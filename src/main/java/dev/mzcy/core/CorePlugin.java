@@ -11,6 +11,8 @@ import dev.mzcy.core.module.ModuleRegistry;
 import dev.mzcy.core.scanner.ClassScanner;
 import dev.mzcy.core.scanner.ComponentRegistry;
 import dev.mzcy.core.scanner.ScanResult;
+import dev.mzcy.core.updater.UpdateChecker;
+import dev.mzcy.core.updater.UpdateNotifier;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -202,6 +204,17 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(ScanResult.class, scanResult);
 
         log.info("Scan complete: " + scanResult);
+
+        checkForUpdates();
+    }
+
+    private void checkForUpdates() {
+        new UpdateChecker(this).checkAsync(result -> {
+            if (result.isUpdateAvailable()) {
+                getServer().getPluginManager()
+                        .registerEvents(new UpdateNotifier(this, result), this);
+            }
+        });
     }
 
     private void initConfigs() {

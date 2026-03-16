@@ -58,12 +58,13 @@ public final class Binding<T> {
     /**
      * Binding from contract type to implementation type.
      */
+    @SuppressWarnings("unchecked")
     public static <T> Binding<T> of(
             @NotNull Class<T> contract,
             @NotNull Class<? extends T> impl,
             @NotNull Scope scope
     ) {
-        return new Binding<>(contract, impl, null, scope, null);
+        return new Binding<>(contract, impl, (String) null, scope, null);
     }
 
     /**

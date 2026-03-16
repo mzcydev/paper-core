@@ -66,13 +66,15 @@ public final class Container {
 
     /**
      * Binds a contract type to an implementation with an explicit scope.
+     * Raw-type overload for internal use where generic type info is unavailable.
      */
-    public <T> void bind(
-            Class<?> contract,
-            Class<?> impl,
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void bind(
+            @NotNull Class<?> contract,
+            @NotNull Class<?> impl,
             @NotNull Scope scope
     ) {
-        register(Binding.of(contract, impl, scope));
+        register(Binding.of((Class) contract, (Class) impl, scope));
     }
 
     /**
