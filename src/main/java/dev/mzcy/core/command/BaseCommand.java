@@ -1,7 +1,9 @@
 package dev.mzcy.core.command;
 
 import dev.mzcy.core.annotation.Command;
+import dev.mzcy.core.annotation.Cooldown;
 import dev.mzcy.core.annotation.SubCommand;
+import dev.mzcy.core.cooldown.CooldownManager;
 import dev.mzcy.core.exception.CommandException;
 import lombok.extern.java.Log;
 import org.bukkit.command.CommandSender;
@@ -54,6 +56,12 @@ public abstract class BaseCommand {
     /** The annotation on this command class. Lazily cached. */
     private Command commandAnnotation;
 
+    private CooldownManager cooldownManager;
+
+    void setCooldownManager(@NotNull CooldownManager cooldownManager) {
+        this.cooldownManager = cooldownManager;
+    }
+
     // =========================================================================
     // Internal dispatch — called by CommandManager via the Bukkit wrapper
     // =========================================================================
@@ -85,6 +93,14 @@ public abstract class BaseCommand {
                     : meta.permissionMessage();
             ctx.send(msg);
             return true;
+        }
+
+        final Cooldown rootCooldown = getClass().getAnnotation(Cooldown.class);
+        if (rootCooldown != null && cooldownManager != null) {
+            final String key = "cmd:" + meta.name();
+            if (!cooldownManager.checkAndApply(sender, key, rootCooldown)) {
+                return true; // blocked by cooldown
+            }
         }
 
         // Try sub-command routing first
@@ -136,6 +152,15 @@ public abstract class BaseCommand {
                 && !ctx.getSender().hasPermission(meta.permission())) {
             ctx.sendError("<red>You do not have permission for this sub-command.");
             return;
+        }
+
+        // Sub-command cooldown check
+        final Cooldown subCooldown = handler.getMethod().getAnnotation(Cooldown.class);
+        if (subCooldown != null && cooldownManager != null) {
+            final String key = "cmd:" + getCommandAnnotation().name() + ":" + handler.token();
+            if (!cooldownManager.checkAndApply(ctx.getSender(), key, subCooldown)) {
+                return; // blocked by cooldown
+            }
         }
 
         // Strip sub-command token from args for minArgs check

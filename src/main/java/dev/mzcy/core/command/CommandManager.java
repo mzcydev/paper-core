@@ -1,6 +1,7 @@
 package dev.mzcy.core.command;
 
 import dev.mzcy.core.annotation.Command;
+import dev.mzcy.core.cooldown.CooldownManager;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.exception.CommandException;
 import dev.mzcy.core.scanner.ScanResult;
@@ -27,6 +28,7 @@ public final class CommandManager {
 
     private final String pluginName;
     private final Container container;
+    private final CooldownManager cooldownManager;
     private final CommandMap commandMap;
 
     /** All registered wrappers for cleanup on disable. */
@@ -35,6 +37,8 @@ public final class CommandManager {
     public CommandManager(@NotNull String pluginName, @NotNull Container container) {
         this.pluginName = pluginName.toLowerCase(Locale.ROOT);
         this.container  = container;
+        this.cooldownManager = new CooldownManager();
+        container.bindInstance(CooldownManager.class, cooldownManager);
         this.commandMap = resolveCommandMap();
     }
 
@@ -78,6 +82,7 @@ public final class CommandManager {
         }
 
         final BaseCommand instance = container.resolve(commandClass);
+        instance.setCooldownManager(this.cooldownManager);
         final BukkitCommandWrapper wrapper = new BukkitCommandWrapper(meta, instance);
 
         commandMap.register(pluginName, wrapper);
@@ -98,6 +103,7 @@ public final class CommandManager {
             wrapper.unregister(commandMap);
             log.fine(() -> "Unregistered command: /" + wrapper.getName());
         });
+        cooldownManager.shutdown();
         registered.clear();
     }
 
