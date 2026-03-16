@@ -6,6 +6,7 @@ import dev.mzcy.core.data.DataStoreManager;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.exception.CoreException;
 import dev.mzcy.core.exception.ModuleException;
+import dev.mzcy.core.input.ChatInputManager;
 import dev.mzcy.core.inventory.InventoryManager;
 import dev.mzcy.core.module.ModuleRegistry;
 import dev.mzcy.core.placeholder.PlaceholderManager;
@@ -68,6 +69,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private InventoryManager inventoryManager;
     @Getter private ComponentRegistry componentRegistry;
     @Getter private PlaceholderManager placeholderManager;
+    @Getter private ChatInputManager chatInputManager;
 
     /** The scan result from startup — available to dependent plugins post-enable. */
     @Getter private ScanResult scanResult;
@@ -131,6 +133,8 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("PlaceholderManager.shutdown",
                 () -> placeholderManager.shutdown());
 
+        safeRun("ChatInputManager.shutdown", () -> chatInputManager.shutdown());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -191,6 +195,7 @@ public final class CorePlugin extends JavaPlugin {
         commandManager    = new CommandManager(getName(), container);
         inventoryManager  = new InventoryManager(container, this);
         placeholderManager = new PlaceholderManager(this, container);
+        chatInputManager = new ChatInputManager(this);
 
         container.bindInstance(ModuleRegistry.class,   moduleRegistry);
         container.bindInstance(ConfigManager.class,    configManager);
@@ -198,6 +203,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(CommandManager.class,   commandManager);
         container.bindInstance(InventoryManager.class, inventoryManager);
         container.bindInstance(PlaceholderManager.class, placeholderManager);
+        container.bindInstance(ChatInputManager.class, chatInputManager);
 
     }
 
