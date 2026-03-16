@@ -68,8 +68,8 @@ public final class Container {
      * Binds a contract type to an implementation with an explicit scope.
      */
     public <T> void bind(
-            @NotNull Class<T> contract,
-            @NotNull Class<? extends T> impl,
+            Class<?> contract,
+            Class<?> impl,
             @NotNull Scope scope
     ) {
         register(Binding.of(contract, impl, scope));
