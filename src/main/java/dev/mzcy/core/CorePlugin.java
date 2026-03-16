@@ -8,6 +8,7 @@ import dev.mzcy.core.exception.CoreException;
 import dev.mzcy.core.exception.ModuleException;
 import dev.mzcy.core.inventory.InventoryManager;
 import dev.mzcy.core.module.ModuleRegistry;
+import dev.mzcy.core.placeholder.PlaceholderManager;
 import dev.mzcy.core.scanner.ClassScanner;
 import dev.mzcy.core.scanner.ComponentRegistry;
 import dev.mzcy.core.scanner.ScanResult;
@@ -66,6 +67,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private CommandManager commandManager;
     @Getter private InventoryManager inventoryManager;
     @Getter private ComponentRegistry componentRegistry;
+    @Getter private PlaceholderManager placeholderManager;
 
     /** The scan result from startup — available to dependent plugins post-enable. */
     @Getter private ScanResult scanResult;
@@ -126,6 +128,9 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("ConfigManager.saveAll",
                 () -> configManager.saveAll());
 
+        safeRun("PlaceholderManager.shutdown",
+                () -> placeholderManager.shutdown());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -145,6 +150,7 @@ public final class CorePlugin extends JavaPlugin {
         step("Registering commands",                 this::initCommands);
         step("Registering inventories",              this::initInventories);
         step("Registering Bukkit listeners",         this::initListeners);
+        step("Initializing PlaceholderAPI", this::initPlaceholders);
         step("Loading modules",                      this::loadModules);
         step("Enabling modules",                     this::enableModules);
     }
@@ -184,12 +190,15 @@ public final class CorePlugin extends JavaPlugin {
         );
         commandManager    = new CommandManager(getName(), container);
         inventoryManager  = new InventoryManager(container, this);
+        placeholderManager = new PlaceholderManager(this, container);
 
         container.bindInstance(ModuleRegistry.class,   moduleRegistry);
         container.bindInstance(ConfigManager.class,    configManager);
         container.bindInstance(DataStoreManager.class, dataStoreManager);
         container.bindInstance(CommandManager.class,   commandManager);
         container.bindInstance(InventoryManager.class, inventoryManager);
+        container.bindInstance(PlaceholderManager.class, placeholderManager);
+
     }
 
     private void initScanner() {
@@ -248,6 +257,10 @@ public final class CorePlugin extends JavaPlugin {
                         "Failed to register listener: " + cls.getName(), ex);
             }
         }
+    }
+
+    private void initPlaceholders() {
+        placeholderManager.initialize(scanResult);
     }
 
     private void loadModules() {

@@ -18,12 +18,16 @@ java {
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.extendedclip.com/releases/")
 }
 
 dependencies {
     // Paper
     // paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+
+    // PlaceholderAPI Integration
+    compileOnly("me.clip:placeholderapi:2.12.2")
 
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.34")

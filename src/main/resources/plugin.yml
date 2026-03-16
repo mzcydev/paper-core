@@ -7,3 +7,5 @@ authors:
   - mzcy
 website: https://mzcy.dev
 load: STARTUP
+softdepend:
+  - PlaceholderAPI
