@@ -9,6 +9,7 @@ import dev.mzcy.core.exception.ModuleException;
 import dev.mzcy.core.input.ChatInputManager;
 import dev.mzcy.core.inventory.InventoryManager;
 import dev.mzcy.core.module.ModuleRegistry;
+import dev.mzcy.core.npc.NpcManager;
 import dev.mzcy.core.placeholder.PlaceholderManager;
 import dev.mzcy.core.scanner.ClassScanner;
 import dev.mzcy.core.scanner.ComponentRegistry;
@@ -82,6 +83,7 @@ public final class CorePlugin extends JavaPlugin {
     private ChatInputManager chatInputManager;
     @Getter
     private ScoreboardManager scoreboardManager;
+    @Getter private NpcManager npcManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -154,6 +156,9 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("ScoreboardManager.destroyAll",
                 () -> scoreboardManager.destroyAll());
 
+        safeRun("NpcManager.destroy",
+                () -> npcManager.destroy());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -216,6 +221,7 @@ public final class CorePlugin extends JavaPlugin {
         placeholderManager = new PlaceholderManager(this, container);
         chatInputManager = new ChatInputManager(this);
         scoreboardManager = new ScoreboardManager(this);
+        npcManager = new NpcManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -225,6 +231,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(PlaceholderManager.class, placeholderManager);
         container.bindInstance(ChatInputManager.class, chatInputManager);
         container.bindInstance(ScoreboardManager.class, scoreboardManager);
+        container.bindInstance(NpcManager.class, npcManager);
 
     }
 
