@@ -7,6 +7,7 @@ import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.*;
+import org.redisson.api.options.KeysOptions;
 
 import java.time.Duration;
 import java.util.*;
@@ -135,13 +136,17 @@ public abstract class AbstractRedisRepository<K, V>
         );
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     @NotNull
     public CompletableFuture<Long> count() {
-        return async(() ->
-                provider.getClient().getKeys()
-                        .countByPattern(getNamespace() + ":*")
-        );
+        return async(() -> {
+            final Iterable<String> keys = provider.getClient()
+                    .getKeys().getKeysByPattern(getNamespace() + ":*");
+            long cnt = 0;
+            for (final String key : keys) cnt++;
+            return cnt;
+        });
     }
 
     @Override
