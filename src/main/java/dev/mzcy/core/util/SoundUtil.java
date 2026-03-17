@@ -8,9 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -131,7 +129,9 @@ public class SoundUtil {
     @Builder
     public static final class SoundEffect {
 
-        /** The Bukkit sound to play. */
+        /**
+         * The Bukkit sound to play.
+         */
         @NotNull
         private final Sound sound;
 
@@ -149,7 +149,9 @@ public class SoundUtil {
         @Builder.Default
         private final float pitch = 1.0f;
 
-        /** The sound category controlling which volume slider affects this sound. */
+        /**
+         * The sound category controlling which volume slider affects this sound.
+         */
         @Builder.Default
         @NotNull
         private final SoundCategory category = SoundCategory.MASTER;
@@ -250,11 +252,10 @@ public class SoundUtil {
      */
     public static final class SoundSequence {
 
-        private record Step(SoundEffect effect, long delayTicks) {}
-
         private final List<Step> steps = new java.util.ArrayList<>();
 
-        private SoundSequence() {}
+        private SoundSequence() {
+        }
 
         @NotNull
         public static SoundSequence create() {
@@ -307,6 +308,9 @@ public class SoundUtil {
                             @NotNull Collection<? extends Player> players) {
             players.forEach(p -> play(plugin, p));
         }
+
+        private record Step(SoundEffect effect, long delayTicks) {
+        }
     }
 
     // =========================================================================
@@ -321,93 +325,122 @@ public class SoundUtil {
      */
     public static final class Presets {
 
-        private Presets() {}
-
-        // --- UI ---
-        /** Subtle click for GUI button presses. */
+        /**
+         * Subtle click for GUI button presses.
+         */
         public static final SoundEffect CLICK = SoundEffect.of(
                 Sound.UI_BUTTON_CLICK, 0.6f, 1.0f);
 
-        /** Softer click variant — useful for navigation. */
+        // --- UI ---
+        /**
+         * Softer click variant — useful for navigation.
+         */
         public static final SoundEffect CLICK_SOFT = SoundEffect.of(
                 Sound.UI_BUTTON_CLICK, 0.4f, 1.2f);
-
-        /** High-pitched click for confirmation actions. */
+        /**
+         * High-pitched click for confirmation actions.
+         */
         public static final SoundEffect CLICK_HIGH = SoundEffect.of(
                 Sound.UI_BUTTON_CLICK, 0.6f, 1.5f);
-
-        // --- Feedback ---
-        /** Positive action completed successfully. */
+        /**
+         * Positive action completed successfully.
+         */
         public static final SoundEffect SUCCESS = SoundEffect.of(
                 Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.8f);
 
-        /** Negative feedback — action denied or failed. */
+        // --- Feedback ---
+        /**
+         * Negative feedback — action denied or failed.
+         */
         public static final SoundEffect ERROR = SoundEffect.of(
                 Sound.ENTITY_VILLAGER_NO, 0.8f, 1.0f);
-
-        /** Warning — use before potential destructive actions. */
+        /**
+         * Warning — use before potential destructive actions.
+         */
         public static final SoundEffect WARNING = SoundEffect.of(
                 Sound.BLOCK_NOTE_BLOCK_BASS, 0.8f, 0.8f);
-
-        // --- Achievement / Progress ---
-        /** Full level-up sound. */
+        /**
+         * Full level-up sound.
+         */
         public static final SoundEffect LEVEL_UP = SoundEffect.of(
                 Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 
-        /** Coin/token collected. */
+        // --- Achievement / Progress ---
+        /**
+         * Coin/token collected.
+         */
         public static final SoundEffect COIN = SoundEffect.of(
                 Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1.2f);
-
-        /** Item purchased or transaction completed. */
+        /**
+         * Item purchased or transaction completed.
+         */
         public static final SoundEffect PURCHASE = SoundEffect.of(
                 Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 0.8f);
-
-        // --- Navigation ---
-        /** Opening a menu or GUI. */
+        /**
+         * Opening a menu or GUI.
+         */
         public static final SoundEffect OPEN = SoundEffect.of(
                 Sound.BLOCK_CHEST_OPEN, 0.5f, 1.2f);
 
-        /** Closing a menu or GUI. */
+        // --- Navigation ---
+        /**
+         * Closing a menu or GUI.
+         */
         public static final SoundEffect CLOSE = SoundEffect.of(
                 Sound.BLOCK_CHEST_CLOSE, 0.5f, 1.2f);
-
-        /** Navigating to previous page. */
+        /**
+         * Navigating to previous page.
+         */
         public static final SoundEffect PAGE_PREV = SoundEffect.of(
                 Sound.ITEM_BOOK_PAGE_TURN, 0.8f, 0.9f);
-
-        /** Navigating to next page. */
+        /**
+         * Navigating to next page.
+         */
         public static final SoundEffect PAGE_NEXT = SoundEffect.of(
                 Sound.ITEM_BOOK_PAGE_TURN, 0.8f, 1.1f);
-
-        // --- Notifications ---
-        /** Incoming message or notification ping. */
+        /**
+         * Incoming message or notification ping.
+         */
         public static final SoundEffect PING = SoundEffect.of(
                 Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 2.0f);
 
-        /** Countdown tick — use in repeating tasks. */
+        // --- Notifications ---
+        /**
+         * Countdown tick — use in repeating tasks.
+         */
         public static final SoundEffect TICK = SoundEffect.of(
                 Sound.BLOCK_NOTE_BLOCK_HAT, 0.5f, 1.0f);
-
-        /** Final countdown beep — use on last second. */
+        /**
+         * Final countdown beep — use on last second.
+         */
         public static final SoundEffect TICK_FINAL = SoundEffect.of(
                 Sound.BLOCK_NOTE_BLOCK_HAT, 0.8f, 2.0f);
-
-        // --- Teleportation ---
-        /** Player teleported away. */
+        /**
+         * Player teleported away.
+         */
         public static final SoundEffect TELEPORT_OUT = SoundEffect.of(
                 Sound.ENTITY_ENDERMAN_TELEPORT, 0.6f, 1.0f);
 
-        /** Player arrived at teleport destination. */
+        // --- Teleportation ---
+        /**
+         * Player arrived at teleport destination.
+         */
         public static final SoundEffect TELEPORT_IN = SoundEffect.of(
                 Sound.ENTITY_ENDERMAN_TELEPORT, 0.4f, 1.5f);
-
-        // --- Economy ---
-        /** Money deposited or reward given. */
+        /**
+         * Money deposited or reward given.
+         */
         public static final SoundEffect DEPOSIT = SoundEffect.of(
                 Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
 
-        /** Money withdrawn. */
+        // --- Economy ---
+        /**
+         * Money withdrawn.
+         */
         public static final SoundEffect WITHDRAW = SoundEffect.of(
                 Sound.ENTITY_ITEM_PICKUP, 0.8f, 0.8f);
+
+        private Presets() {
+        }
     }
 }

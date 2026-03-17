@@ -1,7 +1,6 @@
 package dev.mzcy.core.scoreboard;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.NotNull;
@@ -26,10 +25,14 @@ public final class ScoreboardLine {
 
     private final int lineIndex;
 
-    /** If non-null, always returns this value. */
+    /**
+     * If non-null, always returns this value.
+     */
     private final Component staticValue;
 
-    /** If non-null, called on every update tick to get the current value. */
+    /**
+     * If non-null, called on every update tick to get the current value.
+     */
     private final Supplier<Component> dynamicSupplier;
 
     private ScoreboardLine(
@@ -37,8 +40,8 @@ public final class ScoreboardLine {
             Component staticValue,
             Supplier<Component> dynamicSupplier
     ) {
-        this.lineIndex       = lineIndex;
-        this.staticValue     = staticValue;
+        this.lineIndex = lineIndex;
+        this.staticValue = staticValue;
         this.dynamicSupplier = dynamicSupplier;
     }
 

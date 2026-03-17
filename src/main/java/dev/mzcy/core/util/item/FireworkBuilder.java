@@ -1,14 +1,11 @@
 package dev.mzcy.core.util.item;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 /**
  * Specialized builder for {@link Material#FIREWORK_ROCKET} items.
@@ -164,7 +161,8 @@ public final class FireworkBuilder
 
         private final FireworkEffect.Builder builder = FireworkEffect.builder();
 
-        private FireworkEffectBuilder() {}
+        private FireworkEffectBuilder() {
+        }
 
         @NotNull
         public static FireworkEffectBuilder create() {

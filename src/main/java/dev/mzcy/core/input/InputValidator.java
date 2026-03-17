@@ -28,7 +28,7 @@ public interface InputValidator {
      *
      * @param input the raw chat message typed by the player
      * @return {@code null} if the input is valid,
-     *         or a MiniMessage error string to send to the player
+     * or a MiniMessage error string to send to the player
      */
     @Nullable
     String validate(@NotNull String input);
@@ -57,7 +57,8 @@ public interface InputValidator {
      */
     final class Validators {
 
-        private Validators() {}
+        private Validators() {
+        }
 
         /**
          * Accepts any non-blank input.
@@ -153,7 +154,7 @@ public interface InputValidator {
         /**
          * Validates that the input matches the given regex pattern.
          *
-         * @param pattern the regex pattern
+         * @param pattern      the regex pattern
          * @param errorMessage MiniMessage error sent when the pattern does not match
          */
         @NotNull

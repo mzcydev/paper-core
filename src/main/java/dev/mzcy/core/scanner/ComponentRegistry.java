@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Set;
 
 /**
  * High-level façade that orchestrates scanning + processing in one call.
@@ -21,8 +21,10 @@ import java.util.*;
 @RequiredArgsConstructor
 public final class ComponentRegistry {
 
-    @NotNull private final Container container;
-    @NotNull private final ClassScanner scanner;
+    @NotNull
+    private final Container container;
+    @NotNull
+    private final ClassScanner scanner;
 
     /**
      * Scans the given base package and processes all discovered annotations,

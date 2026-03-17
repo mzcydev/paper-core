@@ -10,7 +10,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -43,10 +42,14 @@ public final class CooldownManager {
     private static final String DEFAULT_MESSAGE =
             "<red>You must wait <bold><remaining></bold> before using this again.";
 
-    /** All active cooldown entries. */
+    /**
+     * All active cooldown entries.
+     */
     private final Map<CooldownKey, CooldownEntry> entries = new ConcurrentHashMap<>();
 
-    /** Background eviction scheduler. */
+    /**
+     * Background eviction scheduler.
+     */
     private final ScheduledExecutorService evictionScheduler =
             Executors.newSingleThreadScheduledExecutor(r -> {
                 final Thread t = new Thread(r, "core-cooldown-eviction");
@@ -54,7 +57,9 @@ public final class CooldownManager {
                 return t;
             });
 
-    /** Overrideable default message. */
+    /**
+     * Overrideable default message.
+     */
     @Setter
     @NotNull
     private String defaultMessage = DEFAULT_MESSAGE;
@@ -79,7 +84,7 @@ public final class CooldownManager {
      * @param commandKey unique key identifying the command/sub-command
      * @param cooldown   the {@link Cooldown} annotation metadata
      * @return {@code true} if the sender is NOT on cooldown (execution should proceed),
-     *         {@code false} if they ARE on cooldown (execution should be blocked)
+     * {@code false} if they ARE on cooldown (execution should be blocked)
      */
     public boolean checkAndApply(
             @NotNull CommandSender sender,

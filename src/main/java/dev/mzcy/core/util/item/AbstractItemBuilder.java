@@ -1,6 +1,5 @@
 package dev.mzcy.core.util.item;
 
-import com.google.common.collect.Multimap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -14,9 +13,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -39,11 +39,15 @@ public abstract class AbstractItemBuilder<SELF extends AbstractItemBuilder<SELF,
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    /** The item being built. Mutations happen directly on this instance. */
+    /**
+     * The item being built. Mutations happen directly on this instance.
+     */
     @Getter
     protected final ItemStack item;
 
-    /** Typed meta reference. Re-fetched from item on {@link #build()}. */
+    /**
+     * Typed meta reference. Re-fetched from item on {@link #build()}.
+     */
     protected final META meta;
 
     // =========================================================================

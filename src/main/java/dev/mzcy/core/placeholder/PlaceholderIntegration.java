@@ -1,6 +1,5 @@
 package dev.mzcy.core.placeholder;
 
-import dev.mzcy.core.annotation.Component;
 import lombok.extern.java.Log;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
@@ -8,7 +7,8 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -45,7 +45,7 @@ public class PlaceholderIntegration extends PlaceholderExpansion {
             @NotNull Plugin plugin,
             @NotNull String expansionId
     ) {
-        this.plugin      = plugin;
+        this.plugin = plugin;
         this.expansionId = expansionId;
     }
 

@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Optional Bukkit {@link Listener} that notifies operators with
@@ -31,8 +30,10 @@ public final class UpdateNotifier implements Listener {
 
     private static final String NOTIFY_PERMISSION = "core.update.notify";
 
-    @NotNull private final Plugin       plugin;
-    @NotNull private final UpdateResult result;
+    @NotNull
+    private final Plugin plugin;
+    @NotNull
+    private final UpdateResult result;
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(@NotNull PlayerJoinEvent event) {

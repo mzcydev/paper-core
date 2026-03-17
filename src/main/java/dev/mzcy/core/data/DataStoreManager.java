@@ -8,7 +8,10 @@ import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -28,13 +31,15 @@ public final class DataStoreManager {
     private final Path dataFolder;
     private final Container container;
 
-    /** All managed stores, keyed by their class. */
+    /**
+     * All managed stores, keyed by their class.
+     */
     private final Map<Class<? extends AbstractDataStore<?, ?>>, AbstractDataStore<?, ?>> registry
             = new LinkedHashMap<>();
 
     public DataStoreManager(@NotNull Path dataFolder, @NotNull Container container) {
         this.dataFolder = dataFolder;
-        this.container  = container;
+        this.container = container;
     }
 
     // =========================================================================
@@ -52,8 +57,7 @@ public final class DataStoreManager {
                 continue;
             }
             try {
-                @SuppressWarnings("unchecked")
-                final Class<? extends AbstractDataStore<?, ?>> storeClass =
+                @SuppressWarnings("unchecked") final Class<? extends AbstractDataStore<?, ?>> storeClass =
                         (Class<? extends AbstractDataStore<?, ?>>) cls;
                 initialize(storeClass);
             } catch (Exception ex) {

@@ -58,13 +58,19 @@ public final class ScoreboardManager implements Listener {
 
     private final Plugin plugin;
 
-    /** All registered sidebars by name. */
+    /**
+     * All registered sidebars by name.
+     */
     private final Map<String, FastSidebar> sidebars = new LinkedHashMap<>();
 
-    /** Currently active sidebar per player UUID. */
+    /**
+     * Currently active sidebar per player UUID.
+     */
     private final Map<UUID, String> activeSidebar = new ConcurrentHashMap<>();
 
-    /** The name of the default sidebar shown to players on join. Null = none. */
+    /**
+     * The name of the default sidebar shown to players on join. Null = none.
+     */
     @Nullable
     private String defaultSidebarName = null;
 

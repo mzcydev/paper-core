@@ -19,12 +19,18 @@ import java.lang.annotation.*;
 @Documented
 public @interface InventoryGui {
 
-    /** Unique identifier for this GUI (used for lookup). */
+    /**
+     * Unique identifier for this GUI (used for lookup).
+     */
     String id();
 
-    /** Display title (supports legacy color codes). */
+    /**
+     * Display title (supports legacy color codes).
+     */
     String title();
 
-    /** Number of rows (1–6). */
+    /**
+     * Number of rows (1–6).
+     */
     int rows() default 3;
 }

@@ -1,8 +1,6 @@
 package dev.mzcy.core.placeholder;
 
-import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Contract for components that contribute placeholders to PlaceholderAPI.

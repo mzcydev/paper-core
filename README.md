@@ -1,6 +1,7 @@
 # Core Framework
 
-> A professional, annotation-driven plugin framework for **Paper 1.21.x** built around dependency injection, automatic component scanning, and a clean module lifecycle.
+> A professional, annotation-driven plugin framework for **Paper 1.21.x** built around dependency injection, automatic
+> component scanning, and a clean module lifecycle.
 
 ```
 dev.mzcy.core  ·  Paper 1.21.x  ·  Java 21  ·  Gradle KTS  ·  Lombok
@@ -68,18 +69,19 @@ dev.mzcy.core  ·  Paper 1.21.x  ·  Java 21  ·  Gradle KTS  ·  Lombok
 
 ## Overview
 
-Core is a **framework plugin** — it does not add gameplay. It provides the infrastructure that your own plugins build on top of:
+Core is a **framework plugin** — it does not add gameplay. It provides the infrastructure that your own plugins build on
+top of:
 
-| Subsystem | What it gives you |
-|---|---|
-| **DI Container** | Constructor, field, and method injection with singleton/prototype scopes |
-| **Class Scanner** | Automatic discovery of `@Component`, `@Command`, `@Config`, `@Listener`, `@DataStore`, `@InventoryGui` |
-| **Config Framework** | Type-safe YAML/JSON configs as plain Java objects |
-| **Command Framework** | Annotation-based commands with sub-command routing, no `plugin.yml` declarations needed |
-| **Inventory Framework** | Fluent GUI builder with automatic click routing and per-player state isolation |
-| **Data Store** | Binary, non-human-readable persistent key-value storage per plugin |
-| **Item Builders** | Modular, typed fluent builders for every item meta variant |
-| **Utilities** | Scheduler, ComponentUtil, ColorUtil, TimeUtil, Preconditions |
+| Subsystem               | What it gives you                                                                                      |
+|-------------------------|--------------------------------------------------------------------------------------------------------|
+| **DI Container**        | Constructor, field, and method injection with singleton/prototype scopes                               |
+| **Class Scanner**       | Automatic discovery of `@Component`, `@Command`, `@Config`, `@Listener`, `@DataStore`, `@InventoryGui` |
+| **Config Framework**    | Type-safe YAML/JSON configs as plain Java objects                                                      |
+| **Command Framework**   | Annotation-based commands with sub-command routing, no `plugin.yml` declarations needed                |
+| **Inventory Framework** | Fluent GUI builder with automatic click routing and per-player state isolation                         |
+| **Data Store**          | Binary, non-human-readable persistent key-value storage per plugin                                     |
+| **Item Builders**       | Modular, typed fluent builders for every item meta variant                                             |
+| **Utilities**           | Scheduler, ComponentUtil, ColorUtil, TimeUtil, Preconditions                                           |
 
 ---
 
@@ -105,7 +107,8 @@ CorePlugin (Bootstrap)
     └── ModuleRegistry            ← load → enable → disable lifecycle
 ```
 
-Every subsystem is registered as a singleton in the DI container, meaning you can inject any manager directly into your components.
+Every subsystem is registered as a singleton in the DI container, meaning you can inject any manager directly into your
+components.
 
 ---
 
@@ -114,6 +117,7 @@ Every subsystem is registered as a singleton in the DI container, meaning you ca
 ### Adding Core as a Dependency
 
 **`build.gradle.kts`** (your plugin):
+
 ```kotlin
 repositories {
     maven("https://repo.mzcy.dev/releases") // or local
@@ -125,6 +129,7 @@ dependencies {
 ```
 
 **`plugin.yml`**:
+
 ```yaml
 depend:
   - Core
@@ -183,6 +188,7 @@ public final class MyPlugin extends JavaPlugin {
 Annotate any class with `@Component` to make it managed by the DI container:
 
 ```java
+
 @Component
 public class EconomyService {
 
@@ -199,6 +205,7 @@ The scanner discovers `@Component` classes automatically. You never call `new Ec
 Use `@Inject` on fields, constructors, or methods:
 
 ```java
+
 @Component
 public class ShopService {
 
@@ -224,12 +231,13 @@ public class ShopService {
 
 ### Scopes
 
-| Annotation | Behavior |
-|---|---|
+| Annotation             | Behavior                                              |
+|------------------------|-------------------------------------------------------|
 | `@Singleton` (default) | One shared instance for the entire container lifetime |
-| `@Prototype` | New instance created on every injection point |
+| `@Prototype`           | New instance created on every injection point         |
 
 ```java
+
 @Component
 @Prototype  // fresh instance every time it is injected
 public class TemporaryTask {
@@ -245,8 +253,10 @@ When multiple bindings exist for the same type, use `@Named` to disambiguate:
 
 ```java
 // Registration (manual binding in a module):
-container.bind(DataSource.class, MySQLDataSource.class, "mysql", Scope.SINGLETON);
-container.bind(DataSource.class, RedisDataSource.class, "redis", Scope.SINGLETON);
+container.bind(DataSource .class, MySQLDataSource .class, "mysql",Scope.SINGLETON);
+container.
+
+bind(DataSource .class, RedisDataSource .class, "redis",Scope.SINGLETON);
 
 // Injection:
 @Inject
@@ -261,6 +271,7 @@ private DataSource cacheDatabase;
 ### Lifecycle Callbacks
 
 ```java
+
 @Component
 public class ConnectionPool {
 
@@ -284,15 +295,23 @@ Access the container directly for advanced scenarios:
 Container container = CorePlugin.getInstance().getContainer();
 
 // Bind interface → implementation
-container.bind(PaymentGateway.class, StripeGateway.class);
+container.
+
+bind(PaymentGateway .class, StripeGateway .class);
 
 // Bind a pre-built instance
-container.bindInstance(MyLibrary.class, MyLibrary.create());
+container.
+
+bindInstance(MyLibrary .class, MyLibrary.create());
 
 // Bind a factory supplier
-container.bindFactory(Report.class, PdfReport.class,
-    () -> new PdfReport(new FileOutputStream("out.pdf")),
-    Scope.PROTOTYPE
+        container.
+
+bindFactory(Report .class, PdfReport .class,
+    () ->new
+
+PdfReport(new FileOutputStream("out.pdf")),
+Scope.PROTOTYPE
 );
 
 // Resolve manually
@@ -308,21 +327,22 @@ EconomyService service = container.resolve(EconomyService.class);
 Extend `AbstractConfig` and annotate with `@Config`:
 
 ```java
+
 @Config(value = "settings", format = ConfigFormat.YAML)
 public class MainConfig extends AbstractConfig {
 
-    public String prefix        = "<dark_gray>[<aqua>MyPlugin<dark_gray>] ";
-    public boolean debug        = false;
-    public int maxHomes         = 5;
-    public List<String> worlds  = List.of("world", "world_nether");
+    public String prefix = "<dark_gray>[<aqua>MyPlugin<dark_gray>] ";
+    public boolean debug = false;
+    public int maxHomes = 5;
+    public List<String> worlds = List.of("world", "world_nether");
 
     // Nested objects work too
     public DatabaseSection database = new DatabaseSection();
 
     public static class DatabaseSection implements java.io.Serializable {
-        public String host     = "localhost";
-        public int    port     = 3306;
-        public String name     = "myplugin";
+        public String host = "localhost";
+        public int port = 3306;
+        public String name = "myplugin";
     }
 
     @Override
@@ -333,23 +353,25 @@ public class MainConfig extends AbstractConfig {
 }
 ```
 
-The file is automatically created at `plugins/MyPlugin/settings.yml` on first load. Default values in the class serve as fallback when the file does not exist.
+The file is automatically created at `plugins/MyPlugin/settings.yml` on first load. Default values in the class serve as
+fallback when the file does not exist.
 
 **Supported annotations:**
 
-| Attribute | Default | Description |
-|---|---|---|
-| `value` | required | Filename without extension |
-| `format` | `YAML` | `YAML` or `JSON` |
-| `directory` | `""` (root) | Sub-directory within the data folder |
-| `autoSave` | `true` | Save on plugin disable |
-| `copyDefaults` | `true` | Copy from JAR resources if file missing |
+| Attribute      | Default     | Description                             |
+|----------------|-------------|-----------------------------------------|
+| `value`        | required    | Filename without extension              |
+| `format`       | `YAML`      | `YAML` or `JSON`                        |
+| `directory`    | `""` (root) | Sub-directory within the data folder    |
+| `autoSave`     | `true`      | Save on plugin disable                  |
+| `copyDefaults` | `true`      | Copy from JAR resources if file missing |
 
 ### Accessing Configs
 
 Inject directly via `@Inject`:
 
 ```java
+
 @Component
 public class HomeService {
 
@@ -366,8 +388,8 @@ Or retrieve from the manager:
 
 ```java
 MainConfig config = CorePlugin.getInstance()
-    .getConfigManager()
-    .get(MainConfig.class);
+        .getConfigManager()
+        .get(MainConfig.class);
 ```
 
 ### Reloading
@@ -377,12 +399,19 @@ MainConfig config = CorePlugin.getInstance()
 config.reload();
 
 // Reload all configs at once (e.g., in a /reload command)
-CorePlugin.getInstance().getConfigManager().reloadAll();
+CorePlugin.
+
+getInstance().
+
+getConfigManager().
+
+reloadAll();
 ```
 
 ### Formats
 
 **YAML** (default) — human-friendly, recommended for admin-facing configs:
+
 ```yaml
 prefix: '<dark_gray>[<aqua>MyPlugin<dark_gray>] '
 debug: false
@@ -390,6 +419,7 @@ maxHomes: 5
 ```
 
 **JSON** — useful for machine-written configs or API integration:
+
 ```json
 {
   "prefix": "<dark_gray>[<aqua>MyPlugin<dark_gray>] ",
@@ -407,13 +437,14 @@ maxHomes: 5
 Extend `BaseCommand` and annotate with `@Command`. No `plugin.yml` declaration needed:
 
 ```java
+
 @Command(
-    name        = "home",
-    description = "Manage your homes",
-    usage       = "/home <set|delete|list|tp>",
-    permission  = "myplugin.home",
-    aliases     = {"homes", "h"},
-    playerOnly  = true
+        name = "home",
+        description = "Manage your homes",
+        usage = "/home <set|delete|list|tp>",
+        permission = "myplugin.home",
+        aliases = {"homes", "h"},
+        playerOnly = true
 )
 public class HomeCommand extends BaseCommand {
 
@@ -425,7 +456,7 @@ public class HomeCommand extends BaseCommand {
         // Shown when no sub-command matches
         ctx.send("<yellow>Usage: /home <set|delete|list|tp>");
         homeService.listHomes(ctx.playerOrThrow())
-            .forEach(name -> ctx.send("<gray>  - " + name));
+                .forEach(name -> ctx.send("<gray>  - " + name));
     }
 }
 ```
@@ -435,12 +466,13 @@ public class HomeCommand extends BaseCommand {
 Add `@SubCommand`-annotated methods to the same class:
 
 ```java
+
 @SubCommand(
-    value      = "set",
-    permission = "myplugin.home.set",
-    usage      = "/home set <name>",
-    minArgs    = 1,
-    playerOnly = true
+        value = "set",
+        permission = "myplugin.home.set",
+        usage = "/home set <name>",
+        minArgs = 1,
+        playerOnly = true
 )
 public void onSet(CommandContext ctx) {
     final String name = ctx.arg(0).orElse("home");
@@ -449,11 +481,11 @@ public void onSet(CommandContext ctx) {
 }
 
 @SubCommand(
-    value      = "delete",
-    permission = "myplugin.home.delete",
-    usage      = "/home delete <name>",
-    minArgs    = 1,
-    playerOnly = true
+        value = "delete",
+        permission = "myplugin.home.delete",
+        usage = "/home delete <name>",
+        minArgs = 1,
+        playerOnly = true
 )
 public void onDelete(CommandContext ctx) {
     final String name = ctx.arg(0).orElse("home");
@@ -464,14 +496,14 @@ public void onDelete(CommandContext ctx) {
 @SubCommand(value = "list", playerOnly = true)
 public void onList(CommandContext ctx) {
     homeService.listHomes(ctx.playerOrThrow())
-        .forEach(name -> ctx.send("<gray>• " + name));
+            .forEach(name -> ctx.send("<gray>• " + name));
 }
 
 @SubCommand(
-    value      = "tp",
-    usage      = "/home tp <name>",
-    minArgs    = 1,
-    playerOnly = true
+        value = "tp",
+        usage = "/home tp <name>",
+        minArgs = 1,
+        playerOnly = true
 )
 public void onTeleport(CommandContext ctx) {
     final String name = ctx.arg(0).orElse("home");
@@ -486,22 +518,46 @@ Routing happens automatically — `/home set beach` calls `onSet`, `/home list` 
 ```java
 // Sender checks
 ctx.isPlayer();                          // true if sender is a Player
-ctx.player();                            // Optional<Player>
-ctx.playerOrThrow();                     // Player (throws if not player)
-ctx.hasPermission("myplugin.admin");     // permission check
+ctx.
+
+player();                            // Optional<Player>
+ctx.
+
+playerOrThrow();                     // Player (throws if not player)
+ctx.
+
+hasPermission("myplugin.admin");     // permission check
 
 // Argument access
-ctx.argCount();                          // number of args
-ctx.arg(0);                              // Optional<String> at index 0
-ctx.argInt(1);                           // Optional<Integer>
-ctx.argDouble(2);                        // Optional<Double>
-ctx.joinArgs(1);                         // "arg1 arg2 arg3" from index 1 onward
+ctx.
+
+argCount();                          // number of args
+ctx.
+
+arg(0);                              // Optional<String> at index 0
+ctx.
+
+argInt(1);                           // Optional<Integer>
+ctx.
+
+argDouble(2);                        // Optional<Double>
+ctx.
+
+joinArgs(1);                         // "arg1 arg2 arg3" from index 1 onward
 
 // Messaging (MiniMessage)
-ctx.send("<green>Done!");
-ctx.sendError("Something went wrong.");
-ctx.sendSuccess("Action completed.");
-ctx.sendPlain("No formatting here.");
+ctx.
+
+send("<green>Done!");
+ctx.
+
+sendError("Something went wrong.");
+ctx.
+
+sendSuccess("Action completed.");
+ctx.
+
+sendPlain("No formatting here.");
 ```
 
 ### Tab Completion
@@ -509,6 +565,7 @@ ctx.sendPlain("No formatting here.");
 Override `onTabComplete` for custom suggestions, or `onSubTabComplete` for per-sub-command suggestions:
 
 ```java
+
 @Override
 protected List<String> onTabComplete(@NotNull CommandContext ctx) {
     if (ctx.argCount() == 1) {
@@ -539,6 +596,7 @@ protected List<String> onSubTabComplete(
 Extend `AbstractGui` and annotate with `@InventoryGui`:
 
 ```java
+
 @InventoryGui(id = "main_menu", title = "<dark_gray>✦ Main Menu ✦", rows = 3)
 public class MainMenuGui extends AbstractGui {
 
@@ -551,33 +609,33 @@ public class MainMenuGui extends AbstractGui {
     @Override
     protected void build(@NotNull GuiBuilder builder) {
         builder
-            // Gray glass pane border
-            .border(Material.GRAY_STAINED_GLASS_PANE)
+                // Gray glass pane border
+                .border(Material.GRAY_STAINED_GLASS_PANE)
 
-            // Center: navigate to homes GUI
-            .slot(13,
-                ItemBuilder.of(Material.NETHER_STAR)
-                    .name("<gold>My Homes")
-                    .lore("<gray>Click to manage homes",
-                          "<dark_gray>You have <white>"
-                              + homeService.countHomes(getViewer().getUniqueId())
-                              + "<dark_gray> homes")
-                    .build(),
-                event -> {
-                    getViewer().closeInventory();
-                    CorePlugin.getInstance()
-                        .getInventoryManager()
-                        .open("homes_gui", (Player) event.getWhoClicked());
-                }
-            )
+                // Center: navigate to homes GUI
+                .slot(13,
+                        ItemBuilder.of(Material.NETHER_STAR)
+                                .name("<gold>My Homes")
+                                .lore("<gray>Click to manage homes",
+                                        "<dark_gray>You have <white>"
+                                                + homeService.countHomes(getViewer().getUniqueId())
+                                                + "<dark_gray> homes")
+                                .build(),
+                        event -> {
+                            getViewer().closeInventory();
+                            CorePlugin.getInstance()
+                                    .getInventoryManager()
+                                    .open("homes_gui", (Player) event.getWhoClicked());
+                        }
+                )
 
-            // Close button
-            .slot(22,
-                ItemBuilder.of(Material.BARRIER)
-                    .name("<red>Close")
-                    .build(),
-                event -> event.getWhoClicked().closeInventory()
-            );
+                // Close button
+                .slot(22,
+                        ItemBuilder.of(Material.BARRIER)
+                                .name("<red>Close")
+                                .build(),
+                        event -> event.getWhoClicked().closeInventory()
+                );
     }
 
     @Override
@@ -596,12 +654,14 @@ public class MainMenuGui extends AbstractGui {
 
 ```java
 // By registered ID (string)
-CorePlugin.getInstance().getInventoryManager().open("main_menu", player);
+CorePlugin.getInstance().
+
+getInventoryManager().open("main_menu",player);
 
 // By class (typed, returns the instance)
-MainMenuGui gui = CorePlugin.getInstance()
-    .getInventoryManager()
-    .open(MainMenuGui.class, player);
+        MainMenuGui gui=CorePlugin.getInstance()
+        .getInventoryManager()
+        .open(MainMenuGui.class,player);
 ```
 
 ### Refreshing a GUI
@@ -609,6 +669,7 @@ MainMenuGui gui = CorePlugin.getInstance()
 Call `refresh()` to rebuild slots in-place without reopening the inventory. Useful when underlying data changes:
 
 ```java
+
 @Component
 public class HomeService {
 
@@ -617,8 +678,8 @@ public class HomeService {
 
         // Refresh any open GUI for this player
         CorePlugin.getInstance().getInventoryManager()
-            .findGui(player.getOpenInventory().getTopInventory())
-            .ifPresent(AbstractGui::refresh);
+                .findGui(player.getOpenInventory().getTopInventory())
+                .ifPresent(AbstractGui::refresh);
     }
 }
 ```
@@ -627,26 +688,38 @@ public class HomeService {
 
 ```java
 builder
-    // Single slot with item + click action
-    .slot(index, item, clickAction)
+        // Single slot with item + click action
+        .slot(index, item, clickAction)
 
-    // Decorative slot (no action)
-    .slot(index, item)
+// Decorative slot (no action)
+    .
 
-    // Fill a range of slots with the same item
-    .slotRange(0, 8, fillerItem)
+slot(index, item)
 
-    // Fill all empty slots with a material
-    .fill(Material.BLACK_STAINED_GLASS_PANE)
+// Fill a range of slots with the same item
+    .
 
-    // Fill all empty slots with a specific item
-    .fill(customItem)
+slotRange(0,8,fillerItem)
 
-    // Draw a border around the entire inventory
-    .border(Material.GRAY_STAINED_GLASS_PANE)
+// Fill all empty slots with a material
+    .
 
-    // Clear a slot (remove item and action)
-    .clear(index);
+fill(Material.BLACK_STAINED_GLASS_PANE)
+
+// Fill all empty slots with a specific item
+    .
+
+fill(customItem)
+
+// Draw a border around the entire inventory
+    .
+
+border(Material.GRAY_STAINED_GLASS_PANE)
+
+// Clear a slot (remove item and action)
+    .
+
+clear(index);
 ```
 
 ---
@@ -658,6 +731,7 @@ builder
 Extend `AbstractDataStore<K, V>` and annotate with `@DataStore`. Values must implement `Serializable`:
 
 ```java
+
 @DataStore(value = "playerdata", directory = "data")
 public class PlayerDataStore extends AbstractDataStore<UUID, PlayerData> {
 
@@ -683,6 +757,7 @@ Data is stored in `plugins/MyPlugin/data/playerdata/<uuid>.dat` — binary, XOR-
 `PlayerData` must implement `Serializable`:
 
 ```java
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -691,8 +766,8 @@ public class PlayerData implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String name;
-    private int    kills;
-    private int    deaths;
+    private int kills;
+    private int deaths;
     private double balance;
     private Instant lastSeen;
 }
@@ -701,6 +776,7 @@ public class PlayerData implements Serializable {
 ### CRUD Operations
 
 ```java
+
 @Component
 public class PlayerService {
 
@@ -709,7 +785,7 @@ public class PlayerService {
 
     public void savePlayer(Player player) {
         final PlayerData data = new PlayerData(
-            player.getName(), 0, 0, 100.0, Instant.now()
+                player.getName(), 0, 0, 100.0, Instant.now()
         );
         store.put(player.getUniqueId(), data);
     }
@@ -737,17 +813,32 @@ public class PlayerService {
 ```java
 // Entry expires in 24 hours — automatically evicted on next load
 store.put(
-    player.getUniqueId(),
-    sessionData,
-    Instant.now().plus(Duration.ofHours(24))
-);
+        player.getUniqueId(),
+
+sessionData,
+        Instant.
+
+now().
+
+plus(Duration.ofHours(24))
+        );
 
 // Check expiry metadata
-store.getEntry(uuid).ifPresent(entry -> {
-    System.out.println("Created: " + entry.getCreatedAt());
-    System.out.println("Expires: " + entry.getExpiresAt());
-    System.out.println("Expired: " + entry.isExpired());
-});
+        store.
+
+getEntry(uuid).
+
+ifPresent(entry ->{
+        System.out.
+
+println("Created: "+entry.getCreatedAt());
+        System.out.
+
+println("Expires: "+entry.getExpiresAt());
+        System.out.
+
+println("Expired: "+entry.isExpired());
+        });
 ```
 
 ### Custom Key Types
@@ -755,6 +846,7 @@ store.getEntry(uuid).ifPresent(entry -> {
 For non-String keys, override `keyToFileName` and `fileNameToKey`:
 
 ```java
+
 @DataStore("factiondata")
 public class FactionDataStore extends AbstractDataStore<String, FactionData> {
 
@@ -782,6 +874,7 @@ public class FactionDataStore extends AbstractDataStore<String, FactionData> {
 Annotate with `@Component` and `@Listener`, implement `org.bukkit.event.Listener`:
 
 ```java
+
 @Component
 @Listener
 public class PlayerJoinListener implements Listener {
@@ -797,7 +890,7 @@ public class PlayerJoinListener implements Listener {
         final Player player = event.getPlayer();
 
         event.joinMessage(ComponentUtil.parse(
-            config.prefix + "<green>" + player.getName() + " joined the game."
+                config.prefix + "<green>" + player.getName() + " joined the game."
         ));
 
         playerService.loadOrCreate(player.getUniqueId(), player.getName());
@@ -828,7 +921,7 @@ public class EconomyModule extends AbstractCoreModule {
 
     public EconomyModule(Container container, ScanResult scanResult) {
         super("Economy");
-        this.container  = container;
+        this.container = container;
         this.scanResult = scanResult;
     }
 
@@ -844,7 +937,7 @@ public class EconomyModule extends AbstractCoreModule {
     protected void onEnable() {
         // Start tasks, open connections
         SchedulerUtil.repeatAsync(plugin, this::processQueue,
-            SchedulerUtil.seconds(5), SchedulerUtil.seconds(5));
+                SchedulerUtil.seconds(5), SchedulerUtil.seconds(5));
     }
 
     @Override
@@ -860,13 +953,14 @@ public class EconomyModule extends AbstractCoreModule {
 Register your modules in your plugin's `onEnable`, before the Core boot sequence runs modules:
 
 ```java
+
 @Override
 public void onEnable() {
     final CorePlugin core = CorePlugin.getInstance();
 
     // Register modules before enable
     core.getModuleRegistry().register(
-        new EconomyModule(core.getContainer(), core.getScanResult())
+            new EconomyModule(core.getContainer(), core.getScanResult())
     );
 
     // Core will call load() then enable() on all registered modules
@@ -885,7 +979,8 @@ Modules disable in reverse registration order — so if `B` depends on `A`, regi
 
 ## Item Builders
 
-All builders use the **CRTP pattern** — every method returns the most specific builder type, so you never lose the sub-type while chaining.
+All builders use the **CRTP pattern** — every method returns the most specific builder type, so you never lose the
+sub-type while chaining.
 
 ### ItemBuilder
 
@@ -893,21 +988,21 @@ General-purpose builder for any material:
 
 ```java
 ItemStack sword = ItemBuilder.of(Material.DIAMOND_SWORD)
-    .name("<gradient:#FF6B6B:#FFE66D>⚔ Excalibur</gradient>")
-    .lore(
-        "<gray>A blade of legend.",
-        "",
-        "<red>❤ +10 Attack Damage",
-        "<yellow>✦ +5 Attack Speed",
-        "",
-        "<dark_gray>Mythic · Sword"
-    )
-    .enchant(Enchantment.SHARPNESS, 5)
-    .enchant(Enchantment.UNBREAKING, 3)
-    .unbreakable(true)
-    .hideAllFlags()
-    .amount(1)
-    .build();
+        .name("<gradient:#FF6B6B:#FFE66D>⚔ Excalibur</gradient>")
+        .lore(
+                "<gray>A blade of legend.",
+                "",
+                "<red>❤ +10 Attack Damage",
+                "<yellow>✦ +5 Attack Speed",
+                "",
+                "<dark_gray>Mythic · Sword"
+        )
+        .enchant(Enchantment.SHARPNESS, 5)
+        .enchant(Enchantment.UNBREAKING, 3)
+        .unbreakable(true)
+        .hideAllFlags()
+        .amount(1)
+        .build();
 
 // Quick GUI filler
 ItemStack filler = ItemBuilder.filler();
@@ -919,21 +1014,21 @@ ItemStack redFiller = ItemBuilder.filler(Material.RED_STAINED_GLASS_PANE);
 ```java
 // From player UUID
 ItemStack skull = SkullBuilder.of()
-    .name("<yellow>" + player.getName() + "'s Head")
-    .owner(player.getUniqueId())
-    .build();
+                .name("<yellow>" + player.getName() + "'s Head")
+                .owner(player.getUniqueId())
+                .build();
 
 // From Base64 texture string (MineSkin, Mojang API)
 ItemStack customSkull = SkullBuilder.of()
-    .name("<aqua>Custom Skull")
-    .textureBase64("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6...")
-    .build();
+        .name("<aqua>Custom Skull")
+        .textureBase64("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6...")
+        .build();
 
 // From direct Mojang texture URL
 ItemStack urlSkull = SkullBuilder.of()
-    .name("<gold>URL Skull")
-    .textureUrl("https://textures.minecraft.net/texture/abc123...")
-    .build();
+        .name("<gold>URL Skull")
+        .textureUrl("https://textures.minecraft.net/texture/abc123...")
+        .build();
 ```
 
 ### LeatherArmorBuilder
@@ -941,22 +1036,22 @@ ItemStack urlSkull = SkullBuilder.of()
 ```java
 // Ruby chestplate with hex color
 ItemStack chestplate = LeatherArmorBuilder.of(Material.LEATHER_CHESTPLATE)
-    .name("<red>Ruby Chestplate")
-    .colorHex("#C0392B")
-    .unbreakable(true)
-    .build();
+                .name("<red>Ruby Chestplate")
+                .colorHex("#C0392B")
+                .unbreakable(true)
+                .build();
 
 // RGB color
 ItemStack boots = LeatherArmorBuilder.of(Material.LEATHER_BOOTS)
-    .name("<aqua>Ocean Boots")
-    .color(0, 150, 255)
-    .build();
+        .name("<aqua>Ocean Boots")
+        .color(0, 150, 255)
+        .build();
 
 // Bukkit Color constant
 ItemStack helmet = LeatherArmorBuilder.of(Material.LEATHER_HELMET)
-    .name("<green>Forest Helmet")
-    .color(Color.GREEN)
-    .build();
+        .name("<green>Forest Helmet")
+        .color(Color.GREEN)
+        .build();
 ```
 
 ### BookBuilder
@@ -964,18 +1059,18 @@ ItemStack helmet = LeatherArmorBuilder.of(Material.LEATHER_HELMET)
 ```java
 // Written book with multiple pages
 ItemStack book = BookBuilder.written()
-    .name("<gold>Core Manual")
-    .title("<gold>Core Manual")
-    .author("<gray>mzcy")
-    .page("<yellow><bold>Welcome!\n\n<reset><gray>This book explains the plugin.")
-    .page("<aqua>Chapter 1: Getting Started\n\n<gray>To begin, run /help.")
-    .page("<red>Chapter 2: Commands\n\n<gray>/home — manage homes\n/spawn — go to spawn")
-    .build();
+                .name("<gold>Core Manual")
+                .title("<gold>Core Manual")
+                .author("<gray>mzcy")
+                .page("<yellow><bold>Welcome!\n\n<reset><gray>This book explains the plugin.")
+                .page("<aqua>Chapter 1: Getting Started\n\n<gray>To begin, run /help.")
+                .page("<red>Chapter 2: Commands\n\n<gray>/home — manage homes\n/spawn — go to spawn")
+                .build();
 
 // Writable (blank) book
 ItemStack writable = BookBuilder.writable()
-    .name("<gray>Empty Journal")
-    .build();
+        .name("<gray>Empty Journal")
+        .build();
 ```
 
 ### FireworkBuilder
@@ -983,25 +1078,25 @@ ItemStack writable = BookBuilder.writable()
 ```java
 // Simple rocket with a star burst
 ItemStack rocket = FireworkBuilder.of()
-    .power(2)
-    .name("<aqua>Celebration Rocket")
-    .effect(
-        FireworkBuilder.FireworkEffectBuilder.create()
-            .type(FireworkEffect.Type.STAR)
-            .color(Color.AQUA, Color.WHITE)
-            .fadeColor(Color.BLUE)
-            .trail(true)
-            .flicker(true)
-            .build()
-    )
-    .build();
+                .power(2)
+                .name("<aqua>Celebration Rocket")
+                .effect(
+                        FireworkBuilder.FireworkEffectBuilder.create()
+                                .type(FireworkEffect.Type.STAR)
+                                .color(Color.AQUA, Color.WHITE)
+                                .fadeColor(Color.BLUE)
+                                .trail(true)
+                                .flicker(true)
+                                .build()
+                )
+                .build();
 
 // Multi-effect rocket using convenience methods
 ItemStack multiRocket = FireworkBuilder.of()
-    .power(3)
-    .ballEffect(Color.RED, Color.ORANGE)
-    .starEffect(Color.YELLOW, Color.WHITE)
-    .build();
+        .power(3)
+        .ballEffect(Color.RED, Color.ORANGE)
+        .starEffect(Color.YELLOW, Color.WHITE)
+        .build();
 ```
 
 ---
@@ -1012,27 +1107,51 @@ ItemStack multiRocket = FireworkBuilder.of()
 
 ```java
 // Run on main thread next tick
-SchedulerUtil.run(plugin, () -> player.sendMessage("Hello!"));
+SchedulerUtil.run(plugin, () ->player.
+
+sendMessage("Hello!"));
 
 // Run after 3 seconds (sync)
-SchedulerUtil.runLater(plugin, () -> teleport(player), SchedulerUtil.seconds(3));
+        SchedulerUtil.
+
+runLater(plugin, () ->
+
+teleport(player),SchedulerUtil.
+
+seconds(3));
 
 // Repeating sync task every 5 seconds
 BukkitTask task = SchedulerUtil.repeat(plugin, this::tick,
-    0L, SchedulerUtil.seconds(5));
+        0L, SchedulerUtil.seconds(5));
 
 // Async database lookup with CompletableFuture
-SchedulerUtil.supplyAsync(plugin, () -> database.findPlayer(uuid))
-    .thenAcceptAsync(data -> {
-        player.sendMessage("Balance: " + data.getBalance());
-    }, SchedulerUtil.syncExecutor(plugin)); // switch back to main thread
+SchedulerUtil.
+
+supplyAsync(plugin, () ->database.
+
+findPlayer(uuid))
+        .
+
+thenAcceptAsync(data ->{
+        player.
+
+sendMessage("Balance: "+data.getBalance());
+        },SchedulerUtil.
+
+syncExecutor(plugin)); // switch back to main thread
 
 // Cancel a task safely
-SchedulerUtil.cancel(task);
+        SchedulerUtil.
+
+cancel(task);
 
 // Time conversions
-SchedulerUtil.seconds(5);   // 100 ticks
-SchedulerUtil.minutes(1);   // 1200 ticks
+SchedulerUtil.
+
+seconds(5);   // 100 ticks
+SchedulerUtil.
+
+minutes(1);   // 1200 ticks
 ```
 
 ### ComponentUtil
@@ -1043,19 +1162,19 @@ Component msg = ComponentUtil.parse("<red>Hello <bold>World");
 
 // Parse with placeholders
 Component greeting = ComponentUtil.parse(
-    "<prefix> Welcome, <player>!",
-    Map.of(
-        "prefix", "<dark_gray>[<aqua>Core<dark_gray>]",
-        "player", player.getName()
-    )
+        "<prefix> Welcome, <player>!",
+        Map.of(
+                "prefix", "<dark_gray>[<aqua>Core<dark_gray>]",
+                "player", player.getName()
+        )
 );
 
 // Legacy color code support
 Component legacy = ComponentUtil.fromLegacy("&aHello &bWorld");
 
 // Serialization
-String miniMsg  = ComponentUtil.toMiniMessage(component);
-String plain    = ComponentUtil.toPlain(component);
+String miniMsg = ComponentUtil.toMiniMessage(component);
+String plain = ComponentUtil.toPlain(component);
 String stripped = ComponentUtil.stripFormatting("<red><bold>Hello");
 // → "Hello"
 ```
@@ -1064,19 +1183,19 @@ String stripped = ComponentUtil.stripFormatting("<red><bold>Hello");
 
 ```java
 // Parse hex colors
-Color red   = ColorUtil.fromHex("#FF5733");
+Color red = ColorUtil.fromHex("#FF5733");
 Color green = ColorUtil.fromHex("33FF57");  // # is optional
-Color blue  = ColorUtil.fromHex("#00F");    // shorthand expands to #0000FF
+Color blue = ColorUtil.fromHex("#00F");    // shorthand expands to #0000FF
 
 // Convert between Bukkit Color and Adventure TextColor
-TextColor textColor  = ColorUtil.toTextColor(red);
-Color     bukkit     = ColorUtil.toBukkitColor(textColor);
+TextColor textColor = ColorUtil.toTextColor(red);
+Color bukkit = ColorUtil.toBukkitColor(textColor);
 
 // Hex output
 String hex = ColorUtil.toHex(red);  // → "#FF5733"
 
 // Interpolation
-Color mid       = ColorUtil.lerp(Color.RED, Color.BLUE, 0.5f);
+Color mid = ColorUtil.lerp(Color.RED, Color.BLUE, 0.5f);
 Color[] gradient = ColorUtil.gradient(Color.RED, Color.YELLOW, 10);
 
 // MiniMessage gradient strings
@@ -1092,9 +1211,17 @@ String rainbow = ColorUtil.rainbowText("Rainbow!", 0);
 ```java
 // Format durations
 TimeUtil.format(Duration.ofSeconds(3661));  // → "1h 1m 1s"
-TimeUtil.format(Duration.ofSeconds(90));    // → "1m 30s"
-TimeUtil.formatSeconds(45);                 // → "45s"
-TimeUtil.formatUntil(Instant.now().plusSeconds(120)); // → "2m 0s"
+        TimeUtil.
+
+format(Duration.ofSeconds(90));    // → "1m 30s"
+        TimeUtil.
+
+formatSeconds(45);                 // → "45s"
+TimeUtil.
+
+formatUntil(Instant.now().
+
+plusSeconds(120)); // → "2m 0s"
 
 // Parse compact strings
 Duration d = TimeUtil.parse("1h30m");   // → 90 minutes
@@ -1102,8 +1229,8 @@ Duration d2 = TimeUtil.parse("2d12h"); // → 60 hours
 Duration d3 = TimeUtil.parseSafe("bad_input"); // → Duration.ZERO
 
 // Tick conversions
-long ticks    = TimeUtil.toTicks(Duration.ofSeconds(5)); // → 100
-Duration dur  = TimeUtil.fromTicks(200);                 // → 10 seconds
+long ticks = TimeUtil.toTicks(Duration.ofSeconds(5)); // → 100
+Duration dur = TimeUtil.fromTicks(200);                 // → 10 seconds
 ```
 
 ### Preconditions
@@ -1116,8 +1243,12 @@ Player p = Preconditions.notNull(player, "Player must not be null");
 String name = Preconditions.notBlank(input, "Name must not be blank");
 
 // Assert conditions
-Preconditions.isTrue(balance >= 0, "Balance cannot be negative");
-Preconditions.isFalse(banned, "Banned players cannot perform this action");
+Preconditions.
+
+isTrue(balance >=0, "Balance cannot be negative");
+Preconditions.
+
+isFalse(banned, "Banned players cannot perform this action");
 
 // Numeric range (throws IllegalArgumentException)
 int slot = Preconditions.inRange(index, 0, 53, "Slot index out of range");
@@ -1130,21 +1261,21 @@ List<String> homes = Preconditions.notEmpty(homeList, "Home list must not be emp
 
 ## Annotation Reference
 
-| Annotation | Target | Purpose |
-|---|---|---|
-| `@Component` | Class | Register class as DI-managed component |
-| `@Singleton` | Class | Explicit singleton scope (default) |
-| `@Prototype` | Class | New instance per injection point |
-| `@Inject` | Field / Constructor / Method | Mark injection point |
-| `@Named("id")` | Field / Parameter | Qualify injection by name |
-| `@PostConstruct` | Method | Called after all fields injected |
-| `@PreDestroy` | Method | Called before container destroys instance |
-| `@Config(...)` | Class | Declare a config file binding |
-| `@Command(...)` | Class | Register a command handler |
-| `@SubCommand(...)` | Method | Register a sub-command on a `BaseCommand` |
-| `@Listener` | Class | Auto-register as Bukkit event listener |
-| `@DataStore(...)` | Class | Register a binary data store |
-| `@InventoryGui(...)` | Class | Register a GUI inventory |
+| Annotation           | Target                       | Purpose                                   |
+|----------------------|------------------------------|-------------------------------------------|
+| `@Component`         | Class                        | Register class as DI-managed component    |
+| `@Singleton`         | Class                        | Explicit singleton scope (default)        |
+| `@Prototype`         | Class                        | New instance per injection point          |
+| `@Inject`            | Field / Constructor / Method | Mark injection point                      |
+| `@Named("id")`       | Field / Parameter            | Qualify injection by name                 |
+| `@PostConstruct`     | Method                       | Called after all fields injected          |
+| `@PreDestroy`        | Method                       | Called before container destroys instance |
+| `@Config(...)`       | Class                        | Declare a config file binding             |
+| `@Command(...)`      | Class                        | Register a command handler                |
+| `@SubCommand(...)`   | Method                       | Register a sub-command on a `BaseCommand` |
+| `@Listener`          | Class                        | Auto-register as Bukkit event listener    |
+| `@DataStore(...)`    | Class                        | Register a binary data store              |
+| `@InventoryGui(...)` | Class                        | Register a GUI inventory                  |
 
 ---
 
@@ -1222,6 +1353,7 @@ onDisable()
 A complete minimal plugin built on Core:
 
 **`ExamplePlugin.java`**
+
 ```java
 public final class ExamplePlugin extends JavaPlugin {
 
@@ -1238,37 +1370,54 @@ public final class ExamplePlugin extends JavaPlugin {
 ```
 
 **`ExampleConfig.java`**
+
 ```java
+
 @Config("config")
 public class ExampleConfig extends AbstractConfig {
     public String welcomeMessage = "<green>Welcome, <player>!";
-    public int    startBalance   = 100;
+    public int startBalance = 100;
 }
 ```
 
 **`PlayerDataStore.java`**
+
 ```java
+
 @DataStore("players")
 public class PlayerDataStore extends AbstractDataStore<UUID, PlayerData> {
-    public PlayerDataStore() { super(new BinaryDataSerializer<>()); }
+    public PlayerDataStore() {
+        super(new BinaryDataSerializer<>());
+    }
 
-    @Override protected String keyToFileName(@NotNull UUID key) { return key.toString(); }
-    @Override protected UUID fileNameToKey(@NotNull String f) { return UUID.fromString(f); }
+    @Override
+    protected String keyToFileName(@NotNull UUID key) {
+        return key.toString();
+    }
+
+    @Override
+    protected UUID fileNameToKey(@NotNull String f) {
+        return UUID.fromString(f);
+    }
 }
 ```
 
 **`PlayerService.java`**
+
 ```java
+
 @Component
 public class PlayerService {
 
-    @Inject private PlayerDataStore store;
-    @Inject private ExampleConfig   config;
+    @Inject
+    private PlayerDataStore store;
+    @Inject
+    private ExampleConfig config;
 
     public void onJoin(Player player) {
         if (!store.contains(player.getUniqueId())) {
             store.put(player.getUniqueId(),
-                new PlayerData(player.getName(), config.startBalance));
+                    new PlayerData(player.getName(), config.startBalance));
         }
     }
 
@@ -1279,37 +1428,44 @@ public class PlayerService {
 ```
 
 **`JoinListener.java`**
+
 ```java
+
 @Component
 @Listener
 public class JoinListener implements Listener {
 
-    @Inject private PlayerService   playerService;
-    @Inject private ExampleConfig   config;
+    @Inject
+    private PlayerService playerService;
+    @Inject
+    private ExampleConfig config;
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
         playerService.onJoin(player);
         player.sendMessage(ComponentUtil.parse(
-            config.welcomeMessage,
-            Map.of("player", player.getName())
+                config.welcomeMessage,
+                Map.of("player", player.getName())
         ));
     }
 }
 ```
 
 **`BalanceCommand.java`**
+
 ```java
+
 @Command(
-    name       = "balance",
-    aliases    = {"bal"},
-    permission = "example.balance",
-    playerOnly = true
+        name = "balance",
+        aliases = {"bal"},
+        permission = "example.balance",
+        playerOnly = true
 )
 public class BalanceCommand extends BaseCommand {
 
-    @Inject private PlayerService playerService;
+    @Inject
+    private PlayerService playerService;
 
     @Override
     protected void onCommand(@NotNull CommandContext ctx) {

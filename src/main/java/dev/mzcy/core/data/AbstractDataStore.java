@@ -6,10 +6,14 @@ import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
@@ -44,16 +48,24 @@ public abstract class AbstractDataStore<K, V extends Serializable> {
 
     private static final String FILE_EXTENSION = ".dat";
 
-    /** Write-through in-memory cache. */
+    /**
+     * Write-through in-memory cache.
+     */
     private final ConcurrentHashMap<K, StoreEntry<V>> cache = new ConcurrentHashMap<>();
 
-    /** The serializer used for reading/writing entries. */
+    /**
+     * The serializer used for reading/writing entries.
+     */
     private final DataSerializer<StoreEntry<V>> serializer;
 
-    /** Root directory for this store's files. Set by {@link DataStoreManager}. */
+    /**
+     * Root directory for this store's files. Set by {@link DataStoreManager}.
+     */
     private Path storeDirectory;
 
-    /** Whether this store has been initialized. */
+    /**
+     * Whether this store has been initialized.
+     */
     private volatile boolean initialized = false;
 
     @SuppressWarnings("unchecked")
@@ -72,7 +84,7 @@ public abstract class AbstractDataStore<K, V extends Serializable> {
      */
     final void initialize(@NotNull Path directory) {
         this.storeDirectory = directory;
-        this.initialized    = true;
+        this.initialized = true;
         loadAll();
     }
 
@@ -205,8 +217,9 @@ public abstract class AbstractDataStore<K, V extends Serializable> {
         try (final Stream<Path> files = Files.list(storeDirectory)) {
             files.filter(p -> p.toString().endsWith(FILE_EXTENSION))
                     .forEach(p -> {
-                        try { Files.deleteIfExists(p); }
-                        catch (IOException ex) {
+                        try {
+                            Files.deleteIfExists(p);
+                        } catch (IOException ex) {
                             log.log(Level.WARNING, "Failed to delete store file: " + p, ex);
                         }
                     });
@@ -295,7 +308,7 @@ public abstract class AbstractDataStore<K, V extends Serializable> {
 
     private void writeToDisk(@NotNull K key, @NotNull StoreEntry<V> entry) {
         final Path target = storeDirectory.resolve(keyToFileName(key) + FILE_EXTENSION);
-        final Path temp   = storeDirectory.resolve(keyToFileName(key) + ".tmp");
+        final Path temp = storeDirectory.resolve(keyToFileName(key) + ".tmp");
 
         try {
             Files.createDirectories(storeDirectory);

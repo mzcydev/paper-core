@@ -45,14 +45,14 @@ public class TimeUtil {
     @NotNull
     public String format(@NotNull Duration duration) {
         final long totalSeconds = Math.abs(duration.getSeconds());
-        final long days    = totalSeconds / 86400;
-        final long hours   = (totalSeconds % 86400) / 3600;
+        final long days = totalSeconds / 86400;
+        final long hours = (totalSeconds % 86400) / 3600;
         final long minutes = (totalSeconds % 3600) / 60;
         final long seconds = totalSeconds % 60;
 
         final StringBuilder sb = new StringBuilder();
-        if (days    > 0) sb.append(days).append("d ");
-        if (hours   > 0) sb.append(hours).append("h ");
+        if (days > 0) sb.append(days).append("d ");
+        if (hours > 0) sb.append(hours).append("h ");
         if (minutes > 0) sb.append(minutes).append("m ");
         if (seconds > 0 || sb.isEmpty()) sb.append(seconds).append("s");
 
@@ -123,7 +123,7 @@ public class TimeUtil {
                 case "h" -> value * 3600;
                 case "m" -> value * 60;
                 case "s" -> value;
-                default  -> 0;
+                default -> 0;
             };
         }
 

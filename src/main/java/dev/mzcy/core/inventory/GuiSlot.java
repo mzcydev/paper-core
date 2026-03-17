@@ -19,11 +19,15 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 public final class GuiSlot {
 
-    /** The item displayed in this slot. Null = empty slot. */
+    /**
+     * The item displayed in this slot. Null = empty slot.
+     */
     @Nullable
     private final ItemStack item;
 
-    /** The action invoked on click. Null = no action (decorative only). */
+    /**
+     * The action invoked on click. Null = no action (decorative only).
+     */
     @Nullable
     private final ClickAction action;
 

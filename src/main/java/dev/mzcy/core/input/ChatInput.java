@@ -2,7 +2,6 @@ package dev.mzcy.core.input;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.function.Consumer;
@@ -35,22 +34,22 @@ import java.util.function.Consumer;
 public final class ChatInput {
 
     private final ChatInputManager manager;
-    private final Player           player;
+    private final Player player;
 
     // Configurable fields with sensible defaults
-    private String         prompt          = "<gold>Please type your input in chat:";
-    private String         cancelKeyword   = "cancel";
-    private String         cancelMessage   = "<gray>Input cancelled.";
-    private String         timeoutMessage  = "<red>Input timed out.";
-    private Duration       timeout         = Duration.ofSeconds(30);
-    private InputValidator validator       = null;
+    private String prompt = "<gold>Please type your input in chat:";
+    private String cancelKeyword = "cancel";
+    private String cancelMessage = "<gray>Input cancelled.";
+    private String timeoutMessage = "<red>Input timed out.";
+    private Duration timeout = Duration.ofSeconds(30);
+    private InputValidator validator = null;
     private Consumer<String> onValidationFail = null;
-    private boolean        closeInventory  = true;
-    private boolean        sendPrompt      = true;
+    private boolean closeInventory = true;
+    private boolean sendPrompt = true;
 
     ChatInput(@NotNull ChatInputManager manager, @NotNull Player player) {
         this.manager = manager;
-        this.player  = player;
+        this.player = player;
     }
 
     // =========================================================================

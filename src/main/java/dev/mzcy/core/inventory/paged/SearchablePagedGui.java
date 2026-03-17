@@ -1,6 +1,5 @@
 package dev.mzcy.core.inventory.paged;
 
-import dev.mzcy.core.inventory.GuiBuilder;
 import dev.mzcy.core.util.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -8,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -70,10 +68,14 @@ import java.util.stream.Collectors;
  */
 public abstract class SearchablePagedGui extends PagedGui {
 
-    /** Current filter predicate. Null = no filter (show all). */
+    /**
+     * Current filter predicate. Null = no filter (show all).
+     */
     private Predicate<PagedItem> currentFilter = null;
 
-    /** Current search query string (for display in the indicator). */
+    /**
+     * Current search query string (for display in the indicator).
+     */
     private String currentQuery = "";
 
     // =========================================================================
@@ -126,7 +128,7 @@ public abstract class SearchablePagedGui extends PagedGui {
         }
 
         final String lower = query.toLowerCase(Locale.ROOT);
-        this.currentQuery  = query;
+        this.currentQuery = query;
         this.currentFilter = item -> {
             if (item.getItem().getItemMeta() == null) return false;
             final String displayName = net.kyori.adventure.text.serializer.plain
@@ -154,7 +156,7 @@ public abstract class SearchablePagedGui extends PagedGui {
             @NotNull String query
     ) {
         this.currentFilter = filter;
-        this.currentQuery  = query;
+        this.currentQuery = query;
         goToPage(0);
         refresh();
     }
@@ -165,7 +167,7 @@ public abstract class SearchablePagedGui extends PagedGui {
      */
     public void clearFilter() {
         this.currentFilter = null;
-        this.currentQuery  = "";
+        this.currentQuery = "";
         goToPage(0);
         refresh();
     }

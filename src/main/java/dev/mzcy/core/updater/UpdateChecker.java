@@ -47,16 +47,16 @@ import java.util.logging.Level;
 @Log
 public final class UpdateChecker {
 
-    private static final String GITHUB_OWNER    = "mzcydev";
-    private static final String GITHUB_REPO     = "paper-core";
-    private static final String API_URL         = "https://api.github.com/repos/"
+    private static final String GITHUB_OWNER = "mzcydev";
+    private static final String GITHUB_REPO = "paper-core";
+    private static final String API_URL = "https://api.github.com/repos/"
             + GITHUB_OWNER + "/" + GITHUB_REPO + "/releases/latest";
-    private static final String RELEASES_URL    = "https://github.com/"
+    private static final String RELEASES_URL = "https://github.com/"
             + GITHUB_OWNER + "/" + GITHUB_REPO + "/releases/latest";
 
-    private static final int     CONNECT_TIMEOUT_MS = 5_000;
-    private static final int     READ_TIMEOUT_MS    = 5_000;
-    private static final int     MAX_NOTES_LENGTH   = 500;
+    private static final int CONNECT_TIMEOUT_MS = 5_000;
+    private static final int READ_TIMEOUT_MS = 5_000;
+    private static final int MAX_NOTES_LENGTH = 500;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -67,7 +67,7 @@ public final class UpdateChecker {
      * @param plugin the owning plugin — used for async scheduling and version lookup
      */
     public UpdateChecker(@NotNull Plugin plugin) {
-        this.plugin         = plugin;
+        this.plugin = plugin;
         this.currentVersion = plugin.getPluginMeta().getVersion();
     }
 
@@ -79,7 +79,7 @@ public final class UpdateChecker {
      * @param currentVersion explicit current version string
      */
     public UpdateChecker(@NotNull Plugin plugin, @NotNull String currentVersion) {
-        this.plugin         = plugin;
+        this.plugin = plugin;
         this.currentVersion = currentVersion;
     }
 
@@ -193,7 +193,7 @@ public final class UpdateChecker {
             final String releaseUrl = root.path("html_url").asText(RELEASES_URL);
 
             final String bodyRaw = root.path("body").asText("");
-            final String notes   = bodyRaw.isBlank() ? null
+            final String notes = bodyRaw.isBlank() ? null
                     : bodyRaw.length() > MAX_NOTES_LENGTH
                       ? bodyRaw.substring(0, MAX_NOTES_LENGTH) + "..."
                       : bodyRaw;
@@ -245,13 +245,10 @@ public final class UpdateChecker {
                 }
                 log.warning("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             }
-            case UP_TO_DATE ->
-                    log.info("Core is up to date. (" + result.getCurrentVersion() + ")");
-            case DEV_BUILD ->
-                    log.info("Running a dev build (" + result.getCurrentVersion()
-                            + ") ahead of latest release (" + result.getLatestVersion() + ").");
-            case FAILED ->
-                    log.warning("Update check failed: " + result.getErrorMessage());
+            case UP_TO_DATE -> log.info("Core is up to date. (" + result.getCurrentVersion() + ")");
+            case DEV_BUILD -> log.info("Running a dev build (" + result.getCurrentVersion()
+                    + ") ahead of latest release (" + result.getLatestVersion() + ").");
+            case FAILED -> log.warning("Update check failed: " + result.getErrorMessage());
         }
     }
 }

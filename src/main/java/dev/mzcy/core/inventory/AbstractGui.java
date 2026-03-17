@@ -49,20 +49,28 @@ import java.util.UUID;
 @Log
 public abstract class AbstractGui {
 
-    /** The player this GUI instance was opened for. Set on {@link #open(Player)}. */
+    /**
+     * The player this GUI instance was opened for. Set on {@link #open(Player)}.
+     */
     @Getter
     @Nullable
     private Player viewer;
 
-    /** The built Bukkit inventory. Populated on {@link #open(Player)}. */
+    /**
+     * The built Bukkit inventory. Populated on {@link #open(Player)}.
+     */
     @Getter
     @Nullable
     private Inventory inventory;
 
-    /** Slot action map built during {@link #open(Player)}. */
+    /**
+     * Slot action map built during {@link #open(Player)}.
+     */
     private Map<Integer, GuiSlot> slots = Collections.emptyMap();
 
-    /** Whether this GUI instance has been opened. */
+    /**
+     * Whether this GUI instance has been opened.
+     */
     private boolean opened = false;
 
     // =========================================================================
@@ -96,9 +104,9 @@ public abstract class AbstractGui {
             throw new InventoryException(getId(), ex);
         }
 
-        this.slots     = builder.getSlots();
+        this.slots = builder.getSlots();
         this.inventory = builder.buildInventory();
-        this.opened    = true;
+        this.opened = true;
 
         player.openInventory(inventory);
         onOpen(player);

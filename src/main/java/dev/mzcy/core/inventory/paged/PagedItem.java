@@ -17,8 +17,10 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 public final class PagedItem {
 
-    @NotNull  private final ItemStack   item;
-    @Nullable private final ClickAction action;
+    @NotNull
+    private final ItemStack item;
+    @Nullable
+    private final ClickAction action;
 
     // =========================================================================
     // Factory methods

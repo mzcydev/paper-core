@@ -13,11 +13,15 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public final class CooldownEntry {
 
-    /** The instant this cooldown was applied. */
+    /**
+     * The instant this cooldown was applied.
+     */
     @NotNull
     private final Instant appliedAt;
 
-    /** The instant this cooldown expires. */
+    /**
+     * The instant this cooldown expires.
+     */
     @NotNull
     private final Instant expiresAt;
 

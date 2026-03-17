@@ -1,6 +1,5 @@
 package dev.mzcy.core.data;
 
-import dev.mzcy.core.exception.DataStoreException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;

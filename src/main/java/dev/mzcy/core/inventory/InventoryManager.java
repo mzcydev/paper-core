@@ -48,7 +48,7 @@ public final class InventoryManager {
 
     public InventoryManager(@NotNull Container container, @NotNull Plugin plugin) {
         this.container = container;
-        this.plugin    = plugin;
+        this.plugin = plugin;
     }
 
     // =========================================================================
@@ -68,8 +68,7 @@ public final class InventoryManager {
                 continue;
             }
             try {
-                @SuppressWarnings("unchecked")
-                final Class<? extends AbstractGui> guiClass =
+                @SuppressWarnings("unchecked") final Class<? extends AbstractGui> guiClass =
                         (Class<? extends AbstractGui>) cls;
                 registerType(guiClass);
             } catch (Exception ex) {

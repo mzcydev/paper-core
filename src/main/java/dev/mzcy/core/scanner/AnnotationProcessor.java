@@ -1,11 +1,8 @@
 package dev.mzcy.core.scanner;
 
 import dev.mzcy.core.annotation.*;
-import dev.mzcy.core.annotation.Command;
-import dev.mzcy.core.annotation.Listener;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.di.Scope;
-import dev.mzcy.core.exception.CoreException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +30,8 @@ import java.util.logging.Level;
 @RequiredArgsConstructor
 public final class AnnotationProcessor {
 
-    @NotNull private final Container container;
+    @NotNull
+    private final Container container;
 
     // =========================================================================
     // Entry point
@@ -77,8 +75,8 @@ public final class AnnotationProcessor {
     private void processComponents(@NotNull Set<Class<?>> classes) {
         for (final Class<?> cls : classes) {
             // Skip sub-types that are handled by more specific processors
-            if (cls.isAnnotationPresent(Command.class))     continue;
-            if (cls.isAnnotationPresent(DataStore.class))   continue;
+            if (cls.isAnnotationPresent(Command.class)) continue;
+            if (cls.isAnnotationPresent(DataStore.class)) continue;
             if (cls.isAnnotationPresent(InventoryGui.class)) continue;
 
             try {

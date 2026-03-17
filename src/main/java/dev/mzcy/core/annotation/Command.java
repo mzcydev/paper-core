@@ -24,27 +24,43 @@ import java.lang.annotation.*;
 @Documented
 public @interface Command {
 
-    /** Primary command name (without slash). */
+    /**
+     * Primary command name (without slash).
+     */
     String name();
 
-    /** Command description shown in help. */
+    /**
+     * Command description shown in help.
+     */
     String description() default "";
 
-    /** Usage string shown on wrong usage. */
+    /**
+     * Usage string shown on wrong usage.
+     */
     String usage() default "";
 
-    /** Required permission node. Empty = no permission required. */
+    /**
+     * Required permission node. Empty = no permission required.
+     */
     String permission() default "";
 
-    /** Permission message override. */
+    /**
+     * Permission message override.
+     */
     String permissionMessage() default "";
 
-    /** Command aliases. */
+    /**
+     * Command aliases.
+     */
     String[] aliases() default {};
 
-    /** Minimum argument count. */
+    /**
+     * Minimum argument count.
+     */
     int minArgs() default 0;
 
-    /** Whether this command is only for players. */
+    /**
+     * Whether this command is only for players.
+     */
     boolean playerOnly() default false;
 }

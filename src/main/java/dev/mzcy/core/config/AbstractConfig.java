@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Base class for all configuration holders annotated with {@link Config}.
@@ -35,11 +35,15 @@ import java.nio.file.*;
 @Log
 public abstract class AbstractConfig {
 
-    /** Resolved absolute path to the backing file. Set by {@link ConfigManager}. */
+    /**
+     * Resolved absolute path to the backing file. Set by {@link ConfigManager}.
+     */
     @Getter
     private Path filePath;
 
-    /** The adapter responsible for serialization/deserialization. Set by {@link ConfigManager}. */
+    /**
+     * The adapter responsible for serialization/deserialization. Set by {@link ConfigManager}.
+     */
     private ConfigAdapter adapter;
 
     // =========================================================================
@@ -52,7 +56,7 @@ public abstract class AbstractConfig {
      */
     final void wire(@NotNull Path filePath, @NotNull ConfigAdapter adapter) {
         this.filePath = filePath;
-        this.adapter  = adapter;
+        this.adapter = adapter;
     }
 
     // =========================================================================

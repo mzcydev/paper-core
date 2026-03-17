@@ -1,6 +1,5 @@
 package dev.mzcy.core.input;
 
-import dev.mzcy.core.util.ComponentUtil;
 import lombok.extern.java.Log;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
@@ -18,14 +17,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
 /**
  * Manages all active {@link ChatInputSession}s.
@@ -49,13 +42,19 @@ public final class ChatInputManager implements Listener {
 
     private final Plugin plugin;
 
-    /** Active sessions keyed by player UUID. */
+    /**
+     * Active sessions keyed by player UUID.
+     */
     private final Map<UUID, ChatInputSession> sessions = new ConcurrentHashMap<>();
 
-    /** Per-session timeout tasks. */
+    /**
+     * Per-session timeout tasks.
+     */
     private final Map<UUID, ScheduledFuture<?>> timeoutTasks = new ConcurrentHashMap<>();
 
-    /** Daemon scheduler for timeout management. */
+    /**
+     * Daemon scheduler for timeout management.
+     */
     private final ScheduledExecutorService scheduler =
             Executors.newSingleThreadScheduledExecutor(r -> {
                 final Thread t = new Thread(r, "core-chat-input-timeout");

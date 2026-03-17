@@ -15,56 +15,40 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 public final class UpdateResult {
 
-    public enum Status {
-        /** A newer version is available on GitHub. */
-        UPDATE_AVAILABLE,
-        /** The running version is current. */
-        UP_TO_DATE,
-        /** The running version is ahead of the latest GitHub release (dev build). */
-        DEV_BUILD,
-        /** The check failed — network error, rate limit, or malformed response. */
-        FAILED
-    }
-
-    /** The outcome of the update check. */
+    /**
+     * The outcome of the update check.
+     */
     @NotNull
     private final Status status;
-
-    /** The version currently running on the server. */
+    /**
+     * The version currently running on the server.
+     */
     @NotNull
     private final String currentVersion;
-
     /**
      * The latest version tag from GitHub Releases.
      * {@code null} if {@link #status} is {@link Status#FAILED}.
      */
     @Nullable
     private final String latestVersion;
-
     /**
      * The GitHub release URL for the latest version.
      * {@code null} if {@link #status} is {@link Status#FAILED}.
      */
     @Nullable
     private final String releaseUrl;
-
     /**
      * Human-readable release notes (first 500 chars of the GitHub body).
      * {@code null} if unavailable or check failed.
      */
     @Nullable
     private final String releaseNotes;
-
     /**
      * The error message if {@link #status} is {@link Status#FAILED}.
      * {@code null} otherwise.
      */
     @Nullable
     private final String errorMessage;
-
-    // =========================================================================
-    // Convenience factories
-    // =========================================================================
 
     @NotNull
     public static UpdateResult updateAvailable(
@@ -75,6 +59,10 @@ public final class UpdateResult {
     ) {
         return new UpdateResult(Status.UPDATE_AVAILABLE, current, latest, url, notes, null);
     }
+
+    // =========================================================================
+    // Convenience factories
+    // =========================================================================
 
     @NotNull
     public static UpdateResult upToDate(@NotNull String current) {
@@ -97,13 +85,13 @@ public final class UpdateResult {
         return new UpdateResult(Status.FAILED, current, null, null, null, errorMessage);
     }
 
-    // =========================================================================
-    // Helpers
-    // =========================================================================
-
     public boolean isUpdateAvailable() {
         return status == Status.UPDATE_AVAILABLE;
     }
+
+    // =========================================================================
+    // Helpers
+    // =========================================================================
 
     public boolean isUpToDate() {
         return status == Status.UP_TO_DATE;
@@ -118,5 +106,24 @@ public final class UpdateResult {
         return "UpdateResult{status=" + status
                 + ", current=" + currentVersion
                 + ", latest=" + latestVersion + "}";
+    }
+
+    public enum Status {
+        /**
+         * A newer version is available on GitHub.
+         */
+        UPDATE_AVAILABLE,
+        /**
+         * The running version is current.
+         */
+        UP_TO_DATE,
+        /**
+         * The running version is ahead of the latest GitHub release (dev build).
+         */
+        DEV_BUILD,
+        /**
+         * The check failed — network error, rate limit, or malformed response.
+         */
+        FAILED
     }
 }

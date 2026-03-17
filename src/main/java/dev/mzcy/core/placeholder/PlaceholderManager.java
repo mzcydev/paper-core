@@ -41,7 +41,7 @@ public final class PlaceholderManager {
 
     private static final String PAPI_PLUGIN_NAME = "PlaceholderAPI";
 
-    private final Plugin    plugin;
+    private final Plugin plugin;
     private final Container container;
 
     /**
@@ -54,13 +54,19 @@ public final class PlaceholderManager {
     @NotNull
     private String expansionId;
 
-    /** The PAPI expansion instance. Null if PAPI is not present. */
+    /**
+     * The PAPI expansion instance. Null if PAPI is not present.
+     */
     private PlaceholderIntegration integration;
 
-    /** The registry wrapping the integration. Null if PAPI is not present. */
+    /**
+     * The registry wrapping the integration. Null if PAPI is not present.
+     */
     private PlaceholderRegistry registry;
 
-    /** Whether PAPI is available on this server. */
+    /**
+     * Whether PAPI is available on this server.
+     */
     @Getter
     private boolean papiAvailable = false;
 
@@ -68,8 +74,8 @@ public final class PlaceholderManager {
             @NotNull Plugin plugin,
             @NotNull Container container
     ) {
-        this.plugin      = plugin;
-        this.container   = container;
+        this.plugin = plugin;
+        this.container = container;
         this.expansionId = plugin.getName().toLowerCase(java.util.Locale.ROOT);
     }
 
@@ -92,7 +98,7 @@ public final class PlaceholderManager {
         }
 
         integration = new PlaceholderIntegration(plugin, expansionId);
-        registry    = new PlaceholderRegistry(integration);
+        registry = new PlaceholderRegistry(integration);
 
         // Register built-in Core placeholders
         registerBuiltins();

@@ -8,7 +8,6 @@ import dev.mzcy.core.exception.CommandException;
 import lombok.extern.java.Log;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -50,10 +49,14 @@ import java.util.logging.Level;
 @Log
 public abstract class BaseCommand {
 
-    /** Cached sub-command handlers, built once on first execute. */
+    /**
+     * Cached sub-command handlers, built once on first execute.
+     */
     private Map<String, SubCommandHandler> subCommands;
 
-    /** The annotation on this command class. Lazily cached. */
+    /**
+     * The annotation on this command class. Lazily cached.
+     */
     private Command commandAnnotation;
 
     private CooldownManager cooldownManager;
@@ -196,7 +199,7 @@ public abstract class BaseCommand {
      * Provides tab completion. Returns sub-command tokens by default.
      * Override for custom completion logic.
      *
-     * @param ctx  the command context (args may be partial)
+     * @param ctx the command context (args may be partial)
      * @return mutable list of completions
      */
     @NotNull

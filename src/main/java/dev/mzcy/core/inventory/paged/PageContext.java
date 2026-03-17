@@ -15,22 +15,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class PageContext {
 
-    /** The current page number (1-based). */
+    /**
+     * The current page number (1-based).
+     */
     private final int currentPage;
 
-    /** The total number of pages (minimum 1). */
+    /**
+     * The total number of pages (minimum 1).
+     */
     private final int totalPages;
 
-    /** Number of items on the current page. */
+    /**
+     * Number of items on the current page.
+     */
     private final int itemsOnCurrentPage;
 
-    /** Total number of items across all pages. */
+    /**
+     * Total number of items across all pages.
+     */
     private final int totalItems;
 
-    /** Whether there is a page before the current one. */
+    /**
+     * Whether there is a page before the current one.
+     */
     private final boolean hasPreviousPage;
 
-    /** Whether there is a page after the current one. */
+    /**
+     * Whether there is a page after the current one.
+     */
     private final boolean hasNextPage;
 
     /**

@@ -28,15 +28,21 @@ public final class StoreEntry<V extends Serializable> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /** The stored value. */
+    /**
+     * The stored value.
+     */
     @NotNull
     private V value;
 
-    /** Timestamp of when this entry was first created. */
+    /**
+     * Timestamp of when this entry was first created.
+     */
     @NotNull
     private Instant createdAt;
 
-    /** Timestamp of the most recent update. */
+    /**
+     * Timestamp of the most recent update.
+     */
     @NotNull
     private Instant updatedAt;
 
@@ -79,7 +85,7 @@ public final class StoreEntry<V extends Serializable> implements Serializable {
      * Updates the value and refreshes the {@link #updatedAt} timestamp.
      */
     public void update(@NotNull V newValue) {
-        this.value     = newValue;
+        this.value = newValue;
         this.updatedAt = Instant.now();
     }
 }

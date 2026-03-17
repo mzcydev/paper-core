@@ -49,8 +49,8 @@ public class SchedulerUtil {
     /**
      * Runs a task on the main server thread after a delay.
      *
-     * @param plugin   the owning plugin
-     * @param runnable the task to run
+     * @param plugin     the owning plugin
+     * @param runnable   the task to run
      * @param delayTicks delay in ticks (20 ticks = 1 second)
      * @return the scheduled {@link BukkitTask}
      */
@@ -65,10 +65,10 @@ public class SchedulerUtil {
     /**
      * Runs a repeating task on the main server thread.
      *
-     * @param plugin       the owning plugin
-     * @param runnable     the task to run
-     * @param delayTicks   initial delay in ticks before first run
-     * @param periodTicks  period in ticks between subsequent runs
+     * @param plugin      the owning plugin
+     * @param runnable    the task to run
+     * @param delayTicks  initial delay in ticks before first run
+     * @param periodTicks period in ticks between subsequent runs
      * @return the scheduled {@link BukkitTask}
      */
     @NotNull
@@ -100,9 +100,9 @@ public class SchedulerUtil {
     /**
      * Runs a task asynchronously after a delay.
      *
-     * @param plugin      the owning plugin
-     * @param runnable    the task to run
-     * @param delayTicks  delay in ticks before execution
+     * @param plugin     the owning plugin
+     * @param runnable   the task to run
+     * @param delayTicks delay in ticks before execution
      * @return the scheduled {@link BukkitTask}
      */
     @NotNull

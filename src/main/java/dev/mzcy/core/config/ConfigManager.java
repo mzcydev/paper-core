@@ -9,8 +9,13 @@ import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -34,13 +39,15 @@ import java.util.logging.Level;
 public final class ConfigManager {
 
     private static final ConfigAdapter YAML_ADAPTER = new YamlConfigAdapter();
-    private static final ConfigAdapter JSON_ADAPTER  = new JsonConfigAdapter();
+    private static final ConfigAdapter JSON_ADAPTER = new JsonConfigAdapter();
 
     private final Path dataFolder;
     private final ClassLoader pluginClassLoader;
     private final Container container;
 
-    /** All managed config instances, keyed by their class. */
+    /**
+     * All managed config instances, keyed by their class.
+     */
     private final Map<Class<? extends AbstractConfig>, AbstractConfig> registry
             = new LinkedHashMap<>();
 
@@ -49,9 +56,9 @@ public final class ConfigManager {
             @NotNull ClassLoader pluginClassLoader,
             @NotNull Container container
     ) {
-        this.dataFolder        = dataFolder;
+        this.dataFolder = dataFolder;
         this.pluginClassLoader = pluginClassLoader;
-        this.container         = container;
+        this.container = container;
     }
 
     // =========================================================================
@@ -71,8 +78,7 @@ public final class ConfigManager {
                 continue;
             }
             try {
-                @SuppressWarnings("unchecked")
-                final Class<? extends AbstractConfig> configClass =
+                @SuppressWarnings("unchecked") final Class<? extends AbstractConfig> configClass =
                         (Class<? extends AbstractConfig>) cls;
                 initialize(configClass);
             } catch (Exception ex) {

@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,13 +38,19 @@ public final class GuiBuilder {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    /** Total slot count = rows × 9. */
+    /**
+     * Total slot count = rows × 9.
+     */
     private final int size;
 
-    /** MiniMessage title resolved to a Component. */
+    /**
+     * MiniMessage title resolved to a Component.
+     */
     private final Component title;
 
-    /** Slot definitions by index. */
+    /**
+     * Slot definitions by index.
+     */
     private final Map<Integer, GuiSlot> slots = new HashMap<>();
 
     public GuiBuilder(int rows, @NotNull String miniMessageTitle) {
@@ -53,7 +58,7 @@ public final class GuiBuilder {
             throw new InventoryException("GuiBuilder",
                     "Row count must be between 1 and 6, got: " + rows);
         }
-        this.size  = rows * 9;
+        this.size = rows * 9;
         this.title = MINI.deserialize(miniMessageTitle);
     }
 
@@ -94,9 +99,9 @@ public final class GuiBuilder {
      * Sets a range of slots to the same item (decorative, no action).
      * Useful for borders and dividers.
      *
-     * @param from  start index (inclusive)
-     * @param to    end index (inclusive)
-     * @param item  the item to fill with
+     * @param from start index (inclusive)
+     * @param to   end index (inclusive)
+     * @param item the item to fill with
      * @return this builder
      */
     @NotNull

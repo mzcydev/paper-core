@@ -62,19 +62,32 @@ public final class CorePlugin extends JavaPlugin {
     // Framework components
     // =========================================================================
 
-    @Getter private Container container;
-    @Getter private ModuleRegistry moduleRegistry;
-    @Getter private ConfigManager configManager;
-    @Getter private DataStoreManager dataStoreManager;
-    @Getter private CommandManager commandManager;
-    @Getter private InventoryManager inventoryManager;
-    @Getter private ComponentRegistry componentRegistry;
-    @Getter private PlaceholderManager placeholderManager;
-    @Getter private ChatInputManager chatInputManager;
-    @Getter private ScoreboardManager scoreboardManager;
+    @Getter
+    private Container container;
+    @Getter
+    private ModuleRegistry moduleRegistry;
+    @Getter
+    private ConfigManager configManager;
+    @Getter
+    private DataStoreManager dataStoreManager;
+    @Getter
+    private CommandManager commandManager;
+    @Getter
+    private InventoryManager inventoryManager;
+    @Getter
+    private ComponentRegistry componentRegistry;
+    @Getter
+    private PlaceholderManager placeholderManager;
+    @Getter
+    private ChatInputManager chatInputManager;
+    @Getter
+    private ScoreboardManager scoreboardManager;
 
-    /** The scan result from startup — available to dependent plugins post-enable. */
-    @Getter private ScanResult scanResult;
+    /**
+     * The scan result from startup — available to dependent plugins post-enable.
+     */
+    @Getter
+    private ScanResult scanResult;
 
     // =========================================================================
     // Enable
@@ -153,16 +166,16 @@ public final class CorePlugin extends JavaPlugin {
     // =========================================================================
 
     private void bootFramework() {
-        step("Constructing DI container",            this::initContainer);
-        step("Scanning classpath",                   this::initScanner);
-        step("Initializing ConfigManager",           this::initConfigs);
-        step("Initializing DataStoreManager",        this::initDataStores);
-        step("Registering commands",                 this::initCommands);
-        step("Registering inventories",              this::initInventories);
-        step("Registering Bukkit listeners",         this::initListeners);
+        step("Constructing DI container", this::initContainer);
+        step("Scanning classpath", this::initScanner);
+        step("Initializing ConfigManager", this::initConfigs);
+        step("Initializing DataStoreManager", this::initDataStores);
+        step("Registering commands", this::initCommands);
+        step("Registering inventories", this::initInventories);
+        step("Registering Bukkit listeners", this::initListeners);
         step("Initializing PlaceholderAPI", this::initPlaceholders);
-        step("Loading modules",                      this::loadModules);
-        step("Enabling modules",                     this::enableModules);
+        step("Loading modules", this::loadModules);
+        step("Enabling modules", this::enableModules);
     }
 
     // =========================================================================
@@ -188,26 +201,26 @@ public final class CorePlugin extends JavaPlugin {
         );
 
         // Construct and register all framework managers
-        moduleRegistry    = new ModuleRegistry();
-        configManager     = new ConfigManager(
+        moduleRegistry = new ModuleRegistry();
+        configManager = new ConfigManager(
                 getDataFolder().toPath(),
                 getClassLoader(),
                 container
         );
-        dataStoreManager  = new DataStoreManager(
+        dataStoreManager = new DataStoreManager(
                 getDataFolder().toPath(),
                 container
         );
-        commandManager     = new CommandManager(getName(), container);
-        inventoryManager   = new InventoryManager(container, this);
+        commandManager = new CommandManager(getName(), container);
+        inventoryManager = new InventoryManager(container, this);
         placeholderManager = new PlaceholderManager(this, container);
-        chatInputManager   = new ChatInputManager(this);
-        scoreboardManager  = new ScoreboardManager(this);
+        chatInputManager = new ChatInputManager(this);
+        scoreboardManager = new ScoreboardManager(this);
 
-        container.bindInstance(ModuleRegistry.class,   moduleRegistry);
-        container.bindInstance(ConfigManager.class,    configManager);
+        container.bindInstance(ModuleRegistry.class, moduleRegistry);
+        container.bindInstance(ConfigManager.class, configManager);
         container.bindInstance(DataStoreManager.class, dataStoreManager);
-        container.bindInstance(CommandManager.class,   commandManager);
+        container.bindInstance(CommandManager.class, commandManager);
         container.bindInstance(InventoryManager.class, inventoryManager);
         container.bindInstance(PlaceholderManager.class, placeholderManager);
         container.bindInstance(ChatInputManager.class, chatInputManager);

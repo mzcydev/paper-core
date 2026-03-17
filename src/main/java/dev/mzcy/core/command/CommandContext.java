@@ -7,7 +7,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -27,11 +26,15 @@ public final class CommandContext {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    /** The entity that executed the command. */
+    /**
+     * The entity that executed the command.
+     */
     @NotNull
     private final CommandSender sender;
 
-    /** The label used (command name or alias). */
+    /**
+     * The label used (command name or alias).
+     */
     @NotNull
     private final String label;
 
@@ -108,8 +111,11 @@ public final class CommandContext {
     @NotNull
     public Optional<Integer> argInt(int index) {
         return arg(index).flatMap(s -> {
-            try { return Optional.of(Integer.parseInt(s)); }
-            catch (NumberFormatException ex) { return Optional.empty(); }
+            try {
+                return Optional.of(Integer.parseInt(s));
+            } catch (NumberFormatException ex) {
+                return Optional.empty();
+            }
         });
     }
 
@@ -119,8 +125,11 @@ public final class CommandContext {
     @NotNull
     public Optional<Double> argDouble(int index) {
         return arg(index).flatMap(s -> {
-            try { return Optional.of(Double.parseDouble(s)); }
-            catch (NumberFormatException ex) { return Optional.empty(); }
+            try {
+                return Optional.of(Double.parseDouble(s));
+            } catch (NumberFormatException ex) {
+                return Optional.empty();
+            }
         });
     }
 

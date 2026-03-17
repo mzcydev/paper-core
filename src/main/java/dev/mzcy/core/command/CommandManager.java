@@ -10,7 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 
 /**
@@ -31,12 +34,14 @@ public final class CommandManager {
     private final CooldownManager cooldownManager;
     private final CommandMap commandMap;
 
-    /** All registered wrappers for cleanup on disable. */
+    /**
+     * All registered wrappers for cleanup on disable.
+     */
     private final List<BukkitCommandWrapper> registered = new ArrayList<>();
 
     public CommandManager(@NotNull String pluginName, @NotNull Container container) {
         this.pluginName = pluginName.toLowerCase(Locale.ROOT);
-        this.container  = container;
+        this.container = container;
         this.cooldownManager = new CooldownManager();
         container.bindInstance(CooldownManager.class, cooldownManager);
         this.commandMap = resolveCommandMap();
@@ -59,8 +64,7 @@ public final class CommandManager {
                 continue;
             }
             try {
-                @SuppressWarnings("unchecked")
-                final Class<? extends BaseCommand> commandClass =
+                @SuppressWarnings("unchecked") final Class<? extends BaseCommand> commandClass =
                         (Class<? extends BaseCommand>) cls;
                 register(commandClass);
             } catch (Exception ex) {

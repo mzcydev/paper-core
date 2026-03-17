@@ -60,33 +60,36 @@ public final class FastSidebar {
     private static final String OBJECTIVE_NAME = "core_sidebar";
 
     private final Plugin plugin;
-
-    /** The static title — may be overridden per-player via dynamic title line. */
-    private Component title;
-
-    /** All line definitions in top-to-bottom order (index 0 = top). */
+    /**
+     * All line definitions in top-to-bottom order (index 0 = top).
+     */
     private final List<ScoreboardLine> lines;
-
     /**
      * Optional dynamic title supplier extracted from lines during construction.
      * Index -1 in {@link SidebarBuilder} is used as a sentinel for the title.
      */
     @Nullable
     private final ScoreboardLine dynamicTitle;
-
-    /** Per-player scoreboards. Each player has their own isolated scoreboard. */
+    /**
+     * Per-player scoreboards. Each player has their own isolated scoreboard.
+     */
     private final Map<UUID, Scoreboard> playerBoards = new ConcurrentHashMap<>();
-
-    /** Per-player objectives. */
+    /**
+     * Per-player objectives.
+     */
     private final Map<UUID, Objective> playerObjectives = new ConcurrentHashMap<>();
-
     /**
      * The last rendered line texts per player — used for dirty-checking
      * to avoid unnecessary score updates.
      */
     private final Map<UUID, List<Component>> lastRendered = new ConcurrentHashMap<>();
-
-    /** Auto-update task ID, or -1 if not running. */
+    /**
+     * The static title — may be overridden per-player via dynamic title line.
+     */
+    private Component title;
+    /**
+     * Auto-update task ID, or -1 if not running.
+     */
     private int updateTaskId = -1;
 
     FastSidebar(
@@ -95,7 +98,7 @@ public final class FastSidebar {
             @NotNull List<ScoreboardLine> lines
     ) {
         this.plugin = plugin;
-        this.title  = title;
+        this.title = title;
 
         // Extract dynamic title (sentinel index -1)
         this.dynamicTitle = lines.stream()
@@ -191,7 +194,7 @@ public final class FastSidebar {
     public void update(@NotNull Player player) {
         final UUID uuid = player.getUniqueId();
         final Objective objective = playerObjectives.get(uuid);
-        final Scoreboard board    = playerBoards.get(uuid);
+        final Scoreboard board = playerBoards.get(uuid);
 
         if (objective == null || board == null) return;
         if (!player.isOnline()) {
@@ -267,7 +270,7 @@ public final class FastSidebar {
      * Replaces the content of a specific line by index and immediately
      * pushes the change to all active player boards.
      *
-     * @param lineIndex the 0-based line index (top = 0)
+     * @param lineIndex   the 0-based line index (top = 0)
      * @param miniMessage the new MiniMessage content
      */
     public void setLine(int lineIndex, @NotNull String miniMessage) {
@@ -335,7 +338,7 @@ public final class FastSidebar {
         final UUID uuid = player.getUniqueId();
         final List<Component> previous = lastRendered.getOrDefault(uuid,
                 Collections.emptyList());
-        final List<Component> current  = new ArrayList<>(lines.size());
+        final List<Component> current = new ArrayList<>(lines.size());
 
         for (int i = 0; i < lines.size(); i++) {
             final Component resolved = lines.get(i).resolve();
@@ -392,7 +395,7 @@ public final class FastSidebar {
             @NotNull List<Component> current
     ) {
         for (int i = current.size(); i < previous.size(); i++) {
-            final int score  = lines.size() - i;
+            final int score = lines.size() - i;
             final String key = "line_" + score;
             board.resetScores(key);
             final Team team = board.getTeam(key);

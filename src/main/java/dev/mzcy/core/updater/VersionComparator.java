@@ -19,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class VersionComparator {
 
-    private VersionComparator() {}
+    private VersionComparator() {
+    }
 
     /**
      * Compares two version strings.
@@ -67,9 +68,9 @@ public final class VersionComparator {
         }
 
         // Split on '-' to separate core version from pre-release suffix
-        final String[] dashParts  = version.split("-", 2);
-        final String   corePart   = dashParts[0];
-        final String   suffixPart = dashParts.length > 1 ? dashParts[1].toLowerCase() : "";
+        final String[] dashParts = version.split("-", 2);
+        final String corePart = dashParts[0];
+        final String suffixPart = dashParts.length > 1 ? dashParts[1].toLowerCase() : "";
 
         // Parse MAJOR.MINOR.PATCH
         final String[] numericParts = corePart.split("\\.");
@@ -88,11 +89,11 @@ public final class VersionComparator {
      * Stable releases (no suffix) get the highest weight.
      */
     private static int resolvePreReleaseWeight(@NotNull String suffix) {
-        if (suffix.isBlank())               return 100; // stable
-        if (suffix.startsWith("rc"))        return 80;  // release candidate
-        if (suffix.startsWith("beta"))      return 60;
-        if (suffix.startsWith("alpha"))     return 40;
-        if (suffix.equals("snapshot"))      return 20;
+        if (suffix.isBlank()) return 100; // stable
+        if (suffix.startsWith("rc")) return 80;  // release candidate
+        if (suffix.startsWith("beta")) return 60;
+        if (suffix.startsWith("alpha")) return 40;
+        if (suffix.equals("snapshot")) return 20;
         return 10; // unknown pre-release suffix
     }
 

@@ -30,14 +30,20 @@ import java.util.logging.Level;
 @Log
 public final class Container {
 
-    /** All registered bindings, keyed by {@link Binding#key()}. */
+    /**
+     * All registered bindings, keyed by {@link Binding#key()}.
+     */
     private final Map<String, Binding<?>> bindings = new ConcurrentHashMap<>();
 
-    /** Tracks types currently being resolved to detect circular dependencies. */
+    /**
+     * Tracks types currently being resolved to detect circular dependencies.
+     */
     private final ThreadLocal<Set<String>> resolutionStack =
             ThreadLocal.withInitial(LinkedHashSet::new);
 
-    /** Injector — performs field/constructor/method injection. */
+    /**
+     * Injector — performs field/constructor/method injection.
+     */
     private final Injector injector;
 
     public Container() {

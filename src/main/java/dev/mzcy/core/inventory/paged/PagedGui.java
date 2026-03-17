@@ -2,15 +2,12 @@ package dev.mzcy.core.inventory.paged;
 
 import dev.mzcy.core.inventory.AbstractGui;
 import dev.mzcy.core.inventory.GuiBuilder;
-import dev.mzcy.core.inventory.GuiSlot;
 import dev.mzcy.core.util.item.ItemBuilder;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,15 +57,40 @@ import java.util.List;
 @Log
 public abstract class PagedGui extends AbstractGui {
 
-    /** Current page index (0-based). */
+    /**
+     * Current page index (0-based).
+     */
     @Getter
     private int currentPage = 0;
 
-    /** Cached page partitions built from {@link #getItems()} on each open/refresh. */
+    /**
+     * Cached page partitions built from {@link #getItems()} on each open/refresh.
+     */
     private List<List<PagedItem>> pages = Collections.emptyList();
 
     // =========================================================================
     // AbstractGui contract
+    // =========================================================================
+
+    @NotNull
+    private static List<List<PagedItem>> partition(
+            @NotNull List<PagedItem> items,
+            int pageSize
+    ) {
+        if (items.isEmpty() || pageSize <= 0) {
+            return List.of(Collections.emptyList());
+        }
+        final List<List<PagedItem>> result = new ArrayList<>();
+        for (int i = 0; i < items.size(); i += pageSize) {
+            result.add(Collections.unmodifiableList(
+                    items.subList(i, Math.min(i + pageSize, items.size()))
+            ));
+        }
+        return result;
+    }
+
+    // =========================================================================
+    // Abstract / overrideable API
     // =========================================================================
 
     @Override
@@ -86,10 +108,6 @@ public abstract class PagedGui extends AbstractGui {
         final PageContext ctx = buildPageContext();
         buildControls(builder, ctx);
     }
-
-    // =========================================================================
-    // Abstract / overrideable API
-    // =========================================================================
 
     /**
      * Returns the full list of items to paginate.
@@ -150,7 +168,7 @@ public abstract class PagedGui extends AbstractGui {
             @NotNull PageContext ctx
     ) {
         // Previous page
-        if (ctx.hasPreviousPage()) {
+        if (ctx.isHasPreviousPage()) {
             builder.slot(45, buildPreviousButton(ctx), event -> previousPage());
         } else {
             builder.slot(45, buildDisabledPreviousButton());
@@ -160,7 +178,7 @@ public abstract class PagedGui extends AbstractGui {
         builder.slot(49, buildPageIndicator(ctx));
 
         // Next page
-        if (ctx.hasNextPage()) {
+        if (ctx.isHasNextPage()) {
             builder.slot(53, buildNextButton(ctx), event -> nextPage());
         } else {
             builder.slot(53, buildDisabledNextButton());
@@ -227,6 +245,10 @@ public abstract class PagedGui extends AbstractGui {
                 .build();
     }
 
+    // =========================================================================
+    // Navigation
+    // =========================================================================
+
     /**
      * Builds the page indicator item shown in the center of the control row.
      * Override to customize appearance.
@@ -245,10 +267,6 @@ public abstract class PagedGui extends AbstractGui {
                 )
                 .build();
     }
-
-    // =========================================================================
-    // Navigation
-    // =========================================================================
 
     /**
      * Navigates to the next page and refreshes the inventory in-place.
@@ -292,6 +310,10 @@ public abstract class PagedGui extends AbstractGui {
         goToPage(0);
     }
 
+    // =========================================================================
+    // State queries
+    // =========================================================================
+
     /**
      * Jumps to the last page and refreshes.
      */
@@ -299,37 +321,41 @@ public abstract class PagedGui extends AbstractGui {
         goToPage(totalPages() - 1);
     }
 
-    // =========================================================================
-    // State queries
-    // =========================================================================
-
-    /** Returns true if there is a page before the current one. */
+    /**
+     * Returns true if there is a page before the current one.
+     */
     public boolean hasPreviousPage() {
         return currentPage > 0;
     }
 
-    /** Returns true if there is a page after the current one. */
+    /**
+     * Returns true if there is a page after the current one.
+     */
     public boolean hasNextPage() {
         return currentPage < totalPages() - 1;
     }
 
-    /** Returns the total number of pages (minimum 1). */
+    /**
+     * Returns the total number of pages (minimum 1).
+     */
     public int totalPages() {
         return Math.max(1, pages.size());
-    }
-
-    /** Returns the total number of items across all pages. */
-    public int totalItems() {
-        return getItems().size();
     }
 
     // =========================================================================
     // Internal
     // =========================================================================
 
+    /**
+     * Returns the total number of items across all pages.
+     */
+    public int totalItems() {
+        return getItems().size();
+    }
+
     private void placeContent(@NotNull GuiBuilder builder) {
         final List<Integer> contentSlots = getContentSlots();
-        final List<PagedItem> pageItems  = currentPageItems();
+        final List<PagedItem> pageItems = currentPageItems();
 
         for (int i = 0; i < contentSlots.size(); i++) {
             final int slot = contentSlots.get(i);
@@ -364,22 +390,5 @@ public abstract class PagedGui extends AbstractGui {
                 hasPreviousPage(),
                 hasNextPage()
         );
-    }
-
-    @NotNull
-    private static List<List<PagedItem>> partition(
-            @NotNull List<PagedItem> items,
-            int pageSize
-    ) {
-        if (items.isEmpty() || pageSize <= 0) {
-            return List.of(Collections.emptyList());
-        }
-        final List<List<PagedItem>> result = new ArrayList<>();
-        for (int i = 0; i < items.size(); i += pageSize) {
-            result.add(Collections.unmodifiableList(
-                    items.subList(i, Math.min(i + pageSize, items.size()))
-            ));
-        }
-        return result;
     }
 }

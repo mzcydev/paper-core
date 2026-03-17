@@ -13,10 +13,12 @@ import java.util.UUID;
  */
 public final class CooldownKey {
 
-    /** Sentinel UUID used for global cooldowns. */
+    /**
+     * Sentinel UUID used for global cooldowns.
+     */
     private static final UUID GLOBAL_UUID = new UUID(0, 0);
 
-    private final UUID   senderUuid;
+    private final UUID senderUuid;
     private final String commandKey;
 
     private CooldownKey(@NotNull UUID senderUuid, @NotNull String commandKey) {

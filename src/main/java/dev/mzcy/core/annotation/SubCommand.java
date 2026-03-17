@@ -18,21 +18,33 @@ import java.lang.annotation.*;
 @Documented
 public @interface SubCommand {
 
-    /** Sub-command name (e.g., "reload" for /core reload). */
+    /**
+     * Sub-command name (e.g., "reload" for /core reload).
+     */
     String value();
 
-    /** Required permission for this sub-command. */
+    /**
+     * Required permission for this sub-command.
+     */
     String permission() default "";
 
-    /** Usage string shown on wrong usage. */
+    /**
+     * Usage string shown on wrong usage.
+     */
     String usage() default "";
 
-    /** Description for help menus. */
+    /**
+     * Description for help menus.
+     */
     String description() default "";
 
-    /** Minimum arguments after the sub-command token. */
+    /**
+     * Minimum arguments after the sub-command token.
+     */
     int minArgs() default 0;
 
-    /** Whether this sub-command is player-only. */
+    /**
+     * Whether this sub-command is player-only.
+     */
     boolean playerOnly() default false;
 }

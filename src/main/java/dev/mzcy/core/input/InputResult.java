@@ -15,20 +15,8 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 public final class InputResult {
 
-    public enum Status {
-        /** The player submitted a value within the timeout window. */
-        COMPLETED,
-        /** The player typed the cancel keyword or issued a cancel command. */
-        CANCELLED,
-        /** The timeout elapsed before the player submitted anything. */
-        TIMED_OUT,
-        /** The player disconnected during the input session. */
-        DISCONNECTED
-    }
-
     @NotNull
     private final Status status;
-
     /**
      * The raw value typed by the player.
      * {@code null} for any status other than {@link Status#COMPLETED}.
@@ -36,14 +24,14 @@ public final class InputResult {
     @Nullable
     private final String value;
 
-    // =========================================================================
-    // Factories
-    // =========================================================================
-
     @NotNull
     public static InputResult completed(@NotNull String value) {
         return new InputResult(Status.COMPLETED, value);
     }
+
+    // =========================================================================
+    // Factories
+    // =========================================================================
 
     @NotNull
     public static InputResult cancelled() {
@@ -60,14 +48,25 @@ public final class InputResult {
         return new InputResult(Status.DISCONNECTED, null);
     }
 
+    public boolean isCompleted() {
+        return status == Status.COMPLETED;
+    }
+
     // =========================================================================
     // Convenience
     // =========================================================================
 
-    public boolean isCompleted()    { return status == Status.COMPLETED;    }
-    public boolean isCancelled()    { return status == Status.CANCELLED;    }
-    public boolean isTimedOut()     { return status == Status.TIMED_OUT;    }
-    public boolean isDisconnected() { return status == Status.DISCONNECTED; }
+    public boolean isCancelled() {
+        return status == Status.CANCELLED;
+    }
+
+    public boolean isTimedOut() {
+        return status == Status.TIMED_OUT;
+    }
+
+    public boolean isDisconnected() {
+        return status == Status.DISCONNECTED;
+    }
 
     /**
      * Returns the value if completed, or the given fallback otherwise.
@@ -85,5 +84,24 @@ public final class InputResult {
         return "InputResult{status=" + status
                 + (value != null ? ", value='" + value + "'" : "")
                 + "}";
+    }
+
+    public enum Status {
+        /**
+         * The player submitted a value within the timeout window.
+         */
+        COMPLETED,
+        /**
+         * The player typed the cancel keyword or issued a cancel command.
+         */
+        CANCELLED,
+        /**
+         * The timeout elapsed before the player submitted anything.
+         */
+        TIMED_OUT,
+        /**
+         * The player disconnected during the input session.
+         */
+        DISCONNECTED
     }
 }

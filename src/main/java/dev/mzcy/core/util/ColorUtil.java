@@ -149,9 +149,9 @@ public class ColorUtil {
     @NotNull
     public Color lerp(@NotNull Color from, @NotNull Color to, float ratio) {
         final float t = Math.clamp(ratio, 0f, 1f);
-        final int r = Math.round(from.getRed()   + (to.getRed()   - from.getRed())   * t);
+        final int r = Math.round(from.getRed() + (to.getRed() - from.getRed()) * t);
         final int g = Math.round(from.getGreen() + (to.getGreen() - from.getGreen()) * t);
-        final int b = Math.round(from.getBlue()  + (to.getBlue()  - from.getBlue())  * t);
+        final int b = Math.round(from.getBlue() + (to.getBlue() - from.getBlue()) * t);
         return Color.fromRGB(r, g, b);
     }
 
@@ -194,7 +194,7 @@ public class ColorUtil {
                                @NotNull String fromHex,
                                @NotNull String toHex) {
         final String from = fromHex.startsWith("#") ? fromHex : "#" + fromHex;
-        final String to   = toHex.startsWith("#")   ? toHex   : "#" + toHex;
+        final String to = toHex.startsWith("#") ? toHex : "#" + toHex;
         return "<gradient:" + from + ":" + to + ">" + text + "</gradient>";
     }
 

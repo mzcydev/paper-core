@@ -17,11 +17,15 @@ import java.lang.reflect.Method;
 @RequiredArgsConstructor
 public final class SubCommandHandler {
 
-    /** The annotation carrying metadata (permission, usage, minArgs, etc.). */
+    /**
+     * The annotation carrying metadata (permission, usage, minArgs, etc.).
+     */
     @NotNull
     private final SubCommand annotation;
 
-    /** The method to invoke when this sub-command is matched. */
+    /**
+     * The method to invoke when this sub-command is matched.
+     */
     @NotNull
     private final Method method;
 

@@ -24,19 +24,27 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Binding<T> {
 
-    /** The type this binding is registered under (contract). */
+    /**
+     * The type this binding is registered under (contract).
+     */
     @NotNull
     private final Class<T> contractType;
 
-    /** The concrete class to instantiate (may equal contractType). */
+    /**
+     * The concrete class to instantiate (may equal contractType).
+     */
     @NotNull
     private final Class<? extends T> implementationType;
 
-    /** Optional qualifier name for {@link dev.mzcy.core.annotation.Named} injection. */
+    /**
+     * Optional qualifier name for {@link dev.mzcy.core.annotation.Named} injection.
+     */
     @Nullable
     private final String qualifier;
 
-    /** The scope controlling instance lifecycle. */
+    /**
+     * The scope controlling instance lifecycle.
+     */
     @NotNull
     private final Scope scope;
 
@@ -47,7 +55,9 @@ public final class Binding<T> {
     @Nullable
     private final Supplier<? extends T> factory;
 
-    /** Cached singleton instance — populated on first resolve if scope is SINGLETON. */
+    /**
+     * Cached singleton instance — populated on first resolve if scope is SINGLETON.
+     */
     @Nullable
     private volatile T singletonInstance;
 

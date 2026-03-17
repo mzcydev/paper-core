@@ -27,23 +27,33 @@ import java.util.function.Consumer;
 @Getter
 public final class ChatInputSession {
 
-    /** The player this session belongs to. */
+    /**
+     * The player this session belongs to.
+     */
     @NotNull
     private final Player player;
 
-    /** The future that resolves with the input result. */
+    /**
+     * The future that resolves with the input result.
+     */
     @NotNull
     private final CompletableFuture<InputResult> future;
 
-    /** The instant this session expires. */
+    /**
+     * The instant this session expires.
+     */
     @NotNull
     private final Instant expiresAt;
 
-    /** The keyword the player can type to cancel. */
+    /**
+     * The keyword the player can type to cancel.
+     */
     @NotNull
     private final String cancelKeyword;
 
-    /** Optional validator — if present, input must pass before being accepted. */
+    /**
+     * Optional validator — if present, input must pass before being accepted.
+     */
     @Nullable
     private final InputValidator validator;
 
@@ -54,7 +64,9 @@ public final class ChatInputSession {
     @Nullable
     private final Consumer<String> onValidationFail;
 
-    /** Whether this session has been completed, cancelled, or timed out. */
+    /**
+     * Whether this session has been completed, cancelled, or timed out.
+     */
     private volatile boolean done = false;
 
     ChatInputSession(
@@ -65,11 +77,11 @@ public final class ChatInputSession {
             @Nullable InputValidator validator,
             @Nullable Consumer<String> onValidationFail
     ) {
-        this.player           = player;
-        this.future           = future;
-        this.expiresAt        = expiresAt;
-        this.cancelKeyword    = cancelKeyword;
-        this.validator        = validator;
+        this.player = player;
+        this.future = future;
+        this.expiresAt = expiresAt;
+        this.cancelKeyword = cancelKeyword;
+        this.validator = validator;
         this.onValidationFail = onValidationFail;
     }
 
