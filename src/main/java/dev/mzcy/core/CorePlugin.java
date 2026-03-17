@@ -1,5 +1,6 @@
 package dev.mzcy.core;
 
+import dev.mzcy.core.anvil.AnvilInputManager;
 import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
 import dev.mzcy.core.conversation.ConversationManager;
@@ -29,6 +30,7 @@ import dev.mzcy.core.scanner.ComponentRegistry;
 import dev.mzcy.core.scanner.ScanResult;
 import dev.mzcy.core.schematic.SchematicManager;
 import dev.mzcy.core.scoreboard.ScoreboardManager;
+import dev.mzcy.core.sign.SignManager;
 import dev.mzcy.core.task.TaskManager;
 import dev.mzcy.core.updater.UpdateChecker;
 import dev.mzcy.core.updater.UpdateNotifier;
@@ -124,6 +126,8 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private NetworkManager networkManager;
     @Getter private SchematicManager schematicManager;
     @Getter private DatabaseManager databaseManager;
+    @Getter private SignManager signManager;
+    @Getter private AnvilInputManager anvilInputManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -226,6 +230,12 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("DatabaseManager.disconnectAll",
                 () -> databaseManager.disconnectAll());
 
+        safeRun("SignManager.shutdown",
+                () -> signManager.shutdown());
+
+        safeRun("AnvilInputManager.shutdown",
+                () -> anvilInputManager.shutdown());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -314,6 +324,8 @@ public final class CorePlugin extends JavaPlugin {
         networkManager = new NetworkManager(this, container);
         schematicManager = new SchematicManager(this);
         databaseManager = new DatabaseManager(container);
+        signManager = new SignManager(this);
+        anvilInputManager = new AnvilInputManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -341,6 +353,8 @@ public final class CorePlugin extends JavaPlugin {
             schematicManager.loadAll();
         }
         container.bindInstance(DatabaseManager.class, databaseManager);
+        container.bindInstance(SignManager.class, signManager);
+        container.bindInstance(AnvilInputManager.class, anvilInputManager);
 
     }
 
