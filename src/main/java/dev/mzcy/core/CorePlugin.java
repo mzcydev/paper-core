@@ -8,6 +8,7 @@ import dev.mzcy.core.display.ActionbarManager;
 import dev.mzcy.core.display.bossbar.BossBarManager;
 import dev.mzcy.core.exception.CoreException;
 import dev.mzcy.core.exception.ModuleException;
+import dev.mzcy.core.hologram.HologramManager;
 import dev.mzcy.core.input.ChatInputManager;
 import dev.mzcy.core.inventory.InventoryManager;
 import dev.mzcy.core.module.ModuleRegistry;
@@ -88,6 +89,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private NpcManager npcManager;
     @Getter private ActionbarManager actionbarManager;
     @Getter private BossBarManager bossBarManager;
+    @Getter private HologramManager hologramManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -169,6 +171,9 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("BossBarManager.shutdown",
                 () -> bossBarManager.shutdown());
 
+        safeRun("HologramManager.destroy",
+                () -> hologramManager.destroy());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -234,6 +239,7 @@ public final class CorePlugin extends JavaPlugin {
         npcManager = new NpcManager(this);
         actionbarManager = new ActionbarManager(this);
         bossBarManager = new BossBarManager(this);
+        hologramManager =  new HologramManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -246,6 +252,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(NpcManager.class, npcManager);
         container.bindInstance(ActionbarManager.class, actionbarManager);
         container.bindInstance(BossBarManager.class, bossBarManager);
+        container.bindInstance(HologramManager.class, hologramManager);
 
     }
 
