@@ -19,12 +19,14 @@ import dev.mzcy.core.inventory.InventoryManager;
 import dev.mzcy.core.loot.LootManager;
 import dev.mzcy.core.menu.MenuManager;
 import dev.mzcy.core.module.ModuleRegistry;
+import dev.mzcy.core.network.NetworkManager;
 import dev.mzcy.core.npc.NpcManager;
 import dev.mzcy.core.placeholder.PlaceholderManager;
 import dev.mzcy.core.reload.HotReloadManager;
 import dev.mzcy.core.scanner.ClassScanner;
 import dev.mzcy.core.scanner.ComponentRegistry;
 import dev.mzcy.core.scanner.ScanResult;
+import dev.mzcy.core.schematic.SchematicManager;
 import dev.mzcy.core.scoreboard.ScoreboardManager;
 import dev.mzcy.core.task.TaskManager;
 import dev.mzcy.core.updater.UpdateChecker;
@@ -118,6 +120,8 @@ public final class CorePlugin extends JavaPlugin {
     private ConversationManager conversationManager;
     @Getter
     private LootManager lootManager;
+    @Getter private NetworkManager networkManager;
+    @Getter private SchematicManager schematicManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -211,6 +215,9 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("MenuManager.shutdown",
                 () -> menuManager.shutdown());
 
+        safeRun("NetworkManager.shutdown",
+                () -> networkManager.shutdown());
+
         safeRun("ConversationManager.shutdown",
                 () -> conversationManager.shutdown());
 
@@ -233,6 +240,7 @@ public final class CorePlugin extends JavaPlugin {
         step("Registering commands", this::initCommands);
         step("Registering inventories", this::initInventories);
         step("Registering Bukkit listeners", this::initListeners);
+        step("Registering network message handlers", () -> networkManager.discoverAndRegister(scanResult));
         step("Initializing PlaceholderAPI", this::initPlaceholders);
         step("Loading modules", this::loadModules);
         step("Enabling modules", this::enableModules);
@@ -296,6 +304,8 @@ public final class CorePlugin extends JavaPlugin {
         menuManager = new MenuManager(this);
         conversationManager = new ConversationManager(this);
         lootManager = new LootManager(container);
+        networkManager = new NetworkManager(this, container);
+        schematicManager = new SchematicManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -317,6 +327,11 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(MenuManager.class, menuManager);
         container.bindInstance(ConversationManager.class, conversationManager);
         container.bindInstance(LootManager.class, lootManager);
+        container.bindInstance(NetworkManager.class, networkManager);
+        container.bindInstance(SchematicManager.class, schematicManager);
+        if (schematicManager.isWorldEditAvailable()) {
+            schematicManager.loadAll();
+        }
 
     }
 
