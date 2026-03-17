@@ -2,26 +2,36 @@ package dev.mzcy.core;
 
 import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
+import dev.mzcy.core.conversation.ConversationManager;
 import dev.mzcy.core.data.DataStoreManager;
+import dev.mzcy.core.debug.DebugCommand;
+import dev.mzcy.core.debug.DebugOverlay;
+import dev.mzcy.core.debug.DebugRegistry;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.display.ActionbarManager;
 import dev.mzcy.core.display.bossbar.BossBarManager;
 import dev.mzcy.core.exception.CoreException;
 import dev.mzcy.core.exception.ModuleException;
+import dev.mzcy.core.form.FormManager;
 import dev.mzcy.core.hologram.HologramManager;
 import dev.mzcy.core.input.ChatInputManager;
 import dev.mzcy.core.inventory.InventoryManager;
+import dev.mzcy.core.loot.LootManager;
+import dev.mzcy.core.menu.MenuManager;
 import dev.mzcy.core.module.ModuleRegistry;
 import dev.mzcy.core.npc.NpcManager;
 import dev.mzcy.core.placeholder.PlaceholderManager;
+import dev.mzcy.core.reload.HotReloadManager;
 import dev.mzcy.core.scanner.ClassScanner;
 import dev.mzcy.core.scanner.ComponentRegistry;
 import dev.mzcy.core.scanner.ScanResult;
 import dev.mzcy.core.scoreboard.ScoreboardManager;
+import dev.mzcy.core.task.TaskManager;
 import dev.mzcy.core.updater.UpdateChecker;
 import dev.mzcy.core.updater.UpdateNotifier;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,6 +100,13 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private ActionbarManager actionbarManager;
     @Getter private BossBarManager bossBarManager;
     @Getter private HologramManager hologramManager;
+    @Getter private DebugOverlay debugOverlay;
+    @Getter private HotReloadManager hotReloadManager;
+    @Getter private TaskManager taskManager;
+    @Getter private FormManager formManager;
+    @Getter private MenuManager menuManager;
+    @Getter private ConversationManager conversationManager;
+    @Getter private LootManager lootManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -174,6 +191,18 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("HologramManager.destroy",
                 () -> hologramManager.destroy());
 
+        safeRun("TaskManager.cancelAll",
+                () -> taskManager.cancelAll());
+
+        safeRun("FormManager.shutdown",
+                () -> formManager.shutdown());
+
+        safeRun("MenuManager.shutdown",
+                () -> menuManager.shutdown());
+
+        safeRun("ConversationManager.shutdown",
+                () -> conversationManager.shutdown());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -196,6 +225,10 @@ public final class CorePlugin extends JavaPlugin {
         step("Initializing PlaceholderAPI", this::initPlaceholders);
         step("Loading modules", this::loadModules);
         step("Enabling modules", this::enableModules);
+        step("Scheduling @Task methods", () ->
+                taskManager.discoverAndSchedule(scanResult));
+        step("Registering loot tables",
+                () -> lootManager.discoverAndRegister(scanResult));
     }
 
     // =========================================================================
@@ -240,6 +273,18 @@ public final class CorePlugin extends JavaPlugin {
         actionbarManager = new ActionbarManager(this);
         bossBarManager = new BossBarManager(this);
         hologramManager =  new HologramManager(this);
+        debugOverlay = new DebugOverlay(this);
+        hotReloadManager = new HotReloadManager(
+                this,
+                container,
+                configManager,
+                scanResult
+        );
+        taskManager = new TaskManager(this, container);
+        formManager = new FormManager(this, chatInputManager);
+        menuManager = new MenuManager(this);
+        conversationManager = new ConversationManager(this);
+        lootManager = new LootManager(container);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -253,6 +298,14 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(ActionbarManager.class, actionbarManager);
         container.bindInstance(BossBarManager.class, bossBarManager);
         container.bindInstance(HologramManager.class, hologramManager);
+        container.bindInstance(DebugOverlay.class, debugOverlay);
+        container.bindInstance(DebugRegistry.class, debugOverlay.getRegistry());
+        container.bindInstance(HotReloadManager.class, hotReloadManager);
+        container.bindInstance(TaskManager.class, taskManager);
+        container.bindInstance(FormManager.class, formManager);
+        container.bindInstance(MenuManager.class, menuManager);
+        container.bindInstance(ConversationManager.class, conversationManager);
+        container.bindInstance(LootManager.class, lootManager);
 
     }
 
@@ -312,6 +365,13 @@ public final class CorePlugin extends JavaPlugin {
                         "Failed to register listener: " + cls.getName(), ex);
             }
         }
+        scanResult.getListeners().forEach(cls -> {
+            if (!Listener.class.isAssignableFrom(cls)) return;
+            try {
+                hotReloadManager.manageListener(
+                        (Listener) container.resolve(cls));
+            } catch (Exception ignored) {}
+        });
     }
 
     private void initPlaceholders() {
@@ -332,6 +392,12 @@ public final class CorePlugin extends JavaPlugin {
         } catch (ModuleException ex) {
             throw new CoreException("Module enable phase failed", ex);
         }
+    }
+
+    private void initDebug() {
+        debugOverlay.discoverFrom(scanResult, container);
+        // Register /core command manually (it needs CorePlugin reference)
+        commandManager.register(DebugCommand.class, () -> new DebugCommand(this));
     }
 
     // =========================================================================

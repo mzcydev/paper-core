@@ -268,7 +268,7 @@ public abstract class AbstractDataStore<K, V extends Serializable> {
      * Defaults to the {@link DataStore} annotation value or the simple class name.
      */
     @NotNull
-    protected String getStoreName() {
+    public String getStoreName() {
         final DataStore annotation = getClass().getAnnotation(DataStore.class);
         return annotation != null ? annotation.value() : getClass().getSimpleName();
     }

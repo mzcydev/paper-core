@@ -2,6 +2,7 @@ package dev.mzcy.core.command;
 
 import dev.mzcy.core.annotation.Command;
 import dev.mzcy.core.cooldown.CooldownManager;
+import dev.mzcy.core.debug.DebugCommand;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.exception.CommandException;
 import dev.mzcy.core.scanner.ScanResult;
@@ -96,6 +97,22 @@ public final class CommandManager {
                 + (meta.aliases().length > 0
                 ? " (aliases: " + String.join(", ", meta.aliases()) + ")"
                 : ""));
+    }
+
+    public void register(
+            @NotNull Class<? extends BaseCommand> commandClass,
+            @NotNull java.util.function.Supplier<? extends BaseCommand> factory
+    ) {
+        final dev.mzcy.core.annotation.Command meta =
+                commandClass.getAnnotation(dev.mzcy.core.annotation.Command.class);
+        if (meta == null) throw new CommandException(commandClass.getSimpleName(),
+                "Missing @Command annotation");
+
+        final BaseCommand instance = factory.get();
+        instance.setCooldownManager(cooldownManager);
+        final BukkitCommandWrapper wrapper = new BukkitCommandWrapper(meta, instance);
+        commandMap.register(pluginName, wrapper);
+        registered.add(wrapper);
     }
 
     /**
