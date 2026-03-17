@@ -4,6 +4,7 @@ import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
 import dev.mzcy.core.conversation.ConversationManager;
 import dev.mzcy.core.data.DataStoreManager;
+import dev.mzcy.core.database.DatabaseManager;
 import dev.mzcy.core.debug.DebugCommand;
 import dev.mzcy.core.debug.DebugOverlay;
 import dev.mzcy.core.debug.DebugRegistry;
@@ -122,6 +123,7 @@ public final class CorePlugin extends JavaPlugin {
     private LootManager lootManager;
     @Getter private NetworkManager networkManager;
     @Getter private SchematicManager schematicManager;
+    @Getter private DatabaseManager databaseManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -221,6 +223,9 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("ConversationManager.shutdown",
                 () -> conversationManager.shutdown());
 
+        safeRun("DatabaseManager.disconnectAll",
+                () -> databaseManager.disconnectAll());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -235,6 +240,8 @@ public final class CorePlugin extends JavaPlugin {
     private void bootFramework() {
         step("Constructing DI container", this::initContainer);
         step("Scanning classpath", this::initScanner);
+        step("Wiring database repositories",
+                () -> databaseManager.discoverAndWire(scanResult));
         step("Initializing ConfigManager", this::initConfigs);
         step("Initializing DataStoreManager", this::initDataStores);
         step("Registering commands", this::initCommands);
@@ -306,6 +313,7 @@ public final class CorePlugin extends JavaPlugin {
         lootManager = new LootManager(container);
         networkManager = new NetworkManager(this, container);
         schematicManager = new SchematicManager(this);
+        databaseManager = new DatabaseManager(container);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -332,6 +340,7 @@ public final class CorePlugin extends JavaPlugin {
         if (schematicManager.isWorldEditAvailable()) {
             schematicManager.loadAll();
         }
+        container.bindInstance(DatabaseManager.class, databaseManager);
 
     }
 

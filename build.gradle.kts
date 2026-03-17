@@ -40,6 +40,21 @@ dependencies {
     // SnakeYAML (bundled in Paper, but explicit for IDE)
     compileOnly("org.yaml:snakeyaml:2.2")
 
+    // HikariCP — Connection Pool für MySQL + SQLite
+    implementation("com.zaxxer:HikariCP:5.1.0")
+
+    // SQLite JDBC Driver
+    implementation("org.xerial:sqlite-jdbc:3.46.1.3")
+
+    // MySQL Connector
+    compileOnly("com.mysql:mysql-connector-j:9.0.0")
+
+    // MongoDB Java Driver
+    implementation("org.mongodb:mongodb-driver-sync:5.2.0")
+
+    // Redisson — Redis Client
+    implementation("org.redisson:redisson:3.37.0")
+
     // Jackson for JSON config
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2")
@@ -74,6 +89,10 @@ tasks {
         archiveClassifier.set("")
         relocate("com.fasterxml.jackson", "dev.mzcy.core.libs.jackson")
         relocate("org.objectweb.asm", "dev.mzcy.core.libs.asm")
+        relocate("com.zaxxer.hikari", "dev.mzcy.core.libs.hikari")
+        relocate("org.sqlite", "dev.mzcy.core.libs.sqlite")
+        relocate("org.mongodb", "dev.mzcy.core.libs.mongodb")
+        relocate("org.redisson", "dev.mzcy.core.libs.redisson")
 
         mergeServiceFiles()
         minimize {
