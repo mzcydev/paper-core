@@ -13,6 +13,7 @@ import dev.mzcy.core.placeholder.PlaceholderManager;
 import dev.mzcy.core.scanner.ClassScanner;
 import dev.mzcy.core.scanner.ComponentRegistry;
 import dev.mzcy.core.scanner.ScanResult;
+import dev.mzcy.core.scoreboard.ScoreboardManager;
 import dev.mzcy.core.updater.UpdateChecker;
 import dev.mzcy.core.updater.UpdateNotifier;
 import lombok.Getter;
@@ -70,6 +71,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private ComponentRegistry componentRegistry;
     @Getter private PlaceholderManager placeholderManager;
     @Getter private ChatInputManager chatInputManager;
+    @Getter private ScoreboardManager scoreboardManager;
 
     /** The scan result from startup — available to dependent plugins post-enable. */
     @Getter private ScanResult scanResult;
@@ -133,7 +135,11 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("PlaceholderManager.shutdown",
                 () -> placeholderManager.shutdown());
 
-        safeRun("ChatInputManager.shutdown", () -> chatInputManager.shutdown());
+        safeRun("ChatInputManager.shutdown",
+                () -> chatInputManager.shutdown());
+
+        safeRun("ScoreboardManager.destroyAll",
+                () -> scoreboardManager.destroyAll());
 
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
@@ -192,10 +198,11 @@ public final class CorePlugin extends JavaPlugin {
                 getDataFolder().toPath(),
                 container
         );
-        commandManager    = new CommandManager(getName(), container);
-        inventoryManager  = new InventoryManager(container, this);
+        commandManager     = new CommandManager(getName(), container);
+        inventoryManager   = new InventoryManager(container, this);
         placeholderManager = new PlaceholderManager(this, container);
-        chatInputManager = new ChatInputManager(this);
+        chatInputManager   = new ChatInputManager(this);
+        scoreboardManager  = new ScoreboardManager(this);
 
         container.bindInstance(ModuleRegistry.class,   moduleRegistry);
         container.bindInstance(ConfigManager.class,    configManager);
@@ -204,6 +211,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(InventoryManager.class, inventoryManager);
         container.bindInstance(PlaceholderManager.class, placeholderManager);
         container.bindInstance(ChatInputManager.class, chatInputManager);
+        container.bindInstance(ScoreboardManager.class, scoreboardManager);
 
     }
 
