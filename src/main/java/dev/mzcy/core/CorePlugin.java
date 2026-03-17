@@ -1,6 +1,7 @@
 package dev.mzcy.core;
 
 import dev.mzcy.core.anvil.AnvilInputManager;
+import dev.mzcy.core.cache.CacheManager;
 import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
 import dev.mzcy.core.conversation.ConversationManager;
@@ -130,6 +131,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private SignManager signManager;
     @Getter private AnvilInputManager anvilInputManager;
     @Getter private MapDisplayManager mapDisplayManager;
+    @Getter private CacheManager cacheManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -241,6 +243,9 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("MapDisplayManager.shutdown",
                 () -> mapDisplayManager.shutdown());
 
+        safeRun("CacheManager.shutdown",
+                () -> cacheManager.shutdown());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -332,6 +337,7 @@ public final class CorePlugin extends JavaPlugin {
         signManager = new SignManager(this);
         anvilInputManager = new AnvilInputManager(this);
         mapDisplayManager = new MapDisplayManager(this);
+        cacheManager = new CacheManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -362,6 +368,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(SignManager.class, signManager);
         container.bindInstance(AnvilInputManager.class, anvilInputManager);
         container.bindInstance(MapDisplayManager.class, mapDisplayManager);
+        container.bindInstance(CacheManager.class, cacheManager);
 
     }
 

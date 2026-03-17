@@ -152,6 +152,7 @@ public final class DebugOverlay {
         registerScoreboardSection();
         registerNpcSection();
         registerPapiSection();
+        registerCacheSection();
     }
 
     private void registerJvmSection() {
@@ -327,6 +328,22 @@ public final class DebugOverlay {
         registry.registerEntry("PlaceholderAPI", "Expansion ID", () ->
                 "<white>%" + core.getPlaceholderManager().getExpansionId() + "_<key>%"
         );
+    }
+
+    private void registerCacheSection() {
+        registry.registerEntry("Cache", "Registered Caches", () ->
+                "<white>" + core.getCacheManager().cacheCount());
+        registry.registerEntry("Cache", "Total Entries", () ->
+                "<white>" + core.getCacheManager().totalEntries());
+        registry.registerEntry("Cache", "Per Cache", () -> {
+            final StringBuilder sb = new StringBuilder();
+            core.getCacheManager().getStats().forEach((name, count) -> {
+                if (!sb.isEmpty()) sb.append("\n");
+                sb.append("<gray>").append(name)
+                        .append("<dark_gray>: <white>").append(count);
+            });
+            return sb.isEmpty() ? "<dark_gray>none" : sb.toString();
+        });
     }
 
     // =========================================================================
