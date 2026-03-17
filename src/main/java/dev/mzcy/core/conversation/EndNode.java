@@ -12,11 +12,13 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 public final class EndNode implements ConversationNode {
 
-    @NotNull  private final String   id;
-    @Nullable private final String   farewellMessage;
+    @NotNull
+    private final String id;
+    @Nullable
+    private final String farewellMessage;
 
     EndNode(@NotNull String id, @Nullable String farewellMessage) {
-        this.id              = id;
+        this.id = id;
         this.farewellMessage = farewellMessage;
     }
 

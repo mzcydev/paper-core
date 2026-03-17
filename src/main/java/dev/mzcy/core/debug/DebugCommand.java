@@ -6,13 +6,8 @@ import dev.mzcy.core.command.BaseCommand;
 import dev.mzcy.core.command.CommandContext;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.di.Scope;
-import dev.mzcy.core.scanner.ScanResult;
 import lombok.extern.java.Log;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
-import java.util.List;
 
 /**
  * The {@code /core} command — entry point to the Core framework CLI.
@@ -28,10 +23,10 @@ import java.util.List;
  */
 @Log
 @Command(
-        name        = "core",
+        name = "core",
         description = "Core framework administration",
-        permission  = "core.admin",
-        aliases     = {"cr"}
+        permission = "core.admin",
+        aliases = {"cr"}
 )
 public final class DebugCommand extends BaseCommand {
 
@@ -58,8 +53,8 @@ public final class DebugCommand extends BaseCommand {
     // =========================================================================
 
     @SubCommand(
-            value       = "debug",
-            permission  = "core.admin",
+            value = "debug",
+            permission = "core.admin",
             description = "Print the full debug overlay"
     )
     public void onDebug(@NotNull CommandContext ctx) {
@@ -71,8 +66,8 @@ public final class DebugCommand extends BaseCommand {
     // =========================================================================
 
     @SubCommand(
-            value       = "bindings",
-            permission  = "core.admin",
+            value = "bindings",
+            permission = "core.admin",
             description = "List all DI container bindings"
     )
     public void onBindings(@NotNull CommandContext ctx) {
@@ -81,8 +76,8 @@ public final class DebugCommand extends BaseCommand {
 
         container.getAllBindings().forEach(binding -> {
             final boolean isSingleton = binding.getScope() == Scope.SINGLETON;
-            final String  scopeColor  = isSingleton ? "<green>" : "<yellow>";
-            final String  instance    = binding.hasSingletonInstance()
+            final String scopeColor = isSingleton ? "<green>" : "<yellow>";
+            final String instance = binding.hasSingletonInstance()
                     ? " <dark_gray>[<aqua>live<dark_gray>]"
                     : "";
 
@@ -102,19 +97,19 @@ public final class DebugCommand extends BaseCommand {
     // =========================================================================
 
     @SubCommand(
-            value       = "gc",
-            permission  = "core.admin",
+            value = "gc",
+            permission = "core.admin",
             description = "Request a JVM garbage collection cycle"
     )
     public void onGc(@NotNull CommandContext ctx) {
         final long before = Runtime.getRuntime().freeMemory() / 1024 / 1024;
         System.gc();
-        final long after  = Runtime.getRuntime().freeMemory() / 1024 / 1024;
-        final long freed  = after - before;
+        final long after = Runtime.getRuntime().freeMemory() / 1024 / 1024;
+        final long freed = after - before;
 
         ctx.send("<green>GC requested.");
         ctx.send("<gray>Free memory before<dark_gray>: <white>" + before + "MB");
-        ctx.send("<gray>Free memory after <dark_gray>: <white>" + after  + "MB");
+        ctx.send("<gray>Free memory after <dark_gray>: <white>" + after + "MB");
         ctx.send("<gray>Approximately freed<dark_gray>: <white>"
                 + (freed > 0 ? "<green>+" + freed : "<yellow>" + freed) + "MB");
     }
@@ -124,7 +119,7 @@ public final class DebugCommand extends BaseCommand {
     // =========================================================================
 
     @SubCommand(
-            value       = "version",
+            value = "version",
             description = "Print Core version and build info"
     )
     public void onVersion(@NotNull CommandContext ctx) {
@@ -144,8 +139,8 @@ public final class DebugCommand extends BaseCommand {
     // =========================================================================
 
     @SubCommand(
-            value       = "paste",
-            permission  = "core.admin",
+            value = "paste",
+            permission = "core.admin",
             description = "Upload debug report to pastes.dev"
     )
     public void onPaste(@NotNull CommandContext ctx) {
@@ -181,8 +176,8 @@ public final class DebugCommand extends BaseCommand {
     // =========================================================================
 
     @SubCommand(
-            value       = "reload",
-            permission  = "core.admin",
+            value = "reload",
+            permission = "core.admin",
             description = "Hot-reload configs and listeners"
     )
     public void onReload(@NotNull CommandContext ctx) {

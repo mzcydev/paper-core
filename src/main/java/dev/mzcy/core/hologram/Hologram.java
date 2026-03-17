@@ -3,9 +3,7 @@ package dev.mzcy.core.hologram;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,13 +21,14 @@ import java.util.List;
 @Getter
 public final class Hologram {
 
-    @NotNull private final String          id;
-    @NotNull private       Location        location;
-    @NotNull private final List<HologramLine> lines;
-
-    private final double  lineSpacing;
+    @NotNull
+    private final String id;
+    @NotNull
+    private final List<HologramLine> lines;
+    private final double lineSpacing;
     private final boolean persistOnChunkLoad;
-
+    @NotNull
+    private Location location;
     private volatile boolean spawned = false;
 
     Hologram(
@@ -39,10 +38,10 @@ public final class Hologram {
             double lineSpacing,
             boolean persistOnChunkLoad
     ) {
-        this.id                 = id;
-        this.location           = location.clone();
-        this.lines              = Collections.unmodifiableList(lines);
-        this.lineSpacing        = lineSpacing;
+        this.id = id;
+        this.location = location.clone();
+        this.lines = Collections.unmodifiableList(lines);
+        this.lineSpacing = lineSpacing;
         this.persistOnChunkLoad = persistOnChunkLoad;
     }
 
@@ -107,8 +106,8 @@ public final class Hologram {
     void tick() {
         if (!spawned) return;
         lines.forEach(line -> {
-            if (line instanceof TextHologramLine  t) t.update();
-            if (line instanceof ItemHologramLine  i) i.update();
+            if (line instanceof TextHologramLine t) t.update();
+            if (line instanceof ItemHologramLine i) i.update();
             if (line instanceof BlockHologramLine b) b.update();
         });
     }
@@ -129,7 +128,7 @@ public final class Hologram {
         double currentY = location.getY();
         for (int i = lines.size() - 1; i >= 0; i--) {
             final HologramLine line = lines.get(i);
-            final Location lineLoc  = location.clone();
+            final Location lineLoc = location.clone();
             lineLoc.setY(currentY);
             line.teleport(lineLoc);
             currentY += line.getHeight() + lineSpacing;

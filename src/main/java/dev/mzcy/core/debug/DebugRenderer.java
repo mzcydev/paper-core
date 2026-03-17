@@ -1,7 +1,7 @@
 package dev.mzcy.core.debug;
 
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,10 +22,10 @@ import java.time.format.DateTimeFormatter;
  */
 public final class DebugRenderer {
 
-    private static final MiniMessage              MINI  = MiniMessage.miniMessage();
+    private static final MiniMessage MINI = MiniMessage.miniMessage();
     private static final PlainTextComponentSerializer PLAIN =
             PlainTextComponentSerializer.plainText();
-    private static final DateTimeFormatter         DATE =
+    private static final DateTimeFormatter DATE =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                     .withZone(ZoneOffset.UTC);
 

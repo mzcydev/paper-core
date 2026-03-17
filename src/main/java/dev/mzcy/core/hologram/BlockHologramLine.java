@@ -2,7 +2,6 @@ package dev.mzcy.core.hologram;
 
 import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Display;
@@ -20,15 +19,17 @@ import java.util.function.Supplier;
 @Getter
 public final class BlockHologramLine implements HologramLine {
 
-    @NotNull  private BlockData blockData;
-    @Nullable private final Supplier<BlockData> blockSupplier;
-
+    @Nullable
+    private final Supplier<BlockData> blockSupplier;
     private final float scale;
-
-    /** Optional rotation in degrees around the Y axis. */
+    /**
+     * Optional rotation in degrees around the Y axis.
+     */
     private final float rotationY;
-
-    @Nullable private BlockDisplay entity;
+    @NotNull
+    private BlockData blockData;
+    @Nullable
+    private BlockDisplay entity;
 
     BlockHologramLine(
             @NotNull BlockData blockData,
@@ -36,10 +37,10 @@ public final class BlockHologramLine implements HologramLine {
             float scale,
             float rotationY
     ) {
-        this.blockData     = blockData;
+        this.blockData = blockData;
         this.blockSupplier = blockSupplier;
-        this.scale         = scale;
-        this.rotationY     = rotationY;
+        this.scale = scale;
+        this.rotationY = rotationY;
     }
 
     // =========================================================================
@@ -95,7 +96,8 @@ public final class BlockHologramLine implements HologramLine {
                 this.blockData = updated;
                 entity.setBlock(updated);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     /**

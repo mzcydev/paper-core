@@ -11,7 +11,10 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
@@ -46,10 +49,10 @@ import java.util.logging.Level;
 @Log
 public final class HotReloadManager {
 
-    private final Plugin         plugin;
-    private final Container      container;
-    private final ConfigManager  configManager;
-    private final ScanResult     scanResult;
+    private final Plugin plugin;
+    private final Container container;
+    private final ConfigManager configManager;
+    private final ScanResult scanResult;
 
     /**
      * Named reload steps in insertion order.
@@ -68,7 +71,9 @@ public final class HotReloadManager {
      */
     private final List<Listener> managedListeners = new ArrayList<>();
 
-    /** Prevents concurrent reload execution. */
+    /**
+     * Prevents concurrent reload execution.
+     */
     private final AtomicBoolean reloading = new AtomicBoolean(false);
 
     public HotReloadManager(
@@ -77,10 +82,10 @@ public final class HotReloadManager {
             @NotNull ConfigManager configManager,
             @NotNull ScanResult scanResult
     ) {
-        this.plugin        = plugin;
-        this.container     = container;
+        this.plugin = plugin;
+        this.container = container;
         this.configManager = configManager;
-        this.scanResult    = scanResult;
+        this.scanResult = scanResult;
 
         registerBuiltinSteps();
         discoverReloadables();
@@ -129,8 +134,8 @@ public final class HotReloadManager {
             return ReloadResult.alreadyRunning();
         }
 
-        final long start         = System.currentTimeMillis();
-        final List<String> ok    = new ArrayList<>();
+        final long start = System.currentTimeMillis();
+        final List<String> ok = new ArrayList<>();
         final List<String> fails = new ArrayList<>();
 
         log.info("Hot-reload started by: " + sender.getName());
@@ -342,9 +347,10 @@ public final class HotReloadManager {
     // =========================================================================
 
     private record DiscoveredReloadable(
-            @NotNull String  name,
-            @NotNull Object  instance,
-            @NotNull Method  method,
-            int              order
-    ) {}
+            @NotNull String name,
+            @NotNull Object instance,
+            @NotNull Method method,
+            int order
+    ) {
+    }
 }

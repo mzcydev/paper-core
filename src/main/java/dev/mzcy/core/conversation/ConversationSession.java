@@ -29,25 +29,31 @@ public final class ConversationSession {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    @NotNull private final Player                  player;
-    @NotNull private final ConversationTree        tree;
-    @NotNull private final ConversationContext     context;
-    @NotNull private final Plugin                  plugin;
-    @NotNull private final CompletableFuture<ConversationContext> future;
+    @NotNull
+    private final Player player;
+    @NotNull
+    private final ConversationTree tree;
+    @NotNull
+    private final ConversationContext context;
+    @NotNull
+    private final Plugin plugin;
+    @NotNull
+    private final CompletableFuture<ConversationContext> future;
 
-    @Nullable private Runnable onEnd;
-    private volatile boolean   done = false;
+    @Nullable
+    private Runnable onEnd;
+    private volatile boolean done = false;
 
     ConversationSession(
             @NotNull Player player,
             @NotNull ConversationTree tree,
             @NotNull Plugin plugin
     ) {
-        this.player  = player;
-        this.tree    = tree;
-        this.plugin  = plugin;
+        this.player = player;
+        this.tree = tree;
+        this.plugin = plugin;
         this.context = new ConversationContext(player);
-        this.future  = new CompletableFuture<>();
+        this.future = new CompletableFuture<>();
     }
 
     // =========================================================================
@@ -82,11 +88,11 @@ public final class ConversationSession {
         }
 
         switch (node.getType()) {
-            case DIALOGUE   -> processDialogue((DialogueNode) node);
-            case CHOICE     -> processChoice((ChoiceNode) node);
-            case ACTION     -> processAction((ActionNode) node);
-            case CONDITION  -> processCondition((ConditionNode) node);
-            case END        -> processEnd((EndNode) node);
+            case DIALOGUE -> processDialogue((DialogueNode) node);
+            case CHOICE -> processChoice((ChoiceNode) node);
+            case ACTION -> processAction((ActionNode) node);
+            case CONDITION -> processCondition((ConditionNode) node);
+            case END -> processEnd((EndNode) node);
         }
     }
 
@@ -228,8 +234,9 @@ public final class ConversationSession {
         }
 
         if (onEnd != null) {
-            try { onEnd.run(); }
-            catch (Exception ex) {
+            try {
+                onEnd.run();
+            } catch (Exception ex) {
                 log.warning("Exception in conversation onEnd: " + ex.getMessage());
             }
         }

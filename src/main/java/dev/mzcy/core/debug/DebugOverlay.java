@@ -1,17 +1,9 @@
 package dev.mzcy.core.debug;
 
-import dev.mzcy.core.command.CommandContext;
-import dev.mzcy.core.config.ConfigManager;
-import dev.mzcy.core.data.DataStoreManager;
 import dev.mzcy.core.di.Container;
-import dev.mzcy.core.inventory.InventoryManager;
-import dev.mzcy.core.npc.NpcManager;
-import dev.mzcy.core.placeholder.PlaceholderManager;
 import dev.mzcy.core.scanner.ScanResult;
-import dev.mzcy.core.scoreboard.ScoreboardManager;
 import lombok.Getter;
 import lombok.extern.java.Log;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.RuntimeMXBean;
-import java.util.List;
 
 /**
  * The Core debug overlay — accessible via {@code /core debug}.
@@ -63,15 +54,15 @@ public final class DebugOverlay {
     @Getter
     private final DebugRenderer renderer;
     @Getter
-    private final PasteService  pasteService;
+    private final PasteService pasteService;
 
     private final dev.mzcy.core.CorePlugin core;
 
     public DebugOverlay(@NotNull dev.mzcy.core.CorePlugin core) {
-        this.core     = core;
+        this.core = core;
         this.registry = new DebugRegistry();
         registerBuiltins();
-        this.renderer     = new DebugRenderer(this);
+        this.renderer = new DebugRenderer(this);
         this.pasteService = new PasteService();
     }
 
@@ -164,13 +155,13 @@ public final class DebugOverlay {
     }
 
     private void registerJvmSection() {
-        final MemoryMXBean  memory  = ManagementFactory.getMemoryMXBean();
+        final MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
         final RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
 
         registry.registerEntry("JVM", "Heap Used", () -> {
-            final long used  = memory.getHeapMemoryUsage().getUsed() / 1024 / 1024;
-            final long max   = memory.getHeapMemoryUsage().getMax()  / 1024 / 1024;
-            final int  pct   = (int) ((double) used / max * 100);
+            final long used = memory.getHeapMemoryUsage().getUsed() / 1024 / 1024;
+            final long max = memory.getHeapMemoryUsage().getMax() / 1024 / 1024;
+            final int pct = (int) ((double) used / max * 100);
             final String color = pct < 60 ? "<green>" : pct < 80 ? "<yellow>" : "<red>";
             return color + used + "MB <dark_gray>/ <gray>" + max + "MB "
                     + "<dark_gray>(" + color + pct + "%<dark_gray>)";
@@ -178,9 +169,9 @@ public final class DebugOverlay {
 
         registry.registerEntry("JVM", "Uptime", () -> {
             final long uptimeMs = runtime.getUptime();
-            final long hours    = uptimeMs / 3600000;
-            final long mins     = (uptimeMs % 3600000) / 60000;
-            final long secs     = (uptimeMs % 60000) / 1000;
+            final long hours = uptimeMs / 3600000;
+            final long mins = (uptimeMs % 3600000) / 60000;
+            final long secs = (uptimeMs % 60000) / 1000;
             return String.format("<white>%dh %dm %ds", hours, mins, secs);
         });
 

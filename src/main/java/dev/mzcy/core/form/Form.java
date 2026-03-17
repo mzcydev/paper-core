@@ -47,35 +47,58 @@ import java.util.function.Consumer;
 @Getter
 public final class Form {
 
-    @NotNull  private final String            id;
-    @NotNull  private final String            title;
-    @NotNull  private final List<FormField>   fields;
+    @NotNull
+    private final String id;
+    @NotNull
+    private final String title;
+    @NotNull
+    private final List<FormField> fields;
 
-    /** Called when all fields are submitted successfully. */
-    @Nullable private final Consumer<FormResponse> onSubmit;
+    /**
+     * Called when all fields are submitted successfully.
+     */
+    @Nullable
+    private final Consumer<FormResponse> onSubmit;
 
-    /** Called when the player cancels or times out. */
-    @Nullable private final Consumer<FormResponse> onCancel;
+    /**
+     * Called when the player cancels or times out.
+     */
+    @Nullable
+    private final Consumer<FormResponse> onCancel;
 
-    /** Called when the player disconnects mid-form. */
-    @Nullable private final Consumer<FormResponse> onDisconnect;
+    /**
+     * Called when the player disconnects mid-form.
+     */
+    @Nullable
+    private final Consumer<FormResponse> onDisconnect;
 
-    /** MiniMessage string shown at the start of the form. */
-    @NotNull  private final String header;
+    /**
+     * MiniMessage string shown at the start of the form.
+     */
+    @NotNull
+    private final String header;
 
-    /** MiniMessage string shown at the end of each prompt. */
-    @NotNull  private final String footer;
+    /**
+     * MiniMessage string shown at the end of each prompt.
+     */
+    @NotNull
+    private final String footer;
 
     private Form(Builder builder) {
-        this.id           = builder.id;
-        this.title        = builder.title;
-        this.fields       = Collections.unmodifiableList(
+        this.id = builder.id;
+        this.title = builder.title;
+        this.fields = Collections.unmodifiableList(
                 new ArrayList<>(builder.fields));
-        this.onSubmit     = builder.onSubmit;
-        this.onCancel     = builder.onCancel;
+        this.onSubmit = builder.onSubmit;
+        this.onCancel = builder.onCancel;
         this.onDisconnect = builder.onDisconnect;
-        this.header       = builder.header;
-        this.footer       = builder.footer;
+        this.header = builder.header;
+        this.footer = builder.footer;
+    }
+
+    @NotNull
+    public static Builder builder(@NotNull String id) {
+        return new Builder(id);
     }
 
     /**
@@ -90,6 +113,10 @@ public final class Form {
         return fields.get(index);
     }
 
+    // =========================================================================
+    // Builder
+    // =========================================================================
+
     /**
      * Returns the number of fields in this form.
      */
@@ -97,75 +124,80 @@ public final class Form {
         return fields.size();
     }
 
-    // =========================================================================
-    // Builder
-    // =========================================================================
-
-    @NotNull
-    public static Builder builder(@NotNull String id) {
-        return new Builder(id);
-    }
-
     public static final class Builder {
 
-        private final String              id;
-        private String                    title        = "";
-        private final List<FormField>     fields       = new ArrayList<>();
-        private Consumer<FormResponse>    onSubmit     = null;
-        private Consumer<FormResponse>    onCancel     = null;
-        private Consumer<FormResponse>    onDisconnect = null;
-        private String                    header       =
+        private final String id;
+        private final List<FormField> fields = new ArrayList<>();
+        private String title = "";
+        private Consumer<FormResponse> onSubmit = null;
+        private Consumer<FormResponse> onCancel = null;
+        private Consumer<FormResponse> onDisconnect = null;
+        private String header =
                 "<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
-        private String                    footer       =
+        private String footer =
                 "<dark_gray>Type <white>cancel <dark_gray>to abort the form.";
 
         private Builder(@NotNull String id) {
             this.id = id;
         }
 
-        /** Sets the form display title (shown in header). */
+        /**
+         * Sets the form display title (shown in header).
+         */
         @NotNull
         public Builder title(@NotNull String miniMessage) {
             this.title = miniMessage;
             return this;
         }
 
-        /** Adds a field to the form. Fields are presented in order. */
+        /**
+         * Adds a field to the form. Fields are presented in order.
+         */
         @NotNull
         public Builder field(@NotNull FormField field) {
             this.fields.add(field);
             return this;
         }
 
-        /** Sets the submission callback. */
+        /**
+         * Sets the submission callback.
+         */
         @NotNull
         public Builder onSubmit(@NotNull Consumer<FormResponse> handler) {
             this.onSubmit = handler;
             return this;
         }
 
-        /** Sets the cancellation callback. */
+        /**
+         * Sets the cancellation callback.
+         */
         @NotNull
         public Builder onCancel(@NotNull Consumer<FormResponse> handler) {
             this.onCancel = handler;
             return this;
         }
 
-        /** Sets the disconnect callback. */
+        /**
+         * Sets the disconnect callback.
+         */
         @NotNull
         public Builder onDisconnect(@NotNull Consumer<FormResponse> handler) {
             this.onDisconnect = handler;
             return this;
         }
 
-        /** Sets the header shown before every prompt. */
+        /**
+         * Sets the header shown before every prompt.
+         */
         @NotNull
         public Builder header(@NotNull String miniMessage) {
             this.header = miniMessage;
             return this;
         }
 
-        /** Sets the footer shown after every prompt. */
+        /**
+         * Sets the footer shown after every prompt.
+         */
         @NotNull
         public Builder footer(@NotNull String miniMessage) {
             this.footer = miniMessage;

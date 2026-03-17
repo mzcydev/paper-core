@@ -21,7 +21,8 @@ import java.util.List;
  */
 public final class ParticleShape {
 
-    private ParticleShape() {}
+    private ParticleShape() {
+    }
 
     // =========================================================================
     // 2D shapes
@@ -70,7 +71,7 @@ public final class ParticleShape {
     ) {
         final List<Location> result = new ArrayList<>(points);
         for (int i = 0; i < points; i++) {
-            final double r     = radius * Math.sqrt(Math.random());
+            final double r = radius * Math.sqrt(Math.random());
             final double angle = Math.random() * 2 * Math.PI;
             result.add(center.clone().add(
                     Math.cos(angle) * r, 0, Math.sin(angle) * r
@@ -130,8 +131,8 @@ public final class ParticleShape {
         final double goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
         for (int i = 0; i < points; i++) {
-            final double y     = 1 - (i / (double)(points - 1)) * 2;
-            final double r     = Math.sqrt(1 - y * y);
+            final double y = 1 - (i / (double) (points - 1)) * 2;
+            final double r = Math.sqrt(1 - y * y);
             final double theta = goldenAngle * i;
 
             result.add(center.clone().add(
@@ -177,11 +178,11 @@ public final class ParticleShape {
     /**
      * Generates a helix (spiral) of locations.
      *
-     * @param center     the base center location
-     * @param radius     the helix radius
-     * @param height     total height of the helix
-     * @param rotations  number of full rotations
-     * @param points     total number of points
+     * @param center    the base center location
+     * @param radius    the helix radius
+     * @param height    total height of the helix
+     * @param rotations number of full rotations
+     * @param points    total number of points
      * @return list of locations forming the helix
      */
     @NotNull
@@ -194,9 +195,9 @@ public final class ParticleShape {
     ) {
         final List<Location> result = new ArrayList<>(points);
         for (int i = 0; i < points; i++) {
-            final double t     = (double) i / points;
+            final double t = (double) i / points;
             final double angle = t * rotations * 2 * Math.PI;
-            final double y     = t * height;
+            final double y = t * height;
             result.add(center.clone().add(
                     Math.cos(angle) * radius,
                     y,
@@ -209,7 +210,7 @@ public final class ParticleShape {
     /**
      * Generates a star shape in the horizontal plane.
      *
-     * @param center the center location
+     * @param center      the center location
      * @param outerRadius the outer point radius
      * @param innerRadius the inner valley radius
      * @param points      number of star points
@@ -225,7 +226,7 @@ public final class ParticleShape {
         final List<Location> result = new ArrayList<>(points * 2);
         final double step = Math.PI / points;
         for (int i = 0; i < points * 2; i++) {
-            final double r     = (i % 2 == 0) ? outerRadius : innerRadius;
+            final double r = (i % 2 == 0) ? outerRadius : innerRadius;
             final double angle = i * step - Math.PI / 2;
             result.add(center.clone().add(
                     Math.cos(angle) * r, 0, Math.sin(angle) * r

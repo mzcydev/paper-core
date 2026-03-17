@@ -2,7 +2,6 @@ package dev.mzcy.core.command;
 
 import dev.mzcy.core.annotation.Command;
 import dev.mzcy.core.cooldown.CooldownManager;
-import dev.mzcy.core.debug.DebugCommand;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.exception.CommandException;
 import dev.mzcy.core.scanner.ScanResult;

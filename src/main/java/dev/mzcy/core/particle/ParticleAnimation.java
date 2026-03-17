@@ -22,16 +22,17 @@ public final class ParticleAnimation {
 
     private final ParticleEffect<?> effect;
     private final Supplier<List<Location>> locationSupplier;
-    @Nullable private final Player targetPlayer;
+    @Nullable
+    private final Player targetPlayer;
 
     private ParticleAnimation(
             @NotNull ParticleEffect<?> effect,
             @NotNull Supplier<List<Location>> locationSupplier,
             @Nullable Player targetPlayer
     ) {
-        this.effect           = effect;
+        this.effect = effect;
         this.locationSupplier = locationSupplier;
-        this.targetPlayer     = targetPlayer;
+        this.targetPlayer = targetPlayer;
     }
 
     // =========================================================================

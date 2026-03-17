@@ -36,9 +36,11 @@ import java.util.Map;
 @Getter
 public final class TaskContext {
 
-    @NotNull private final Plugin              plugin;
-    @NotNull private final Map<String, Object> data = new HashMap<>();
-    private volatile boolean                   cancelled = false;
+    @NotNull
+    private final Plugin plugin;
+    @NotNull
+    private final Map<String, Object> data = new HashMap<>();
+    private volatile boolean cancelled = false;
 
     TaskContext(@NotNull Plugin plugin) {
         this.plugin = plugin;

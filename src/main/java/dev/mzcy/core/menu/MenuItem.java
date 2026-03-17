@@ -27,21 +27,17 @@ import java.util.List;
 public final class MenuItem {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
-
-    public enum Type {
-        ACTION,
-        SEPARATOR,
-        DISABLED,
-        SUBMENU
-    }
-
-    @NotNull  private final Type            type;
-    @NotNull  private final Component       label;
-    @NotNull  private final List<Component> description;
-    @Nullable private final MenuAction      action;
-    @Nullable private final ContextMenu     submenu;
-    private   final boolean                 closeOnClick;
-
+    @NotNull
+    private final Type type;
+    @NotNull
+    private final Component label;
+    @NotNull
+    private final List<Component> description;
+    @Nullable
+    private final MenuAction action;
+    @Nullable
+    private final ContextMenu submenu;
+    private final boolean closeOnClick;
     private MenuItem(
             @NotNull Type type,
             @NotNull Component label,
@@ -50,17 +46,13 @@ public final class MenuItem {
             @Nullable ContextMenu submenu,
             boolean closeOnClick
     ) {
-        this.type         = type;
-        this.label        = label;
-        this.description  = Collections.unmodifiableList(description);
-        this.action       = action;
-        this.submenu      = submenu;
+        this.type = type;
+        this.label = label;
+        this.description = Collections.unmodifiableList(description);
+        this.action = action;
+        this.submenu = submenu;
         this.closeOnClick = closeOnClick;
     }
-
-    // =========================================================================
-    // Factory methods
-    // =========================================================================
 
     /**
      * Creates a clickable menu item.
@@ -81,6 +73,10 @@ public final class MenuItem {
                 action, null, true
         );
     }
+
+    // =========================================================================
+    // Factory methods
+    // =========================================================================
 
     /**
      * Creates a clickable item with description lines.
@@ -157,15 +153,22 @@ public final class MenuItem {
         );
     }
 
-    // =========================================================================
-    // Convenience
-    // =========================================================================
-
     public boolean isClickable() {
         return type == Type.ACTION || type == Type.SUBMENU;
     }
 
+    // =========================================================================
+    // Convenience
+    // =========================================================================
+
     public boolean isSeparator() {
         return type == Type.SEPARATOR;
+    }
+
+    public enum Type {
+        ACTION,
+        SEPARATOR,
+        DISABLED,
+        SUBMENU
     }
 }

@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,27 +36,39 @@ import java.util.Collection;
 @Builder
 public final class ParticleEffect<T> {
 
-    /** The particle type to spawn. */
+    /**
+     * The particle type to spawn.
+     */
     @NotNull
     private final Particle particle;
 
-    /** Number of particles to spawn per call. */
+    /**
+     * Number of particles to spawn per call.
+     */
     @Builder.Default
     private final int count = 1;
 
-    /** X spread offset. */
+    /**
+     * X spread offset.
+     */
     @Builder.Default
     private final double offsetX = 0.0;
 
-    /** Y spread offset. */
+    /**
+     * Y spread offset.
+     */
     @Builder.Default
     private final double offsetY = 0.0;
 
-    /** Z spread offset. */
+    /**
+     * Z spread offset.
+     */
     @Builder.Default
     private final double offsetZ = 0.0;
 
-    /** Particle speed / extra value. */
+    /**
+     * Particle speed / extra value.
+     */
     @Builder.Default
     private final double speed = 0.0;
 
@@ -122,9 +133,9 @@ public final class ParticleEffect<T> {
     /**
      * Creates a dust transition effect (color A → color B).
      *
-     * @param from  start color
-     * @param to    end color
-     * @param size  dust size
+     * @param from start color
+     * @param to   end color
+     * @param size dust size
      * @return a dust transition effect
      */
     @NotNull

@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
-import java.util.Map;
 
 /**
  * Tracks an active {@link ContextMenu} session for a player.
@@ -13,10 +12,14 @@ import java.util.Map;
 @Getter
 public final class MenuSession {
 
-    @NotNull private final Player      player;
-    @NotNull private final ContextMenu menu;
-    @NotNull private final String      sessionKey;
-    @NotNull private final Instant     expiresAt;
+    @NotNull
+    private final Player player;
+    @NotNull
+    private final ContextMenu menu;
+    @NotNull
+    private final String sessionKey;
+    @NotNull
+    private final Instant expiresAt;
 
     MenuSession(
             @NotNull Player player,
@@ -24,10 +27,10 @@ public final class MenuSession {
             @NotNull String sessionKey,
             long timeoutSeconds
     ) {
-        this.player     = player;
-        this.menu       = menu;
+        this.player = player;
+        this.menu = menu;
         this.sessionKey = sessionKey;
-        this.expiresAt  = Instant.now().plusSeconds(timeoutSeconds);
+        this.expiresAt = Instant.now().plusSeconds(timeoutSeconds);
     }
 
     public boolean isExpired() {

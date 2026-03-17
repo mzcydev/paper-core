@@ -2,7 +2,6 @@ package dev.mzcy.core.npc;
 
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,29 +32,29 @@ import java.util.UUID;
 public final class NpcBuilder {
 
     private final NpcManager manager;
-    private final String     id;
+    private final String id;
 
     // Profile fields
-    private String name             = "<white>NPC";
-    private UUID   uuid             = UUID.randomUUID();
-    private String textureValue     = null;
+    private String name = "<white>NPC";
+    private UUID uuid = UUID.randomUUID();
+    private String textureValue = null;
     private String textureSignature = null;
 
     // Settings fields
-    private Location      location       = null;
-    private int           viewDistance   = 48;
-    private boolean       lookAtPlayer   = true;
-    private double        lookAtDistance = 8.0;
-    private boolean       showInTabList  = false;
-    private List<String>  hologramLines  = new ArrayList<>();
-    private double        hologramOffset = 2.2;
-    private NpcClickAction clickAction   = null;
-    private boolean       collidable     = false;
-    private boolean       glowing        = false;
+    private Location location = null;
+    private int viewDistance = 48;
+    private boolean lookAtPlayer = true;
+    private double lookAtDistance = 8.0;
+    private boolean showInTabList = false;
+    private List<String> hologramLines = new ArrayList<>();
+    private double hologramOffset = 2.2;
+    private NpcClickAction clickAction = null;
+    private boolean collidable = false;
+    private boolean glowing = false;
 
     NpcBuilder(@NotNull NpcManager manager, @NotNull String id) {
         this.manager = manager;
-        this.id      = id;
+        this.id = id;
     }
 
     // =========================================================================
@@ -89,7 +88,7 @@ public final class NpcBuilder {
      */
     @NotNull
     public NpcBuilder texture(@NotNull String value, @NotNull String signature) {
-        this.textureValue     = value;
+        this.textureValue = value;
         this.textureSignature = signature;
         return this;
     }

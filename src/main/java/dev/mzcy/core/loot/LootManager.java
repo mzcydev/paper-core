@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -28,7 +27,9 @@ public final class LootManager {
 
     private final Container container;
 
-    /** All registered loot tables by ID. */
+    /**
+     * All registered loot tables by ID.
+     */
     private final Map<String, LootTable> tables = new LinkedHashMap<>();
 
     public LootManager(@NotNull Container container) {
@@ -53,7 +54,7 @@ public final class LootManager {
      * Auto-discovers and registers all {@link LootTableDef}-annotated
      * factory methods in the given {@link ScanResult}.
      *
-     * @param result    the scan result
+     * @param result the scan result
      */
     public void discoverAndRegister(@NotNull ScanResult result) {
         int count = 0;

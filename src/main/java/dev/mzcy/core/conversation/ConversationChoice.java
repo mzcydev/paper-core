@@ -13,11 +13,16 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 public final class ConversationChoice {
 
-    @NotNull  private final String                id;
-    @NotNull  private final String                label;
-    @NotNull  private final String                nextNodeId;
-    @Nullable private final ConversationCondition visibleIf;
-    @Nullable private final ConversationAction    onSelect;
+    @NotNull
+    private final String id;
+    @NotNull
+    private final String label;
+    @NotNull
+    private final String nextNodeId;
+    @Nullable
+    private final ConversationCondition visibleIf;
+    @Nullable
+    private final ConversationAction onSelect;
 
     public ConversationChoice(
             @NotNull String id,
@@ -26,11 +31,11 @@ public final class ConversationChoice {
             @Nullable ConversationCondition visibleIf,
             @Nullable ConversationAction onSelect
     ) {
-        this.id         = id;
-        this.label      = label;
+        this.id = id;
+        this.label = label;
         this.nextNodeId = nextNodeId;
-        this.visibleIf  = visibleIf;
-        this.onSelect   = onSelect;
+        this.visibleIf = visibleIf;
+        this.onSelect = onSelect;
     }
 
     // =========================================================================

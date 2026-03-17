@@ -14,17 +14,20 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 public final class ActionNode implements ConversationNode {
 
-    @NotNull  private final String               id;
-    @NotNull  private final ConversationAction   action;
-    @Nullable private final String               nextNodeId;
+    @NotNull
+    private final String id;
+    @NotNull
+    private final ConversationAction action;
+    @Nullable
+    private final String nextNodeId;
 
     ActionNode(
             @NotNull String id,
             @NotNull ConversationAction action,
             @Nullable String nextNodeId
     ) {
-        this.id         = id;
-        this.action     = action;
+        this.id = id;
+        this.action = action;
         this.nextNodeId = nextNodeId;
     }
 

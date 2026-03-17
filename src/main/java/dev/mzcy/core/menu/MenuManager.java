@@ -14,7 +14,8 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -33,21 +34,27 @@ import java.util.logging.Level;
 @Log
 public final class MenuManager implements Listener {
 
-    /** Singleton — menus need to call back without a reference chain. */
+    /**
+     * Singleton — menus need to call back without a reference chain.
+     */
     @Getter
     private static MenuManager instance;
 
     private final Plugin plugin;
 
-    /** Active sessions by player UUID. */
+    /**
+     * Active sessions by player UUID.
+     */
     private final Map<UUID, MenuSession> sessions = new ConcurrentHashMap<>();
 
-    /** Timeout eviction task. */
+    /**
+     * Timeout eviction task.
+     */
     private BukkitTask evictionTask;
 
     public MenuManager(@NotNull Plugin plugin) {
         this.plugin = plugin;
-        instance    = this;
+        instance = this;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         startEvictionTask();
     }
@@ -153,7 +160,7 @@ public final class MenuManager implements Listener {
         if (lastUnderscore == -1) return;
 
         final String sessionKey = payload.substring(0, lastUnderscore);
-        final int    itemIndex;
+        final int itemIndex;
         try {
             itemIndex = Integer.parseInt(payload.substring(lastUnderscore + 1));
         } catch (NumberFormatException ex) {

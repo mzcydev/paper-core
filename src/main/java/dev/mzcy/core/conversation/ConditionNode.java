@@ -12,10 +12,14 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public final class ConditionNode implements ConversationNode {
 
-    @NotNull private final String                  id;
-    @NotNull private final ConversationCondition   condition;
-    @NotNull private final String                  trueNodeId;
-    @NotNull private final String                  falseNodeId;
+    @NotNull
+    private final String id;
+    @NotNull
+    private final ConversationCondition condition;
+    @NotNull
+    private final String trueNodeId;
+    @NotNull
+    private final String falseNodeId;
 
     ConditionNode(
             @NotNull String id,
@@ -23,9 +27,9 @@ public final class ConditionNode implements ConversationNode {
             @NotNull String trueNodeId,
             @NotNull String falseNodeId
     ) {
-        this.id          = id;
-        this.condition   = condition;
-        this.trueNodeId  = trueNodeId;
+        this.id = id;
+        this.condition = condition;
+        this.trueNodeId = trueNodeId;
         this.falseNodeId = falseNodeId;
     }
 

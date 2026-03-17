@@ -23,35 +23,42 @@ import java.util.function.Supplier;
 public final class TextHologramLine implements HologramLine {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
-
-    /** Static text — used if supplier is null. */
-    @Nullable
-    private Component staticText;
-
-    /** Dynamic text supplier — evaluated on every {@link #update()} call. */
+    /**
+     * Dynamic text supplier — evaluated on every {@link #update()} call.
+     */
     @Nullable
     private final Supplier<Component> textSupplier;
-
-    /** Background color (ARGB). Null = default transparent. */
+    /**
+     * Background color (ARGB). Null = default transparent.
+     */
     @Nullable
     private final Color backgroundColor;
-
-    /** Text opacity 0–255. -1 = default. */
+    /**
+     * Text opacity 0–255. -1 = default.
+     */
     private final byte opacity;
-
-    /** Whether the text casts a shadow. */
+    /**
+     * Whether the text casts a shadow.
+     */
     private final boolean shadow;
-
-    /** Whether the text is always visible regardless of line-of-sight. */
+    /**
+     * Whether the text is always visible regardless of line-of-sight.
+     */
     private final boolean seeThrough;
-
-    /** Text alignment. */
+    /**
+     * Text alignment.
+     */
     @NotNull
     private final TextDisplay.TextAlignment alignment;
-
-    /** Scale multiplier for the text display. */
+    /**
+     * Scale multiplier for the text display.
+     */
     private final float scale;
-
+    /**
+     * Static text — used if supplier is null.
+     */
+    @Nullable
+    private Component staticText;
     @Nullable
     private TextDisplay entity;
 
@@ -65,14 +72,14 @@ public final class TextHologramLine implements HologramLine {
             @NotNull TextDisplay.TextAlignment alignment,
             float scale
     ) {
-        this.staticText       = staticText;
-        this.textSupplier     = textSupplier;
-        this.backgroundColor  = backgroundColor;
-        this.opacity          = opacity;
-        this.shadow           = shadow;
-        this.seeThrough       = seeThrough;
-        this.alignment        = alignment;
-        this.scale            = scale;
+        this.staticText = staticText;
+        this.textSupplier = textSupplier;
+        this.backgroundColor = backgroundColor;
+        this.opacity = opacity;
+        this.shadow = shadow;
+        this.seeThrough = seeThrough;
+        this.alignment = alignment;
+        this.scale = scale;
     }
 
     // =========================================================================
@@ -129,7 +136,8 @@ public final class TextHologramLine implements HologramLine {
         if (textSupplier == null) return;
         try {
             entity.text(textSupplier.get());
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     /**

@@ -30,25 +30,42 @@ import java.util.List;
 @Getter
 public final class LootPool {
 
-    @NotNull  private final String            name;
-    @NotNull  private final List<LootEntry>   entries;
-    private   final int                       minRolls;
-    private   final int                       maxRolls;
-    private   final int                       bonusRollsPerLooting;
-    @Nullable private final LootCondition     condition;
+    @NotNull
+    private final String name;
+    @NotNull
+    private final List<LootEntry> entries;
+    private final int minRolls;
+    private final int maxRolls;
+    private final int bonusRollsPerLooting;
+    @Nullable
+    private final LootCondition condition;
 
     private LootPool(Builder builder) {
-        this.name                 = builder.name;
-        this.entries              = Collections.unmodifiableList(
+        this.name = builder.name;
+        this.entries = Collections.unmodifiableList(
                 new ArrayList<>(builder.entries));
-        this.minRolls             = builder.minRolls;
-        this.maxRolls             = builder.maxRolls;
+        this.minRolls = builder.minRolls;
+        this.maxRolls = builder.maxRolls;
         this.bonusRollsPerLooting = builder.bonusRollsPerLooting;
-        this.condition            = builder.condition;
+        this.condition = builder.condition;
     }
 
     // =========================================================================
     // Rolling
+    // =========================================================================
+
+    @NotNull
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    @NotNull
+    public static Builder builder(@NotNull String name) {
+        return new Builder().name(name);
+    }
+
+    // =========================================================================
+    // Builder
     // =========================================================================
 
     /**
@@ -56,7 +73,7 @@ public final class LootPool {
      *
      * @param context the loot context
      * @return list of dropped items (may include nulls for empty entries,
-     *         which are filtered by the caller)
+     * which are filtered by the caller)
      */
     @NotNull
     public List<ItemStack> roll(@NotNull LootContext context) {
@@ -112,28 +129,14 @@ public final class LootPool {
                 .resolve(context.getRandom());
     }
 
-    // =========================================================================
-    // Builder
-    // =========================================================================
-
-    @NotNull
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @NotNull
-    public static Builder builder(@NotNull String name) {
-        return new Builder().name(name);
-    }
-
     public static final class Builder {
 
-        private String              name                 = "pool";
-        private final List<LootEntry> entries            = new ArrayList<>();
-        private int                 minRolls             = 1;
-        private int                 maxRolls             = 1;
-        private int                 bonusRollsPerLooting = 0;
-        private LootCondition       condition            = null;
+        private final List<LootEntry> entries = new ArrayList<>();
+        private String name = "pool";
+        private int minRolls = 1;
+        private int maxRolls = 1;
+        private int bonusRollsPerLooting = 0;
+        private LootCondition condition = null;
 
         @NotNull
         public Builder name(@NotNull String name) {

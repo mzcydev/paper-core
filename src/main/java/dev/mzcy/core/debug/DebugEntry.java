@@ -16,11 +16,15 @@ import java.util.Map;
 @Getter
 public final class DebugEntry {
 
-    @NotNull private final String   category;
-    @NotNull private final String   label;
-    @NotNull private final Object   instance;
-    @NotNull private final Method   method;
-    private  final boolean          opOnly;
+    @NotNull
+    private final String category;
+    @NotNull
+    private final String label;
+    @NotNull
+    private final Object instance;
+    @NotNull
+    private final Method method;
+    private final boolean opOnly;
 
     DebugEntry(
             @NotNull String category,
@@ -30,10 +34,10 @@ public final class DebugEntry {
             boolean opOnly
     ) {
         this.category = category;
-        this.label    = label;
+        this.label = label;
         this.instance = instance;
-        this.method   = method;
-        this.opOnly   = opOnly;
+        this.method = method;
+        this.opOnly = opOnly;
     }
 
     // =========================================================================
@@ -68,8 +72,8 @@ public final class DebugEntry {
     @NotNull
     @SuppressWarnings("unchecked")
     private String formatResult(@Nullable Object result) {
-        if (result == null)              return "<dark_gray>null";
-        if (result instanceof String s)  return s;
+        if (result == null) return "<dark_gray>null";
+        if (result instanceof String s) return s;
         if (result instanceof Map<?, ?> map) {
             if (map.isEmpty()) return "<dark_gray>{}";
             final StringBuilder sb = new StringBuilder();

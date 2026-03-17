@@ -20,13 +20,15 @@ import java.util.function.Supplier;
 @Getter
 public final class ItemHologramLine implements HologramLine {
 
-    @NotNull  private ItemStack item;
-    @Nullable private final Supplier<ItemStack> itemSupplier;
-
-    @NotNull  private final ItemDisplay.ItemDisplayTransform transform;
-    private   final float scale;
-
-    @Nullable private ItemDisplay entity;
+    @Nullable
+    private final Supplier<ItemStack> itemSupplier;
+    @NotNull
+    private final ItemDisplay.ItemDisplayTransform transform;
+    private final float scale;
+    @NotNull
+    private ItemStack item;
+    @Nullable
+    private ItemDisplay entity;
 
     ItemHologramLine(
             @NotNull ItemStack item,
@@ -34,10 +36,10 @@ public final class ItemHologramLine implements HologramLine {
             @NotNull ItemDisplay.ItemDisplayTransform transform,
             float scale
     ) {
-        this.item         = item;
+        this.item = item;
         this.itemSupplier = itemSupplier;
-        this.transform    = transform;
-        this.scale        = scale;
+        this.transform = transform;
+        this.scale = scale;
     }
 
     // =========================================================================
@@ -93,7 +95,8 @@ public final class ItemHologramLine implements HologramLine {
                 this.item = updated;
                 entity.setItemStack(updated);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     /**

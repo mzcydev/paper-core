@@ -96,17 +96,28 @@ public final class CorePlugin extends JavaPlugin {
     private ChatInputManager chatInputManager;
     @Getter
     private ScoreboardManager scoreboardManager;
-    @Getter private NpcManager npcManager;
-    @Getter private ActionbarManager actionbarManager;
-    @Getter private BossBarManager bossBarManager;
-    @Getter private HologramManager hologramManager;
-    @Getter private DebugOverlay debugOverlay;
-    @Getter private HotReloadManager hotReloadManager;
-    @Getter private TaskManager taskManager;
-    @Getter private FormManager formManager;
-    @Getter private MenuManager menuManager;
-    @Getter private ConversationManager conversationManager;
-    @Getter private LootManager lootManager;
+    @Getter
+    private NpcManager npcManager;
+    @Getter
+    private ActionbarManager actionbarManager;
+    @Getter
+    private BossBarManager bossBarManager;
+    @Getter
+    private HologramManager hologramManager;
+    @Getter
+    private DebugOverlay debugOverlay;
+    @Getter
+    private HotReloadManager hotReloadManager;
+    @Getter
+    private TaskManager taskManager;
+    @Getter
+    private FormManager formManager;
+    @Getter
+    private MenuManager menuManager;
+    @Getter
+    private ConversationManager conversationManager;
+    @Getter
+    private LootManager lootManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -272,7 +283,7 @@ public final class CorePlugin extends JavaPlugin {
         npcManager = new NpcManager(this);
         actionbarManager = new ActionbarManager(this);
         bossBarManager = new BossBarManager(this);
-        hologramManager =  new HologramManager(this);
+        hologramManager = new HologramManager(this);
         debugOverlay = new DebugOverlay(this);
         hotReloadManager = new HotReloadManager(
                 this,
@@ -370,7 +381,8 @@ public final class CorePlugin extends JavaPlugin {
             try {
                 hotReloadManager.manageListener(
                         (Listener) container.resolve(cls));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         });
     }
 

@@ -1,12 +1,10 @@
 package dev.mzcy.core.npc;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -14,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.bukkit.entity.EntityType;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,40 +42,44 @@ public final class Npc {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    /** Unique identifier for this NPC within the {@link NpcManager}. */
+    /**
+     * Unique identifier for this NPC within the {@link NpcManager}.
+     */
     @NotNull
     private final String id;
 
-    /** The profile describing this NPC's identity and skin. */
+    /**
+     * The profile describing this NPC's identity and skin.
+     */
     @NotNull
     private final NpcProfile profile;
 
-    /** The settings controlling behavior and appearance. */
+    /**
+     * The settings controlling behavior and appearance.
+     */
     @NotNull
     private final NpcSettings settings;
 
     private final Plugin plugin;
-
+    /**
+     * Hologram armor stands spawned above this NPC.
+     * Index 0 = topmost line.
+     */
+    private final List<ArmorStand> hologramStands = new ArrayList<>();
+    /**
+     * Players currently within view range of this NPC.
+     * Used to avoid redundant show/hide operations.
+     */
+    private final Set<UUID> viewers = ConcurrentHashMap.newKeySet();
     /**
      * The invisible ArmorStand used as click proxy when Citizens is unavailable.
      * Null if Citizens is handling this NPC.
      */
     @Nullable
     private ArmorStand proxyEntity;
-
     /**
-     * Hologram armor stands spawned above this NPC.
-     * Index 0 = topmost line.
+     * Whether this NPC has been spawned into the world.
      */
-    private final List<ArmorStand> hologramStands = new ArrayList<>();
-
-    /**
-     * Players currently within view range of this NPC.
-     * Used to avoid redundant show/hide operations.
-     */
-    private final Set<UUID> viewers = ConcurrentHashMap.newKeySet();
-
-    /** Whether this NPC has been spawned into the world. */
     private volatile boolean spawned = false;
 
     Npc(
@@ -87,10 +88,10 @@ public final class Npc {
             @NotNull NpcSettings settings,
             @NotNull Plugin plugin
     ) {
-        this.id       = id;
-        this.profile  = profile;
+        this.id = id;
+        this.profile = profile;
         this.settings = settings;
-        this.plugin   = plugin;
+        this.plugin = plugin;
     }
 
     // =========================================================================
@@ -157,7 +158,7 @@ public final class Npc {
         if (!spawned || proxyEntity == null) return;
         if (!settings.isLookAtPlayer()) return;
 
-        final Location npcLoc    = proxyEntity.getLocation();
+        final Location npcLoc = proxyEntity.getLocation();
         final Location playerLoc = player.getLocation();
 
         if (!Objects.equals(npcLoc.getWorld(), playerLoc.getWorld())) return;
@@ -167,7 +168,7 @@ public final class Npc {
         final double dz = playerLoc.getZ() - npcLoc.getZ();
         final double dy = playerLoc.getY() - npcLoc.getY();
 
-        final float yaw   = (float) (Math.toDegrees(Math.atan2(-dx, dz)));
+        final float yaw = (float) (Math.toDegrees(Math.atan2(-dx, dz)));
         final float pitch = (float) (-Math.toDegrees(Math.atan2(
                 dy, Math.sqrt(dx * dx + dz * dz))));
 
@@ -190,7 +191,7 @@ public final class Npc {
      */
     public boolean isInRange(@NotNull Player player) {
         if (!spawned || proxyEntity == null) return false;
-        final Location npcLoc    = proxyEntity.getLocation();
+        final Location npcLoc = proxyEntity.getLocation();
         final Location playerLoc = player.getLocation();
         if (!Objects.equals(npcLoc.getWorld(), playerLoc.getWorld())) return false;
         return npcLoc.distance(playerLoc) <= settings.getViewDistance();

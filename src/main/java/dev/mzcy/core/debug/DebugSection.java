@@ -16,12 +16,14 @@ import java.util.List;
 @Getter
 public final class DebugSection {
 
-    @NotNull private final String            category;
-    @NotNull private final List<DebugEntry>  entries;
+    @NotNull
+    private final String category;
+    @NotNull
+    private final List<DebugEntry> entries;
 
     DebugSection(@NotNull String category, @NotNull List<DebugEntry> entries) {
         this.category = category;
-        this.entries  = Collections.unmodifiableList(new ArrayList<>(entries));
+        this.entries = Collections.unmodifiableList(new ArrayList<>(entries));
     }
 
     /**

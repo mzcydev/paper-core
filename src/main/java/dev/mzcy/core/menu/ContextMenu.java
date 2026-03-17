@@ -8,7 +8,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A context menu displayed to a player as a series of numbered chat messages.
@@ -47,33 +50,42 @@ import java.util.*;
 @Getter
 public final class ContextMenu {
 
-    private static final MiniMessage MINI = MiniMessage.miniMessage();
-
-    /** Internal command prefix for click handling. */
+    /**
+     * Internal command prefix for click handling.
+     */
     static final String COMMAND_PREFIX = "/_coremenu_";
-
-    @NotNull  private final String          id;
-    @Nullable private final Component       title;
-    @Nullable private final Component       footer;
-    @NotNull  private final List<MenuItem>  items;
-    private   final long                    timeoutSeconds;
-    private   final boolean                 showNumbers;
+    private static final MiniMessage MINI = MiniMessage.miniMessage();
+    @NotNull
+    private final String id;
+    @Nullable
+    private final Component title;
+    @Nullable
+    private final Component footer;
+    @NotNull
+    private final List<MenuItem> items;
+    private final long timeoutSeconds;
+    private final boolean showNumbers;
 
     private ContextMenu(Builder builder) {
-        this.id             = builder.id;
-        this.title          = builder.title != null
+        this.id = builder.id;
+        this.title = builder.title != null
                 ? MINI.deserialize(builder.title) : null;
-        this.footer         = builder.footer != null
+        this.footer = builder.footer != null
                 ? MINI.deserialize(builder.footer) : null;
-        this.items          = Collections.unmodifiableList(
+        this.items = Collections.unmodifiableList(
                 new ArrayList<>(builder.items));
         this.timeoutSeconds = builder.timeoutSeconds;
-        this.showNumbers    = builder.showNumbers;
+        this.showNumbers = builder.showNumbers;
     }
 
     // =========================================================================
     // Display
     // =========================================================================
+
+    @NotNull
+    public static Builder builder(@NotNull String id) {
+        return new Builder(id);
+    }
 
     /**
      * Opens this menu for a player, rendering it in chat.
@@ -85,6 +97,10 @@ public final class ContextMenu {
         MenuManager.getInstance().open(this, player);
     }
 
+    // =========================================================================
+    // Rendering
+    // =========================================================================
+
     /**
      * Closes this menu for a player (clears the session).
      *
@@ -93,10 +109,6 @@ public final class ContextMenu {
     public void close(@NotNull Player player) {
         MenuManager.getInstance().close(player);
     }
-
-    // =========================================================================
-    // Rendering
-    // =========================================================================
 
     /**
      * Renders the menu to the player's chat.
@@ -174,6 +186,10 @@ public final class ContextMenu {
         ).append(item.getLabel());
     }
 
+    // =========================================================================
+    // Builder
+    // =========================================================================
+
     /**
      * Returns all clickable items (actions + submenus) in order.
      * Used to map number input to the correct item.
@@ -191,23 +207,14 @@ public final class ContextMenu {
         return result;
     }
 
-    // =========================================================================
-    // Builder
-    // =========================================================================
-
-    @NotNull
-    public static Builder builder(@NotNull String id) {
-        return new Builder(id);
-    }
-
     public static final class Builder {
 
-        private final String          id;
-        private String                title          = null;
-        private String                footer         = null;
-        private final List<MenuItem>  items          = new ArrayList<>();
-        private long                  timeoutSeconds = 30L;
-        private boolean               showNumbers    = true;
+        private final String id;
+        private final List<MenuItem> items = new ArrayList<>();
+        private String title = null;
+        private String footer = null;
+        private long timeoutSeconds = 30L;
+        private boolean showNumbers = true;
 
         private Builder(@NotNull String id) {
             this.id = id;

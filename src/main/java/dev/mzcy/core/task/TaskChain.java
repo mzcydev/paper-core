@@ -46,16 +46,19 @@ import java.util.logging.Level;
 @Log
 public final class TaskChain {
 
-    private final Plugin                   plugin;
-    private final TaskContext              context;
-    private final List<StepEntry<?, ?>>    steps    = new ArrayList<>();
+    private final Plugin plugin;
+    private final TaskContext context;
+    private final List<StepEntry<?, ?>> steps = new ArrayList<>();
 
-    @Nullable private Consumer<Throwable>    errorHandler    = null;
-    @Nullable private Consumer<TaskContext>  completeHandler = null;
-    @Nullable private Consumer<TaskContext>  cancelHandler   = null;
+    @Nullable
+    private Consumer<Throwable> errorHandler = null;
+    @Nullable
+    private Consumer<TaskContext> completeHandler = null;
+    @Nullable
+    private Consumer<TaskContext> cancelHandler = null;
 
     private TaskChain(@NotNull Plugin plugin) {
-        this.plugin  = plugin;
+        this.plugin = plugin;
         this.context = new TaskContext(plugin);
     }
 
@@ -82,7 +85,7 @@ public final class TaskChain {
      * Adds a sync step that receives the previous output and returns a new value.
      * Runs on the <b>main server thread</b>.
      *
-     * @param step the step function
+     * @param step  the step function
      * @param <IN>  input type
      * @param <OUT> output type
      * @return {@code this} chain
@@ -97,7 +100,7 @@ public final class TaskChain {
      * Adds an async step that receives the previous output and returns a new value.
      * Runs on an <b>async Bukkit scheduler thread</b>.
      *
-     * @param step the step function
+     * @param step  the step function
      * @param <IN>  input type
      * @param <OUT> output type
      * @return {@code this} chain
@@ -272,8 +275,9 @@ public final class TaskChain {
             runOnMain(() -> {
                 future.complete(context);
                 if (completeHandler != null) {
-                    try { completeHandler.accept(context); }
-                    catch (Exception ex) {
+                    try {
+                        completeHandler.accept(context);
+                    } catch (Exception ex) {
                         log.log(Level.WARNING, "Exception in onComplete handler", ex);
                     }
                 }
@@ -286,8 +290,9 @@ public final class TaskChain {
             runOnMain(() -> {
                 future.complete(context);
                 if (cancelHandler != null) {
-                    try { cancelHandler.accept(context); }
-                    catch (Exception ex) {
+                    try {
+                        cancelHandler.accept(context);
+                    } catch (Exception ex) {
                         log.log(Level.WARNING, "Exception in onCancel handler", ex);
                     }
                 }
@@ -315,8 +320,9 @@ public final class TaskChain {
                 runOnMain(() -> {
                     future.completeExceptionally(ex);
                     if (errorHandler != null) {
-                        try { errorHandler.accept(ex); }
-                        catch (Exception handlerEx) {
+                        try {
+                            errorHandler.accept(ex);
+                        } catch (Exception handlerEx) {
                             log.log(Level.WARNING,
                                     "Exception in onError handler", handlerEx);
                         }
@@ -357,6 +363,8 @@ public final class TaskChain {
             this(step, async, 0L);
         }
 
-        boolean isDelay() { return step == null && delayTicks > 0; }
+        boolean isDelay() {
+            return step == null && delayTicks > 0;
+        }
     }
 }

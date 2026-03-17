@@ -17,9 +17,12 @@ import java.util.Map;
 @Getter
 public final class ConversationContext {
 
-    @NotNull private final Player              player;
-    @NotNull private final Map<String, Object> data   = new HashMap<>();
-    @NotNull private final Map<String, String> flags  = new HashMap<>();
+    @NotNull
+    private final Player player;
+    @NotNull
+    private final Map<String, Object> data = new HashMap<>();
+    @NotNull
+    private final Map<String, String> flags = new HashMap<>();
 
     ConversationContext(@NotNull Player player) {
         this.player = player;

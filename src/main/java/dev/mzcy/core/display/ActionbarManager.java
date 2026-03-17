@@ -9,7 +9,10 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -50,11 +53,15 @@ public final class ActionbarManager {
 
     private final Plugin plugin;
 
-    /** Active message queues per player UUID. */
+    /**
+     * Active message queues per player UUID.
+     */
     private final Map<UUID, PriorityQueue<ActionbarEntry>> queues
             = new ConcurrentHashMap<>();
 
-    /** The repeating send task. */
+    /**
+     * The repeating send task.
+     */
     private BukkitTask sendTask;
 
     public ActionbarManager(@NotNull Plugin plugin) {
@@ -133,10 +140,10 @@ public final class ActionbarManager {
     /**
      * Sends a temporary actionbar message by seconds.
      *
-     * @param player    the target player
-     * @param message   MiniMessage string
-     * @param seconds   duration in seconds
-     * @param priority  display priority
+     * @param player   the target player
+     * @param message  MiniMessage string
+     * @param seconds  duration in seconds
+     * @param priority display priority
      */
     public void sendTemporarySeconds(
             @NotNull Player player,
@@ -246,8 +253,11 @@ public final class ActionbarManager {
         Component resolve() {
             if (staticText != null) return staticText;
             if (dynamicSupplier != null) {
-                try { return dynamicSupplier.get(); }
-                catch (Exception ignored) { return Component.empty(); }
+                try {
+                    return dynamicSupplier.get();
+                } catch (Exception ignored) {
+                    return Component.empty();
+                }
             }
             return Component.empty();
         }

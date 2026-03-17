@@ -21,7 +21,9 @@ import java.util.List;
 @Builder
 public final class NpcSettings {
 
-    /** The world location where this NPC spawns. */
+    /**
+     * The world location where this NPC spawns.
+     */
     @NotNull
     private final Location location;
 

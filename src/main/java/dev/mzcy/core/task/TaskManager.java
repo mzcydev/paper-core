@@ -8,7 +8,9 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -26,14 +28,16 @@ import java.util.logging.Level;
 @Log
 public final class TaskManager {
 
-    private final Plugin    plugin;
+    private final Plugin plugin;
     private final Container container;
 
-    /** All currently running managed task IDs. */
+    /**
+     * All currently running managed task IDs.
+     */
     private final Map<String, BukkitTask> activeTasks = new ConcurrentHashMap<>();
 
     public TaskManager(@NotNull Plugin plugin, @NotNull Container container) {
-        this.plugin    = plugin;
+        this.plugin = plugin;
         this.container = container;
     }
 
@@ -99,11 +103,11 @@ public final class TaskManager {
     /**
      * Schedules a named task manually.
      *
-     * @param name    unique task name
-     * @param async   whether to run async
-     * @param delay   initial delay in ticks
-     * @param period  period in ticks (0 = one-shot)
-     * @param task    the runnable to execute
+     * @param name   unique task name
+     * @param async  whether to run async
+     * @param delay  initial delay in ticks
+     * @param period period in ticks (0 = one-shot)
+     * @param task   the runnable to execute
      */
     public void schedule(
             @NotNull String name,

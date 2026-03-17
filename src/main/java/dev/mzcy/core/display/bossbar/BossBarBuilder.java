@@ -5,11 +5,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -33,17 +30,17 @@ public final class BossBarBuilder {
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
     private final BossBarManager manager;
-    private final Player         player;
-    private final String         key;
+    private final Player player;
+    private final String key;
 
     // Defaults
-    private Component          title            = Component.empty();
-    private BossBar.Color      color            = BossBar.Color.WHITE;
-    private BossBar.Overlay    overlay          = BossBar.Overlay.PROGRESS;
-    private float              progress         = 1.0f;
-    private Supplier<String>   titleSupplier    = null;
-    private Supplier<Float>    progressSupplier = null;
-    private long               expiresAt        = -1L;
+    private Component title = Component.empty();
+    private BossBar.Color color = BossBar.Color.WHITE;
+    private BossBar.Overlay overlay = BossBar.Overlay.PROGRESS;
+    private float progress = 1.0f;
+    private Supplier<String> titleSupplier = null;
+    private Supplier<Float> progressSupplier = null;
+    private long expiresAt = -1L;
 
     BossBarBuilder(
             @NotNull BossBarManager manager,
@@ -51,8 +48,8 @@ public final class BossBarBuilder {
             @NotNull String key
     ) {
         this.manager = manager;
-        this.player  = player;
-        this.key     = key;
+        this.player = player;
+        this.key = key;
     }
 
     // =========================================================================

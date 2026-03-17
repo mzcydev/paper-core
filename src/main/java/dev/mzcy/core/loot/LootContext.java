@@ -24,28 +24,40 @@ import java.util.Random;
 @Builder
 public final class LootContext {
 
-    /** The player who triggered the loot. May be null for environment drops. */
+    /**
+     * The player who triggered the loot. May be null for environment drops.
+     */
     @Nullable
     private final Player player;
 
-    /** The location where the loot was triggered. */
+    /**
+     * The location where the loot was triggered.
+     */
     @Nullable
     private final Location location;
 
-    /** The looting enchantment level on the player's weapon (0 = no looting). */
+    /**
+     * The looting enchantment level on the player's weapon (0 = no looting).
+     */
     @Builder.Default
     private final int lootingLevel = 0;
 
-    /** Luck modifier — added to weight calculations for positive bias. */
+    /**
+     * Luck modifier — added to weight calculations for positive bias.
+     */
     @Builder.Default
     private final double luck = 0.0;
 
-    /** Custom flags for condition checks. */
+    /**
+     * Custom flags for condition checks.
+     */
     @NotNull
     @Builder.Default
     private final Map<String, String> flags = new HashMap<>();
 
-    /** The random instance used for all rolls in this context. */
+    /**
+     * The random instance used for all rolls in this context.
+     */
     @NotNull
     @Builder.Default
     private final Random random = new Random();

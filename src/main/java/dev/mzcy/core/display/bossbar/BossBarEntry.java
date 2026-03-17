@@ -28,14 +28,21 @@ public final class BossBarEntry {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    @NotNull private final String   key;
-    @NotNull private final BossBar  bar;
-    @NotNull private final Player   player;
+    @NotNull
+    private final String key;
+    @NotNull
+    private final BossBar bar;
+    @NotNull
+    private final Player player;
 
-    @Nullable private final Supplier<String>  titleSupplier;
-    @Nullable private final Supplier<Float>   progressSupplier;
+    @Nullable
+    private final Supplier<String> titleSupplier;
+    @Nullable
+    private final Supplier<Float> progressSupplier;
 
-    /** Expiry timestamp in millis. -1 = permanent. */
+    /**
+     * Expiry timestamp in millis. -1 = permanent.
+     */
     private final long expiresAt;
 
     BossBarEntry(
@@ -46,12 +53,12 @@ public final class BossBarEntry {
             @Nullable Supplier<Float> progressSupplier,
             long expiresAt
     ) {
-        this.key              = key;
-        this.bar              = bar;
-        this.player           = player;
-        this.titleSupplier    = titleSupplier;
+        this.key = key;
+        this.bar = bar;
+        this.player = player;
+        this.titleSupplier = titleSupplier;
         this.progressSupplier = progressSupplier;
-        this.expiresAt        = expiresAt;
+        this.expiresAt = expiresAt;
     }
 
     // =========================================================================
@@ -83,14 +90,16 @@ public final class BossBarEntry {
             try {
                 final Component title = MINI.deserialize(titleSupplier.get());
                 if (!bar.name().equals(title)) bar.name(title);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         if (progressSupplier != null) {
             try {
                 final float progress = Math.clamp(progressSupplier.get(), 0f, 1f);
                 if (bar.progress() != progress) bar.progress(progress);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
     }
 

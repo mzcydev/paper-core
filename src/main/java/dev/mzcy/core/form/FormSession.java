@@ -28,18 +28,28 @@ public final class FormSession {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    @NotNull private final Player             player;
-    @NotNull private final Form               form;
-    @NotNull private final ChatInputManager   chatInput;
-    @NotNull private final CompletableFuture<FormResponse> future;
+    @NotNull
+    private final Player player;
+    @NotNull
+    private final Form form;
+    @NotNull
+    private final ChatInputManager chatInput;
+    @NotNull
+    private final CompletableFuture<FormResponse> future;
 
-    /** Collected values so far. */
+    /**
+     * Collected values so far.
+     */
     private final Map<String, String> collectedValues = new LinkedHashMap<>();
 
-    /** Current field index. */
+    /**
+     * Current field index.
+     */
     private int currentFieldIndex = 0;
 
-    /** Whether this session has completed. */
+    /**
+     * Whether this session has completed.
+     */
     private volatile boolean done = false;
 
     FormSession(
@@ -47,10 +57,10 @@ public final class FormSession {
             @NotNull Form form,
             @NotNull ChatInputManager chatInput
     ) {
-        this.player    = player;
-        this.form      = form;
+        this.player = player;
+        this.form = form;
         this.chatInput = chatInput;
-        this.future    = new CompletableFuture<>();
+        this.future = new CompletableFuture<>();
     }
 
     // =========================================================================
@@ -176,8 +186,9 @@ public final class FormSession {
 
         // Invoke callback
         if (form.getOnSubmit() != null) {
-            try { form.getOnSubmit().accept(response); }
-            catch (Exception ex) {
+            try {
+                form.getOnSubmit().accept(response);
+            } catch (Exception ex) {
                 log.warning("Exception in form onSubmit callback: "
                         + ex.getMessage());
             }
@@ -200,8 +211,9 @@ public final class FormSession {
                 FormResponse.cancelled(collectedValues, atField);
 
         if (form.getOnCancel() != null) {
-            try { form.getOnCancel().accept(response); }
-            catch (Exception ex) {
+            try {
+                form.getOnCancel().accept(response);
+            } catch (Exception ex) {
                 log.warning("Exception in form onCancel callback: "
                         + ex.getMessage());
             }
@@ -221,8 +233,9 @@ public final class FormSession {
                 FormResponse.disconnected(collectedValues);
 
         if (form.getOnDisconnect() != null) {
-            try { form.getOnDisconnect().accept(response); }
-            catch (Exception ex) {
+            try {
+                form.getOnDisconnect().accept(response);
+            } catch (Exception ex) {
                 log.warning("Exception in form onDisconnect callback: "
                         + ex.getMessage());
             }

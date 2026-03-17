@@ -10,7 +10,10 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,10 +33,14 @@ public final class ConversationManager implements Listener {
 
     private final Plugin plugin;
 
-    /** Registered trees by ID. */
+    /**
+     * Registered trees by ID.
+     */
     private final Map<String, ConversationTree> trees = new LinkedHashMap<>();
 
-    /** Active sessions by player UUID. */
+    /**
+     * Active sessions by player UUID.
+     */
     private final Map<UUID, ConversationSession> sessions = new ConcurrentHashMap<>();
 
     public ConversationManager(@NotNull Plugin plugin) {

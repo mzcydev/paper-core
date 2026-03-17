@@ -39,17 +39,24 @@ import java.util.List;
 @Getter
 public final class LootTable {
 
-    @NotNull private final String          id;
-    @NotNull private final List<LootPool>  pools;
+    @NotNull
+    private final String id;
+    @NotNull
+    private final List<LootPool> pools;
 
     private LootTable(@NotNull String id, @NotNull List<LootPool> pools) {
-        this.id    = id;
+        this.id = id;
         this.pools = Collections.unmodifiableList(new ArrayList<>(pools));
     }
 
     // =========================================================================
     // Rolling
     // =========================================================================
+
+    @NotNull
+    public static Builder builder(@NotNull String id) {
+        return new Builder(id);
+    }
 
     /**
      * Rolls all pools and returns the combined list of items.
@@ -64,6 +71,10 @@ public final class LootTable {
         return Collections.unmodifiableList(results);
     }
 
+    // =========================================================================
+    // Builder
+    // =========================================================================
+
     /**
      * Rolls with a minimal default context (no player, no looting).
      *
@@ -74,19 +85,10 @@ public final class LootTable {
         return roll(LootContext.builder().build());
     }
 
-    // =========================================================================
-    // Builder
-    // =========================================================================
-
-    @NotNull
-    public static Builder builder(@NotNull String id) {
-        return new Builder(id);
-    }
-
     public static final class Builder {
 
-        private final String           id;
-        private final List<LootPool>   pools = new ArrayList<>();
+        private final String id;
+        private final List<LootPool> pools = new ArrayList<>();
 
         private Builder(@NotNull String id) {
             this.id = id;

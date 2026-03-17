@@ -36,7 +36,9 @@ public final class BossBarManager {
     private final Map<UUID, Map<String, BossBarEntry>> entries
             = new ConcurrentHashMap<>();
 
-    /** Repeating tick task. */
+    /**
+     * Repeating tick task.
+     */
     private BukkitTask tickTask;
 
     public BossBarManager(@NotNull Plugin plugin) {
@@ -131,8 +133,9 @@ public final class BossBarManager {
     public void hideAll() {
         entries.values().forEach(map ->
                 map.values().forEach(entry -> {
-                    try { entry.hide(); }
-                    catch (Exception ex) {
+                    try {
+                        entry.hide();
+                    } catch (Exception ex) {
                         log.log(Level.FINE, "Failed to hide boss bar", ex);
                     }
                 })
@@ -220,8 +223,9 @@ public final class BossBarManager {
                     return;
                 }
                 if (entry.isDynamic()) {
-                    try { entry.tick(); }
-                    catch (Exception ex) {
+                    try {
+                        entry.tick();
+                    } catch (Exception ex) {
                         log.log(Level.FINE,
                                 "Exception ticking boss bar [" + key + "]", ex);
                     }

@@ -52,7 +52,8 @@ public interface LootCondition {
      */
     final class LootConditions {
 
-        private LootConditions() {}
+        private LootConditions() {
+        }
 
         /**
          * Passes if the player has at least the given level.

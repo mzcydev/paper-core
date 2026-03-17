@@ -66,8 +66,8 @@ public final class NpcProfile {
     /**
      * Creates a profile with a name and Base64 texture.
      *
-     * @param name          MiniMessage display name
-     * @param textureValue  Base64 texture value
+     * @param name             MiniMessage display name
+     * @param textureValue     Base64 texture value
      * @param textureSignature Base64 texture signature
      * @return the profile
      */

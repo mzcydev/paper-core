@@ -1,6 +1,5 @@
 package dev.mzcy.core.npc;
 
-import dev.mzcy.core.exception.CoreException;
 import lombok.extern.java.Log;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -10,16 +9,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 /**
  * Central manager for all {@link Npc} instances.
@@ -39,7 +35,9 @@ public final class NpcManager implements Listener {
 
     private final Plugin plugin;
 
-    /** All registered NPCs by their unique ID. */
+    /**
+     * All registered NPCs by their unique ID.
+     */
     private final Map<String, Npc> npcs = new LinkedHashMap<>();
 
     /**
@@ -48,7 +46,9 @@ public final class NpcManager implements Listener {
      */
     private final Map<UUID, String> entityToNpc = new ConcurrentHashMap<>();
 
-    /** Repeating look-at / view-distance update task. */
+    /**
+     * Repeating look-at / view-distance update task.
+     */
     private BukkitTask updateTask;
 
     public NpcManager(@NotNull Plugin plugin) {

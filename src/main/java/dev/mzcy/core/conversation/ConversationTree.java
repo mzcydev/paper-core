@@ -40,22 +40,31 @@ import java.util.*;
 @Getter
 public final class ConversationTree {
 
-    @NotNull private final String                          id;
-    @NotNull private final String                          npcName;
-    @NotNull private final String                          startNodeId;
-    @NotNull private final Map<String, ConversationNode>   nodes;
+    @NotNull
+    private final String id;
+    @NotNull
+    private final String npcName;
+    @NotNull
+    private final String startNodeId;
+    @NotNull
+    private final Map<String, ConversationNode> nodes;
 
     private ConversationTree(Builder builder) {
-        this.id          = builder.id;
-        this.npcName     = builder.npcName;
+        this.id = builder.id;
+        this.npcName = builder.npcName;
         this.startNodeId = builder.startNodeId;
-        this.nodes       = Collections.unmodifiableMap(
+        this.nodes = Collections.unmodifiableMap(
                 new LinkedHashMap<>(builder.nodes));
     }
 
     // =========================================================================
     // Lookup
     // =========================================================================
+
+    @NotNull
+    public static Builder builder(@NotNull String id) {
+        return new Builder(id);
+    }
 
     @NotNull
     public Optional<ConversationNode> getNode(@NotNull String id) {
@@ -70,25 +79,20 @@ public final class ConversationTree {
         return node;
     }
 
-    public int nodeCount() {
-        return nodes.size();
-    }
-
     // =========================================================================
     // Builder
     // =========================================================================
 
-    @NotNull
-    public static Builder builder(@NotNull String id) {
-        return new Builder(id);
+    public int nodeCount() {
+        return nodes.size();
     }
 
     public static final class Builder {
 
-        private final String                         id;
-        private String                               npcName    = "<white>NPC";
-        private String                               startNodeId;
-        private final Map<String, ConversationNode>  nodes      = new LinkedHashMap<>();
+        private final String id;
+        private final Map<String, ConversationNode> nodes = new LinkedHashMap<>();
+        private String npcName = "<white>NPC";
+        private String startNodeId;
 
         private Builder(@NotNull String id) {
             this.id = id;

@@ -4,11 +4,8 @@ import lombok.experimental.UtilityClass;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * Static utility methods for common particle operations.
@@ -135,9 +132,9 @@ public class ParticleUtil {
     /**
      * Plays a rotating helix animation at a location for a given duration.
      *
-     * @param plugin       the owning plugin
-     * @param location     the base location
-     * @param particle     the particle type
+     * @param plugin        the owning plugin
+     * @param location      the base location
+     * @param particle      the particle type
      * @param durationTicks the duration in ticks
      * @return the running {@link ParticleAnimator}
      */
@@ -152,7 +149,7 @@ public class ParticleUtil {
         final ParticleAnimator animator = new ParticleAnimator(plugin)
                 .interval(2L)
                 .loop(true)
-                .repeat((int)(durationTicks / 2));
+                .repeat((int) (durationTicks / 2));
 
         final double[] angle = {0};
         animator.step(ParticleAnimation.of(

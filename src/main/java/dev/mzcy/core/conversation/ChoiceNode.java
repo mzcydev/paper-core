@@ -16,17 +16,20 @@ import java.util.List;
 @Getter
 public final class ChoiceNode implements ConversationNode {
 
-    @NotNull  private final String                    id;
-    @Nullable private final String                    prompt;
-    @NotNull  private final List<ConversationChoice>  choices;
+    @NotNull
+    private final String id;
+    @Nullable
+    private final String prompt;
+    @NotNull
+    private final List<ConversationChoice> choices;
 
     ChoiceNode(
             @NotNull String id,
             @Nullable String prompt,
             @NotNull List<ConversationChoice> choices
     ) {
-        this.id      = id;
-        this.prompt  = prompt;
+        this.id = id;
+        this.prompt = prompt;
         this.choices = Collections.unmodifiableList(new ArrayList<>(choices));
     }
 

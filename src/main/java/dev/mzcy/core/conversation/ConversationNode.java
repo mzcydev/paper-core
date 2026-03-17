@@ -1,9 +1,6 @@
 package dev.mzcy.core.conversation;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * A single node in a {@link ConversationTree}.

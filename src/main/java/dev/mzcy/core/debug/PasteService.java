@@ -2,18 +2,15 @@ package dev.mzcy.core.debug;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -46,11 +43,11 @@ import java.util.logging.Level;
 @Log
 public final class PasteService {
 
-    private static final String API_URL        = "https://api.pastes.dev/post";
-    private static final String BASE_URL       = "https://pastes.dev/";
-    private static final int    CONNECT_TIMEOUT = 5_000;
-    private static final int    READ_TIMEOUT    = 10_000;
-    private static final int    MAX_CONTENT_LEN = 400_000; // 400KB safety cap
+    private static final String API_URL = "https://api.pastes.dev/post";
+    private static final String BASE_URL = "https://pastes.dev/";
+    private static final int CONNECT_TIMEOUT = 5_000;
+    private static final int READ_TIMEOUT = 10_000;
+    private static final int MAX_CONTENT_LEN = 400_000; // 400KB safety cap
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -100,8 +97,8 @@ public final class PasteService {
                 : content;
 
         try {
-            final byte[]             body       = buildRequestBody(safeContent, language);
-            final HttpURLConnection  connection = openConnection(body.length);
+            final byte[] body = buildRequestBody(safeContent, language);
+            final HttpURLConnection connection = openConnection(body.length);
 
             // Write request body
             try (final OutputStream os = connection.getOutputStream()) {
@@ -138,7 +135,7 @@ public final class PasteService {
             @NotNull String language
     ) throws IOException {
         final ObjectNode body = MAPPER.createObjectNode();
-        body.put("content",  content);
+        body.put("content", content);
         body.put("language", language);
         return MAPPER.writeValueAsBytes(body);
     }

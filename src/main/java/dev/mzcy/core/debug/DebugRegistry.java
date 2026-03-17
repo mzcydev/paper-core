@@ -26,7 +26,9 @@ import java.util.logging.Level;
 @Log
 public final class DebugRegistry {
 
-    /** All entries grouped by category name. */
+    /**
+     * All entries grouped by category name.
+     */
     private final Map<String, List<DebugEntry>> sections = new LinkedHashMap<>();
 
     // =========================================================================
@@ -90,7 +92,9 @@ public final class DebugRegistry {
         // Wrap supplier in a proxy object
         final Object wrapper = new Object() {
             @Debug(category = "", label = "")
-            public String get() { return supplier.get(); }
+            public String get() {
+                return supplier.get();
+            }
         };
         try {
             final Method method = wrapper.getClass().getDeclaredMethod("get");

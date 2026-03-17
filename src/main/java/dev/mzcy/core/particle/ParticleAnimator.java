@@ -36,14 +36,16 @@ public final class ParticleAnimator {
     private final Plugin plugin;
     private final List<ParticleAnimation> steps = new ArrayList<>();
 
-    private long     intervalTicks = 1L;
-    private boolean  loop          = false;
-    private int      currentStep   = 0;
-    private int      repeatCount   = -1; // -1 = infinite
-    private int      playedCycles  = 0;
+    private long intervalTicks = 1L;
+    private boolean loop = false;
+    private int currentStep = 0;
+    private int repeatCount = -1; // -1 = infinite
+    private int playedCycles = 0;
 
-    @Nullable private BukkitTask           task;
-    @Nullable private Consumer<ParticleAnimator> onComplete;
+    @Nullable
+    private BukkitTask task;
+    @Nullable
+    private Consumer<ParticleAnimator> onComplete;
 
     public ParticleAnimator(@NotNull Plugin plugin) {
         this.plugin = plugin;
@@ -133,7 +135,7 @@ public final class ParticleAnimator {
                     "ParticleAnimator has no steps — add at least one step before starting.");
         }
 
-        currentStep  = 0;
+        currentStep = 0;
         playedCycles = 0;
 
         task = plugin.getServer().getScheduler()
@@ -164,7 +166,7 @@ public final class ParticleAnimator {
      * Does not stop the task if running.
      */
     public void reset() {
-        currentStep  = 0;
+        currentStep = 0;
         playedCycles = 0;
     }
 
@@ -173,7 +175,10 @@ public final class ParticleAnimator {
     // =========================================================================
 
     private void tick() {
-        if (steps.isEmpty()) { stop(); return; }
+        if (steps.isEmpty()) {
+            stop();
+            return;
+        }
 
         try {
             steps.get(currentStep).play();

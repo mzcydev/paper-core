@@ -15,34 +15,30 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 public final class TaskResult<T> {
 
-    public enum Status {
-        SUCCESS,
-        FAILURE,
-        CANCELLED
-    }
-
-    @NotNull  private final Status    status;
-    @Nullable private final T         value;
-    @Nullable private final Throwable error;
-
+    @NotNull
+    private final Status status;
+    @Nullable
+    private final T value;
+    @Nullable
+    private final Throwable error;
     private TaskResult(
             @NotNull Status status,
             @Nullable T value,
             @Nullable Throwable error
     ) {
         this.status = status;
-        this.value  = value;
-        this.error  = error;
+        this.value = value;
+        this.error = error;
     }
-
-    // =========================================================================
-    // Factories
-    // =========================================================================
 
     @NotNull
     public static <T> TaskResult<T> success(@Nullable T value) {
         return new TaskResult<>(Status.SUCCESS, value, null);
     }
+
+    // =========================================================================
+    // Factories
+    // =========================================================================
 
     @NotNull
     public static <T> TaskResult<T> failure(@NotNull Throwable error) {
@@ -54,13 +50,21 @@ public final class TaskResult<T> {
         return new TaskResult<>(Status.CANCELLED, null, null);
     }
 
+    public boolean isSuccess() {
+        return status == Status.SUCCESS;
+    }
+
     // =========================================================================
     // Convenience
     // =========================================================================
 
-    public boolean isSuccess()   { return status == Status.SUCCESS;   }
-    public boolean isFailure()   { return status == Status.FAILURE;   }
-    public boolean isCancelled() { return status == Status.CANCELLED; }
+    public boolean isFailure() {
+        return status == Status.FAILURE;
+    }
+
+    public boolean isCancelled() {
+        return status == Status.CANCELLED;
+    }
 
     /**
      * Returns the value or throws the underlying error.
@@ -93,5 +97,11 @@ public final class TaskResult<T> {
                 + (value != null ? ", value=" + value : "")
                 + (error != null ? ", error=" + error.getMessage() : "")
                 + "}";
+    }
+
+    public enum Status {
+        SUCCESS,
+        FAILURE,
+        CANCELLED
     }
 }

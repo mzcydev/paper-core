@@ -15,39 +15,34 @@ import java.util.*;
 @Getter
 public final class FormResponse {
 
-    public enum Status {
-        /** All required fields were filled and validated. */
-        SUBMITTED,
-        /** The player cancelled the form (typed cancel or timed out). */
-        CANCELLED,
-        /** The player disconnected during the form. */
-        DISCONNECTED
-    }
-
-    @NotNull private final Status              status;
-    @NotNull private final Map<String, String> values;
-
-    /** The key of the field that was active when the form was cancelled. */
-    @Nullable private final String cancelledAtField;
+    @NotNull
+    private final Status status;
+    @NotNull
+    private final Map<String, String> values;
+    /**
+     * The key of the field that was active when the form was cancelled.
+     */
+    @Nullable
+    private final String cancelledAtField;
 
     private FormResponse(
             @NotNull Status status,
             @NotNull Map<String, String> values,
             @Nullable String cancelledAtField
     ) {
-        this.status           = status;
-        this.values           = Collections.unmodifiableMap(new LinkedHashMap<>(values));
+        this.status = status;
+        this.values = Collections.unmodifiableMap(new LinkedHashMap<>(values));
         this.cancelledAtField = cancelledAtField;
     }
-
-    // =========================================================================
-    // Factories
-    // =========================================================================
 
     @NotNull
     static FormResponse submitted(@NotNull Map<String, String> values) {
         return new FormResponse(Status.SUBMITTED, values, null);
     }
+
+    // =========================================================================
+    // Factories
+    // =========================================================================
 
     @NotNull
     static FormResponse cancelled(
@@ -62,10 +57,6 @@ public final class FormResponse {
         return new FormResponse(Status.DISCONNECTED, partial, null);
     }
 
-    // =========================================================================
-    // Value access
-    // =========================================================================
-
     /**
      * Returns the value for the given field key.
      *
@@ -76,6 +67,10 @@ public final class FormResponse {
     public String get(@NotNull String key) {
         return values.getOrDefault(key, "");
     }
+
+    // =========================================================================
+    // Value access
+    // =========================================================================
 
     /**
      * Returns the value for the given field key as an {@link Optional}.
@@ -131,16 +126,39 @@ public final class FormResponse {
                 || val.equals("y") || val.equals("1");
     }
 
+    public boolean isSubmitted() {
+        return status == Status.SUBMITTED;
+    }
+
     // =========================================================================
     // Status helpers
     // =========================================================================
 
-    public boolean isSubmitted()    { return status == Status.SUBMITTED;    }
-    public boolean isCancelled()    { return status == Status.CANCELLED;    }
-    public boolean isDisconnected() { return status == Status.DISCONNECTED; }
+    public boolean isCancelled() {
+        return status == Status.CANCELLED;
+    }
+
+    public boolean isDisconnected() {
+        return status == Status.DISCONNECTED;
+    }
 
     @Override
     public String toString() {
         return "FormResponse{status=" + status + ", values=" + values + "}";
+    }
+
+    public enum Status {
+        /**
+         * All required fields were filled and validated.
+         */
+        SUBMITTED,
+        /**
+         * The player cancelled the form (typed cancel or timed out).
+         */
+        CANCELLED,
+        /**
+         * The player disconnected during the form.
+         */
+        DISCONNECTED
     }
 }

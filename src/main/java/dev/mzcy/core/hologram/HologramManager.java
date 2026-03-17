@@ -1,6 +1,5 @@
 package dev.mzcy.core.hologram;
 
-import dev.mzcy.core.exception.CoreException;
 import lombok.extern.java.Log;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -30,10 +29,14 @@ public final class HologramManager implements Listener {
 
     private final Plugin plugin;
 
-    /** All registered holograms by ID. */
+    /**
+     * All registered holograms by ID.
+     */
     private final Map<String, Hologram> holograms = new LinkedHashMap<>();
 
-    /** Repeating dynamic update task. */
+    /**
+     * Repeating dynamic update task.
+     */
     private BukkitTask updateTask;
 
     /**
@@ -111,8 +114,9 @@ public final class HologramManager implements Listener {
     public void removeAll() {
         log.info("Removing " + holograms.size() + " hologram(s)...");
         holograms.values().forEach(h -> {
-            try { h.despawn(); }
-            catch (Exception ex) {
+            try {
+                h.despawn();
+            } catch (Exception ex) {
                 log.log(Level.WARNING, "Failed to despawn hologram: " + h.getId(), ex);
             }
         });
@@ -210,8 +214,9 @@ public final class HologramManager implements Listener {
 
     private void tick() {
         holograms.values().forEach(hologram -> {
-            try { hologram.tick(); }
-            catch (Exception ex) {
+            try {
+                hologram.tick();
+            } catch (Exception ex) {
                 log.log(Level.WARNING,
                         "Exception ticking hologram [" + hologram.getId() + "]", ex);
             }

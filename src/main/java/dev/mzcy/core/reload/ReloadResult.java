@@ -1,11 +1,8 @@
 package dev.mzcy.core.reload;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,35 +14,24 @@ import java.util.List;
 @Getter
 public final class ReloadResult {
 
-    public enum Status {
-        /** All steps completed without error. */
-        SUCCESS,
-        /** One or more steps failed — partial reload. */
-        PARTIAL,
-        /** The reload was blocked because one was already running. */
-        ALREADY_RUNNING
-    }
-
-    @NotNull private final Status       status;
-    @NotNull private final List<String> successSteps;
-    @NotNull private final List<String> failedSteps;
-    private  final long                 elapsedMs;
-
+    @NotNull
+    private final Status status;
+    @NotNull
+    private final List<String> successSteps;
+    @NotNull
+    private final List<String> failedSteps;
+    private final long elapsedMs;
     private ReloadResult(
             @NotNull Status status,
             @NotNull List<String> successSteps,
             @NotNull List<String> failedSteps,
             long elapsedMs
     ) {
-        this.status       = status;
+        this.status = status;
         this.successSteps = Collections.unmodifiableList(successSteps);
-        this.failedSteps  = Collections.unmodifiableList(failedSteps);
-        this.elapsedMs    = elapsedMs;
+        this.failedSteps = Collections.unmodifiableList(failedSteps);
+        this.elapsedMs = elapsedMs;
     }
-
-    // =========================================================================
-    // Factories
-    // =========================================================================
 
     @NotNull
     public static ReloadResult success(
@@ -54,6 +40,10 @@ public final class ReloadResult {
     ) {
         return new ReloadResult(Status.SUCCESS, steps, List.of(), elapsedMs);
     }
+
+    // =========================================================================
+    // Factories
+    // =========================================================================
 
     @NotNull
     public static ReloadResult partial(
@@ -69,16 +59,29 @@ public final class ReloadResult {
         return new ReloadResult(Status.ALREADY_RUNNING, List.of(), List.of(), 0);
     }
 
+    public boolean isSuccess() {
+        return status == Status.SUCCESS;
+    }
+
     // =========================================================================
     // Convenience
     // =========================================================================
 
-    public boolean isSuccess()        { return status == Status.SUCCESS;        }
-    public boolean isPartial()        { return status == Status.PARTIAL;        }
-    public boolean isAlreadyRunning() { return status == Status.ALREADY_RUNNING; }
+    public boolean isPartial() {
+        return status == Status.PARTIAL;
+    }
 
-    public int totalSteps()  { return successSteps.size() + failedSteps.size(); }
-    public int failedCount() { return failedSteps.size(); }
+    public boolean isAlreadyRunning() {
+        return status == Status.ALREADY_RUNNING;
+    }
+
+    public int totalSteps() {
+        return successSteps.size() + failedSteps.size();
+    }
+
+    public int failedCount() {
+        return failedSteps.size();
+    }
 
     @Override
     public String toString() {
@@ -86,5 +89,20 @@ public final class ReloadResult {
                 + ", success=" + successSteps.size()
                 + ", failed=" + failedSteps.size()
                 + ", elapsed=" + elapsedMs + "ms}";
+    }
+
+    public enum Status {
+        /**
+         * All steps completed without error.
+         */
+        SUCCESS,
+        /**
+         * One or more steps failed — partial reload.
+         */
+        PARTIAL,
+        /**
+         * The reload was blocked because one was already running.
+         */
+        ALREADY_RUNNING
     }
 }

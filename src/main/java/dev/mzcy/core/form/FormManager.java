@@ -10,7 +10,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,20 +31,24 @@ import java.util.concurrent.ConcurrentHashMap;
 @Log
 public final class FormManager implements Listener {
 
-    private final Plugin           plugin;
+    private final Plugin plugin;
     private final ChatInputManager chatInput;
 
-    /** Registered reusable forms by ID. */
+    /**
+     * Registered reusable forms by ID.
+     */
     private final Map<String, Form> forms = new LinkedHashMap<>();
 
-    /** Active sessions by player UUID. */
+    /**
+     * Active sessions by player UUID.
+     */
     private final Map<UUID, FormSession> sessions = new ConcurrentHashMap<>();
 
     public FormManager(
             @NotNull Plugin plugin,
             @NotNull ChatInputManager chatInput
     ) {
-        this.plugin    = plugin;
+        this.plugin = plugin;
         this.chatInput = chatInput;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }

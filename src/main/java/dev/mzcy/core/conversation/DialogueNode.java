@@ -18,11 +18,14 @@ import java.util.List;
 @Getter
 public final class DialogueNode implements ConversationNode {
 
-    @NotNull  private final String          id;
-    @NotNull  private final List<String>    lines;
-    @Nullable private final String          nextNodeId;
-    private   final long                    ticksPerLine;
-    private   final boolean                 waitForInput;
+    @NotNull
+    private final String id;
+    @NotNull
+    private final List<String> lines;
+    @Nullable
+    private final String nextNodeId;
+    private final long ticksPerLine;
+    private final boolean waitForInput;
 
     DialogueNode(
             @NotNull String id,
@@ -31,9 +34,9 @@ public final class DialogueNode implements ConversationNode {
             long ticksPerLine,
             boolean waitForInput
     ) {
-        this.id           = id;
-        this.lines        = Collections.unmodifiableList(new ArrayList<>(lines));
-        this.nextNodeId   = nextNodeId;
+        this.id = id;
+        this.lines = Collections.unmodifiableList(new ArrayList<>(lines));
+        this.nextNodeId = nextNodeId;
         this.ticksPerLine = ticksPerLine;
         this.waitForInput = waitForInput;
     }

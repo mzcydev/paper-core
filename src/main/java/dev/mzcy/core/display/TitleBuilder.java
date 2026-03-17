@@ -35,7 +35,9 @@ public final class TitleBuilder {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    /** Default timings matching vanilla Minecraft. */
+    /**
+     * Default timings matching vanilla Minecraft.
+     */
     private static final Title.Times DEFAULT_TIMES = Title.Times.times(
             Duration.ofMillis(500),
             Duration.ofSeconds(3),
@@ -163,7 +165,7 @@ public final class TitleBuilder {
 
     @NotNull
     private Title buildTitle() {
-        final Component titleComponent    = title    != null ? title    : Component.empty();
+        final Component titleComponent = title != null ? title : Component.empty();
         final Component subtitleComponent = subtitle != null ? subtitle : Component.empty();
         final Title.Times times = Title.Times.times(fadeIn, stay, fadeOut);
         return Title.title(titleComponent, subtitleComponent, times);

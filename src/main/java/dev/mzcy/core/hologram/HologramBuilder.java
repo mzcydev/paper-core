@@ -38,12 +38,12 @@ public final class HologramBuilder {
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
     private final HologramManager manager;
-    private final String           id;
-    private final Location         location;
+    private final String id;
+    private final Location location;
 
     private final List<HologramLine> lines = new ArrayList<>();
 
-    private double lineSpacing     = 0.05;
+    private double lineSpacing = 0.05;
     private boolean persistOnChunkLoad = true;
 
     HologramBuilder(
@@ -51,8 +51,8 @@ public final class HologramBuilder {
             @NotNull String id,
             @NotNull Location location
     ) {
-        this.manager  = manager;
-        this.id       = id;
+        this.manager = manager;
+        this.id = id;
         this.location = location.clone();
     }
 
