@@ -4,6 +4,8 @@ import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
 import dev.mzcy.core.data.DataStoreManager;
 import dev.mzcy.core.di.Container;
+import dev.mzcy.core.display.ActionbarManager;
+import dev.mzcy.core.display.bossbar.BossBarManager;
 import dev.mzcy.core.exception.CoreException;
 import dev.mzcy.core.exception.ModuleException;
 import dev.mzcy.core.input.ChatInputManager;
@@ -84,6 +86,8 @@ public final class CorePlugin extends JavaPlugin {
     @Getter
     private ScoreboardManager scoreboardManager;
     @Getter private NpcManager npcManager;
+    @Getter private ActionbarManager actionbarManager;
+    @Getter private BossBarManager bossBarManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -159,6 +163,12 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("NpcManager.destroy",
                 () -> npcManager.destroy());
 
+        safeRun("ActionbarManager.shutdown",
+                () -> actionbarManager.shutdown());
+
+        safeRun("BossBarManager.shutdown",
+                () -> bossBarManager.shutdown());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -222,6 +232,8 @@ public final class CorePlugin extends JavaPlugin {
         chatInputManager = new ChatInputManager(this);
         scoreboardManager = new ScoreboardManager(this);
         npcManager = new NpcManager(this);
+        actionbarManager = new ActionbarManager(this);
+        bossBarManager = new BossBarManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -232,6 +244,8 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(ChatInputManager.class, chatInputManager);
         container.bindInstance(ScoreboardManager.class, scoreboardManager);
         container.bindInstance(NpcManager.class, npcManager);
+        container.bindInstance(ActionbarManager.class, actionbarManager);
+        container.bindInstance(BossBarManager.class, bossBarManager);
 
     }
 
