@@ -2,14 +2,26 @@ import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
     java
-    //id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.gradleup.shadow") version "9.4.0"
 }
 
-group = "dev.mzcy"
-version = "1.0.0-SNAPSHOT"
+group       = "dev.mzcy"
+version     = project.property("version") as String   // reads from gradle.properties
 description = "Core plugin framework"
+
+// ── Dev-build detection ───────────────────────────────────────────────────────
+// When GitHub Actions runs on the dev branch, GITHUB_REF_NAME = "dev".
+// Locally (no CI env), isDev is always false so your local JAR stays clean.
+val isCI    = System.getenv("GITHUB_ACTIONS") == "true"
+val branch  = System.getenv("GITHUB_REF_NAME") ?: ""
+val isDev   = isCI && branch == "dev"
+val shortSha = System.getenv("GITHUB_SHA")?.take(7) ?: ""
+
+// Full version string embedded in the JAR name and plugin.yml:
+//   main branch  →  1.0.0
+//   dev  branch  →  1.0.0-dev+abc1234
+val fullVersion = if (isDev) "${version}-dev+${shortSha}" else version.toString()
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
@@ -23,55 +35,34 @@ repositories {
 }
 
 dependencies {
-    // Paper
-    // paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 
-    // PlaceholderAPI Integration
     compileOnly("me.clip:placeholderapi:2.12.2")
-
-    // WorldEdit Integration
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0")
 
-    // Lombok
     compileOnly("org.projectlombok:lombok:1.18.34")
     annotationProcessor("org.projectlombok:lombok:1.18.34")
 
-    // SnakeYAML (bundled in Paper, but explicit for IDE)
     compileOnly("org.yaml:snakeyaml:2.2")
 
-    // HikariCP — Connection Pool für MySQL + SQLite
     implementation("com.zaxxer:HikariCP:5.1.0")
-
-    // SQLite JDBC Driver
     implementation("org.xerial:sqlite-jdbc:3.46.1.3")
-
-    // MySQL Connector
     compileOnly("com.mysql:mysql-connector-j:9.0.0")
 
-    // MongoDB Java Driver
     implementation("org.mongodb:mongodb-driver-sync:5.2.0")
-
-    // Redisson — Redis Client
     implementation("org.redisson:redisson:3.37.0")
 
-    // Jackson for JSON config
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2")
 
-    // Google Guava (bundled in Paper, safe to use)
     compileOnly("com.google.guava:guava:33.2.1-jre")
 
-    // ASM for annotation processing at runtime (for component scanning)
     implementation("org.ow2.asm:asm:9.7")
     implementation("org.ow2.asm:asm-commons:9.7")
 }
 
 tasks {
-//    assemble {
-//        dependsOn(reobfJar)
-//    }
 
     compileJava {
         options.encoding = "UTF-8"
@@ -80,19 +71,26 @@ tasks {
             listOf(
                 "-Xlint:all",
                 "-Xlint:-processing",
-                "-parameters" // Preserve parameter names for DI
+                "-parameters"
             )
         )
     }
 
     shadowJar {
-        archiveClassifier.set("")
+        // ── JAR name ─────────────────────────────────────────────────────────
+        // main  →  Core-1.0.0.jar
+        // dev   →  Core-1.0.0-dev.jar
+        archiveBaseName.set("Core")
+        archiveVersion.set(version.toString())
+        archiveClassifier.set(if (isDev) "dev" else "")
+
+        // ── Relocation ───────────────────────────────────────────────────────
         relocate("com.fasterxml.jackson", "dev.mzcy.core.libs.jackson")
-        relocate("org.objectweb.asm", "dev.mzcy.core.libs.asm")
-        relocate("com.zaxxer.hikari", "dev.mzcy.core.libs.hikari")
-        relocate("org.sqlite", "dev.mzcy.core.libs.sqlite")
-        relocate("org.mongodb", "dev.mzcy.core.libs.mongodb")
-        relocate("org.redisson", "dev.mzcy.core.libs.redisson")
+        relocate("org.objectweb.asm",     "dev.mzcy.core.libs.asm")
+        relocate("com.zaxxer.hikari",     "dev.mzcy.core.libs.hikari")
+        relocate("org.sqlite",            "dev.mzcy.core.libs.sqlite")
+        relocate("org.mongodb",           "dev.mzcy.core.libs.mongodb")
+        relocate("org.redisson",          "dev.mzcy.core.libs.redisson")
 
         mergeServiceFiles()
         minimize {
@@ -106,18 +104,18 @@ tasks {
 }
 
 bukkit {
-    main = "dev.mzcy.core.CorePlugin"
-    apiVersion = "1.21"
-    version = project.version.toString()
+    main        = "dev.mzcy.core.CorePlugin"
+    apiVersion  = "1.21"
+    version     = fullVersion              // plugin.yml gets the full version
     description = project.description
-    authors = listOf("mzcy")
-    load = BukkitPluginDescription.PluginLoadOrder.STARTUP
-    website = "https://mzcy.dev"
+    authors     = listOf("mzcy")
+    load        = BukkitPluginDescription.PluginLoadOrder.STARTUP
+    website     = "https://mzcy.dev"
 
     permissions {
         register("core.admin") {
             description = "Access to all core administrative commands"
-            default = BukkitPluginDescription.Permission.Default.OP
+            default     = BukkitPluginDescription.Permission.Default.OP
         }
     }
 }
