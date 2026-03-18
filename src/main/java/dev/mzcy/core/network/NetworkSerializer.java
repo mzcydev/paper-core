@@ -21,7 +21,8 @@ import java.io.*;
  */
 public final class NetworkSerializer {
 
-    private NetworkSerializer() {}
+    private NetworkSerializer() {
+    }
 
     /**
      * Serializes a message object to a byte array suitable for

@@ -6,11 +6,15 @@ import lombok.Getter;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.redisson.api.*;
-import org.redisson.api.options.KeysOptions;
+import org.redisson.api.RBatch;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -58,11 +62,15 @@ public abstract class AbstractRedisRepository<K, V>
     // Template methods
     // =========================================================================
 
-    /** The key namespace prefix (e.g., {@code "players"}). */
+    /**
+     * The key namespace prefix (e.g., {@code "players"}).
+     */
     @NotNull
     protected abstract String getNamespace();
 
-    /** Serializes an entity to a String for storage. */
+    /**
+     * Serializes an entity to a String for storage.
+     */
     @NotNull
     protected abstract String serialize(@NotNull V entity);
 
@@ -246,7 +254,7 @@ public abstract class AbstractRedisRepository<K, V>
      *
      * @param id the key
      * @return a future completing with the remaining TTL,
-     *         or {@link Duration#ZERO} if the key has no expiry or does not exist
+     * or {@link Duration#ZERO} if the key has no expiry or does not exist
      */
     @NotNull
     public CompletableFuture<Duration> getTimeToLive(@NotNull K id) {

@@ -2,7 +2,6 @@ package dev.mzcy.core.map;
 
 import lombok.Getter;
 import lombok.extern.java.Log;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -25,12 +24,18 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 public final class ManagedMap {
 
-    @NotNull private final String      id;
-    @NotNull private final MapView     mapView;
-    @NotNull private final MapCanvas   canvas;
-    @NotNull private final MapRenderer renderer;
+    @NotNull
+    private final String id;
+    @NotNull
+    private final MapView mapView;
+    @NotNull
+    private final MapCanvas canvas;
+    @NotNull
+    private final MapRenderer renderer;
 
-    /** The internal Bukkit renderer instance registered on the map. */
+    /**
+     * The internal Bukkit renderer instance registered on the map.
+     */
     private final InternalRenderer internalRenderer;
 
     ManagedMap(
@@ -38,10 +43,10 @@ public final class ManagedMap {
             @NotNull MapView mapView,
             @NotNull MapRenderer renderer
     ) {
-        this.id               = id;
-        this.mapView          = mapView;
-        this.canvas           = new MapCanvas();
-        this.renderer         = renderer;
+        this.id = id;
+        this.mapView = mapView;
+        this.canvas = new MapCanvas();
+        this.renderer = renderer;
         this.internalRenderer = new InternalRenderer(canvas, renderer);
 
         // Remove default renderers and install ours
@@ -111,7 +116,7 @@ public final class ManagedMap {
     private static final class InternalRenderer
             extends org.bukkit.map.MapRenderer {
 
-        private final MapCanvas   canvas;
+        private final MapCanvas canvas;
         private final MapRenderer renderer;
 
         InternalRenderer(
@@ -119,7 +124,7 @@ public final class ManagedMap {
                 @NotNull MapRenderer renderer
         ) {
             super(renderer.isPlayerSpecific());
-            this.canvas   = canvas;
+            this.canvas = canvas;
             this.renderer = renderer;
         }
 

@@ -15,7 +15,9 @@ import org.jetbrains.annotations.NotNull;
 @RequiredArgsConstructor
 public final class CameraPoint {
 
-    /** The world location and yaw/pitch of this keyframe. */
+    /**
+     * The world location and yaw/pitch of this keyframe.
+     */
     @NotNull
     private final Location location;
 
@@ -25,7 +27,9 @@ public final class CameraPoint {
      */
     private final long durationTicks;
 
-    /** Easing function applied when travelling to this point. */
+    /**
+     * Easing function applied when travelling to this point.
+     */
     @NotNull
     private final CameraEasing easing;
 

@@ -12,7 +12,6 @@ import lombok.extern.java.Log;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,11 +62,20 @@ public abstract class AbstractMongoRepository<K, V>
     // Template methods
     // =========================================================================
 
-    @NotNull protected abstract String getCollectionName();
-    @NotNull protected abstract String getIdFieldName();
-    @NotNull protected abstract Document toDocument(@NotNull K id, @NotNull V entity);
-    @NotNull protected abstract V fromDocument(@NotNull Document document);
-    @NotNull protected abstract Object keyToDocumentValue(@NotNull K id);
+    @NotNull
+    protected abstract String getCollectionName();
+
+    @NotNull
+    protected abstract String getIdFieldName();
+
+    @NotNull
+    protected abstract Document toDocument(@NotNull K id, @NotNull V entity);
+
+    @NotNull
+    protected abstract V fromDocument(@NotNull Document document);
+
+    @NotNull
+    protected abstract Object keyToDocumentValue(@NotNull K id);
 
     /**
      * Returns the typed MongoDB collection for this repository.

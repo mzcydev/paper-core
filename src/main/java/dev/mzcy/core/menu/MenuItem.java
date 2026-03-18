@@ -38,6 +38,7 @@ public final class MenuItem {
     @Nullable
     private final ContextMenu submenu;
     private final boolean closeOnClick;
+
     private MenuItem(
             @NotNull Type type,
             @NotNull Component label,

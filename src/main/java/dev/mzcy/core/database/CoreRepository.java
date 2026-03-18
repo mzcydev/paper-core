@@ -2,7 +2,6 @@ package dev.mzcy.core.database;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -15,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
  * to block, chain, or schedule further work.
  *
  * <p>Type parameters:
+ *
  * @param <K> the key/ID type (e.g., {@link java.util.UUID}, {@link String}, {@link Long})
  * @param <V> the value/entity type
  */

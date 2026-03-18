@@ -4,11 +4,6 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -22,7 +17,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Level;
@@ -44,11 +39,16 @@ import java.util.logging.Level;
 @Getter
 public final class Schematic {
 
-    @NotNull private final String   name;
-    @NotNull private final Path     filePath;
-    @NotNull private final Clipboard clipboard;
+    @NotNull
+    private final String name;
+    @NotNull
+    private final Path filePath;
+    @NotNull
+    private final Clipboard clipboard;
 
-    /** Dimensions of the schematic bounding box. */
+    /**
+     * Dimensions of the schematic bounding box.
+     */
     private final int width;
     private final int height;
     private final int length;
@@ -58,12 +58,12 @@ public final class Schematic {
             @NotNull Path filePath,
             @NotNull Clipboard clipboard
     ) {
-        this.name      = name;
-        this.filePath  = filePath;
+        this.name = name;
+        this.filePath = filePath;
         this.clipboard = clipboard;
 
         final BlockVector3 dims = clipboard.getDimensions();
-        this.width  = dims.x();
+        this.width = dims.x();
         this.height = dims.y();
         this.length = dims.z();
     }
@@ -138,10 +138,10 @@ public final class Schematic {
         if (options.getRotation() != org.bukkit.block.structure.StructureRotation.NONE) {
             final AffineTransform transform = new AffineTransform();
             final double degrees = switch (options.getRotation()) {
-                case CLOCKWISE_90          ->  90;
-                case CLOCKWISE_180         -> 180;
-                case COUNTERCLOCKWISE_90   -> 270;
-                default                    ->   0;
+                case CLOCKWISE_90 -> 90;
+                case CLOCKWISE_180 -> 180;
+                case COUNTERCLOCKWISE_90 -> 270;
+                default -> 0;
             };
             holder.setTransform(transform.rotateY(degrees));
         }
@@ -226,7 +226,7 @@ public final class Schematic {
         if (!options.isUseOrigin()) {
             // Offset by clipboard origin so min corner lands at target
             final BlockVector3 clipOrigin = clipboard.getOrigin();
-            final BlockVector3 clipMin    = clipboard.getMinimumPoint();
+            final BlockVector3 clipMin = clipboard.getMinimumPoint();
             x -= clipOrigin.x() - clipMin.x();
             y -= clipOrigin.y() - clipMin.y();
             z -= clipOrigin.z() - clipMin.z();

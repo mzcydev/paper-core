@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
 /**
@@ -33,7 +35,7 @@ public final class CacheProxyFactory {
     public boolean needsProxy(@NotNull Class<?> type) {
         return Arrays.stream(type.getDeclaredMethods())
                 .anyMatch(m ->
-                        m.isAnnotationPresent(Cacheable.class)  ||
+                        m.isAnnotationPresent(Cacheable.class) ||
                                 m.isAnnotationPresent(CacheEvict.class) ||
                                 m.isAnnotationPresent(CachePut.class)
                 );
@@ -73,14 +75,14 @@ public final class CacheProxyFactory {
     private static final class CacheInvocationHandler
             implements InvocationHandler {
 
-        private final Object            target;
-        private final CacheInterceptor  interceptor;
+        private final Object target;
+        private final CacheInterceptor interceptor;
 
         CacheInvocationHandler(
                 @NotNull Object target,
                 @NotNull CacheInterceptor interceptor
         ) {
-            this.target      = target;
+            this.target = target;
             this.interceptor = interceptor;
         }
 
@@ -101,7 +103,7 @@ public final class CacheProxyFactory {
             }
 
             final boolean hasCacheAnnotation =
-                    targetMethod.isAnnotationPresent(Cacheable.class)  ||
+                    targetMethod.isAnnotationPresent(Cacheable.class) ||
                             targetMethod.isAnnotationPresent(CacheEvict.class) ||
                             targetMethod.isAnnotationPresent(CachePut.class);
 

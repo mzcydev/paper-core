@@ -8,11 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 
 /**
  * Base class for all SQL-backed repositories (MySQL + SQLite).
@@ -35,7 +37,9 @@ import java.util.logging.Level;
 public abstract class AbstractSqlRepository<K, V>
         implements CoreRepository<K, V> {
 
-    /** Shared async executor for all SQL repositories. */
+    /**
+     * Shared async executor for all SQL repositories.
+     */
     private static final Executor EXECUTOR = Executors.newFixedThreadPool(
             4, r -> {
                 final Thread t = new Thread(r, "core-sql-repo");
@@ -59,11 +63,15 @@ public abstract class AbstractSqlRepository<K, V>
     // Template methods — subclasses must implement
     // =========================================================================
 
-    /** Returns the SQL table name for this repository. */
+    /**
+     * Returns the SQL table name for this repository.
+     */
     @NotNull
     protected abstract String getTableName();
 
-    /** Returns the primary key column name. */
+    /**
+     * Returns the primary key column name.
+     */
     @NotNull
     protected abstract String getIdColumn();
 

@@ -3,7 +3,6 @@ package dev.mzcy.core.anvil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
@@ -32,21 +31,21 @@ import java.util.function.Predicate;
 public final class AnvilInputBuilder {
 
     private final AnvilInputManager manager;
-    private final Player            player;
+    private final Player player;
 
-    private String            title          = "Enter text";
-    private String            placeholder    = "";
-    private ItemStack         leftItem       = null;
-    private Predicate<String> validator      = null;
-    private String            invalidMessage = "<red>Invalid input.";
-    private boolean           preventClose   = false;
+    private String title = "Enter text";
+    private String placeholder = "";
+    private ItemStack leftItem = null;
+    private Predicate<String> validator = null;
+    private String invalidMessage = "<red>Invalid input.";
+    private boolean preventClose = false;
 
     AnvilInputBuilder(
             @NotNull AnvilInputManager manager,
             @NotNull Player player
     ) {
         this.manager = manager;
-        this.player  = player;
+        this.player = player;
     }
 
     // =========================================================================

@@ -26,12 +26,18 @@ public final class SignEntry {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
 
-    @NotNull  private final Location   location;
-    @NotNull  private final String     id;
-    @Nullable private final SignAction action;
-    @Nullable private final String     tag;
+    @NotNull
+    private final Location location;
+    @NotNull
+    private final String id;
+    @Nullable
+    private final SignAction action;
+    @Nullable
+    private final String tag;
 
-    /** Lines to apply to the sign. Null = don't change existing content. */
+    /**
+     * Lines to apply to the sign. Null = don't change existing content.
+     */
     @Nullable
     private final String[] lines;
 
@@ -42,11 +48,11 @@ public final class SignEntry {
             @Nullable String tag,
             @Nullable String[] lines
     ) {
-        this.id       = id;
+        this.id = id;
         this.location = location.clone();
-        this.action   = action;
-        this.tag      = tag;
-        this.lines    = lines != null ? Arrays.copyOf(lines, 4) : null;
+        this.action = action;
+        this.tag = tag;
+        this.lines = lines != null ? Arrays.copyOf(lines, 4) : null;
     }
 
     // =========================================================================

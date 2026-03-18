@@ -44,26 +44,21 @@ public final class TitleBuilder {
             Duration.ofSeconds(3),
             Duration.ofMillis(500)
     );
-
-    @Nullable
-    @Setter
-    private Component title;
-
-    @Nullable
-    @Setter
-    private Component subtitle;
-
     @NotNull
     @lombok.Builder.Default
     private final Duration fadeIn = Duration.ofMillis(500);
-
     @NotNull
     @lombok.Builder.Default
     private final Duration stay = Duration.ofSeconds(3);
-
     @NotNull
     @lombok.Builder.Default
     private final Duration fadeOut = Duration.ofMillis(500);
+    @Nullable
+    @Setter
+    private Component title;
+    @Nullable
+    @Setter
+    private Component subtitle;
 
     // =========================================================================
     // Entry point

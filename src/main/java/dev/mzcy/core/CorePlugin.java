@@ -127,14 +127,22 @@ public final class CorePlugin extends JavaPlugin {
     private ConversationManager conversationManager;
     @Getter
     private LootManager lootManager;
-    @Getter private NetworkManager networkManager;
-    @Getter private SchematicManager schematicManager;
-    @Getter private DatabaseManager databaseManager;
-    @Getter private SignManager signManager;
-    @Getter private AnvilInputManager anvilInputManager;
-    @Getter private MapDisplayManager mapDisplayManager;
-    @Getter private CacheManager cacheManager;
-    @Getter private CutsceneManager cutsceneManager;
+    @Getter
+    private NetworkManager networkManager;
+    @Getter
+    private SchematicManager schematicManager;
+    @Getter
+    private DatabaseManager databaseManager;
+    @Getter
+    private SignManager signManager;
+    @Getter
+    private AnvilInputManager anvilInputManager;
+    @Getter
+    private MapDisplayManager mapDisplayManager;
+    @Getter
+    private CacheManager cacheManager;
+    @Getter
+    private CutsceneManager cutsceneManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -344,7 +352,7 @@ public final class CorePlugin extends JavaPlugin {
         anvilInputManager = new AnvilInputManager(this);
         mapDisplayManager = new MapDisplayManager(this);
         cacheManager = new CacheManager(this);
-        cutsceneManager =  new CutsceneManager(this);
+        cutsceneManager = new CutsceneManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);

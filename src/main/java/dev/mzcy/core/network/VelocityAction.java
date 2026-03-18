@@ -18,42 +18,52 @@ package dev.mzcy.core.network;
  */
 public final class VelocityAction {
 
-    private VelocityAction() {}
-
-    // ── velocity:player_info actions ──────────────────────────────────────────
-
-    /** Get the minimum compression threshold. */
+    /**
+     * Get the minimum compression threshold.
+     */
     public static final String MIN_VERSION = "MinVersion";
 
-    /** Get player info from the proxy. */
+    // ── velocity:player_info actions ──────────────────────────────────────────
+    /**
+     * Get player info from the proxy.
+     */
     public static final String PLAYER_INFO = "PlayerInfo";
-
-    // ── Custom forward channel actions (require a Velocity-side plugin) ────────
-
     /**
      * Request the proxy to connect a player to a different server.
      * Requires a Velocity plugin listening on the custom channel.
      */
-    public static final String CONNECT        = "Connect";
+    public static final String CONNECT = "Connect";
 
-    /** Connect another player by name. */
-    public static final String CONNECT_OTHER  = "ConnectOther";
+    // ── Custom forward channel actions (require a Velocity-side plugin) ────────
+    /**
+     * Connect another player by name.
+     */
+    public static final String CONNECT_OTHER = "ConnectOther";
+    /**
+     * Send a message to a player anywhere on the network.
+     */
+    public static final String MESSAGE = "Message";
+    /**
+     * Send a message to all players on the network.
+     */
+    public static final String MESSAGE_ALL = "MessageAll";
+    /**
+     * Kick a player by name.
+     */
+    public static final String KICK_PLAYER = "KickPlayer";
+    /**
+     * Forward custom data to one or all servers.
+     */
+    public static final String FORWARD = "Forward";
+    /**
+     * Request the current server name.
+     */
+    public static final String GET_SERVER = "GetServer";
+    /**
+     * Request the player count on a server or the whole network.
+     */
+    public static final String PLAYER_COUNT = "PlayerCount";
 
-    /** Send a message to a player anywhere on the network. */
-    public static final String MESSAGE        = "Message";
-
-    /** Send a message to all players on the network. */
-    public static final String MESSAGE_ALL    = "MessageAll";
-
-    /** Kick a player by name. */
-    public static final String KICK_PLAYER    = "KickPlayer";
-
-    /** Forward custom data to one or all servers. */
-    public static final String FORWARD        = "Forward";
-
-    /** Request the current server name. */
-    public static final String GET_SERVER     = "GetServer";
-
-    /** Request the player count on a server or the whole network. */
-    public static final String PLAYER_COUNT   = "PlayerCount";
+    private VelocityAction() {
+    }
 }

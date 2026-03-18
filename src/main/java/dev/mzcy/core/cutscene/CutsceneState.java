@@ -4,14 +4,24 @@ package dev.mzcy.core.cutscene;
  * The current playback state of a {@link CutsceneSession}.
  */
 public enum CutsceneState {
-    /** Not yet started. */
+    /**
+     * Not yet started.
+     */
     IDLE,
-    /** Currently playing. */
+    /**
+     * Currently playing.
+     */
     PLAYING,
-    /** Temporarily paused. */
+    /**
+     * Temporarily paused.
+     */
     PAUSED,
-    /** Finished normally. */
+    /**
+     * Finished normally.
+     */
     FINISHED,
-    /** Skipped by the player or cancelled externally. */
+    /**
+     * Skipped by the player or cancelled externally.
+     */
     SKIPPED
 }

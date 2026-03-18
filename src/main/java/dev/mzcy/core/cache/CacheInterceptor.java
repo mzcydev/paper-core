@@ -5,8 +5,6 @@ import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 /**
  * Applies {@link Cacheable}, {@link CacheEvict}, and {@link CachePut}
@@ -25,9 +23,9 @@ public final class CacheInterceptor {
     /**
      * Intercepts a method invocation, applying cache annotations.
      *
-     * @param method   the invoked method
-     * @param args     the method arguments
-     * @param invoker  the actual method invocation supplier
+     * @param method  the invoked method
+     * @param args    the method arguments
+     * @param invoker the actual method invocation supplier
      * @return the result — either from cache or from invoker
      * @throws Exception if the underlying method throws
      */
@@ -37,9 +35,9 @@ public final class CacheInterceptor {
             @NotNull MethodInvoker invoker
     ) throws Exception {
 
-        final Cacheable  cacheable  = method.getAnnotation(Cacheable.class);
+        final Cacheable cacheable = method.getAnnotation(Cacheable.class);
         final CacheEvict cacheEvict = method.getAnnotation(CacheEvict.class);
-        final CachePut   cachePut   = method.getAnnotation(CachePut.class);
+        final CachePut cachePut = method.getAnnotation(CachePut.class);
 
         // ── Pre-invocation eviction ──────────────────────────────────────────
         if (cacheEvict != null && cacheEvict.beforeInvocation()) {

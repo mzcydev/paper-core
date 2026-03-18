@@ -26,16 +26,17 @@ import java.util.function.Supplier;
 @Getter
 public final class LootEntry {
 
-    public enum Type { STATIC, DYNAMIC, EMPTY }
-
-    @NotNull  private final Type                type;
-    @Nullable private final ItemStack           item;
-    @Nullable private final Supplier<ItemStack> supplier;
-    private   final double                      weight;
-    private   final int                         minAmount;
-    private   final int                         maxAmount;
-    @Nullable private final LootCondition       condition;
-
+    @NotNull
+    private final Type type;
+    @Nullable
+    private final ItemStack item;
+    @Nullable
+    private final Supplier<ItemStack> supplier;
+    private final double weight;
+    private final int minAmount;
+    private final int maxAmount;
+    @Nullable
+    private final LootCondition condition;
     private LootEntry(
             @NotNull Type type,
             @Nullable ItemStack item,
@@ -45,18 +46,14 @@ public final class LootEntry {
             int maxAmount,
             @Nullable LootCondition condition
     ) {
-        this.type      = type;
-        this.item      = item;
-        this.supplier  = supplier;
-        this.weight    = weight;
+        this.type = type;
+        this.item = item;
+        this.supplier = supplier;
+        this.weight = weight;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
         this.condition = condition;
     }
-
-    // =========================================================================
-    // Factory
-    // =========================================================================
 
     /**
      * Creates a static entry with a fixed item and weight.
@@ -69,6 +66,10 @@ public final class LootEntry {
         return new LootEntry(Type.STATIC, item.clone(), null,
                 weight, item.getAmount(), item.getAmount(), null);
     }
+
+    // =========================================================================
+    // Factory
+    // =========================================================================
 
     /**
      * Creates a static entry with a randomised amount range.
@@ -136,10 +137,6 @@ public final class LootEntry {
                 weight, 0, 0, null);
     }
 
-    // =========================================================================
-    // Resolution
-    // =========================================================================
-
     /**
      * Resolves this entry to an {@link ItemStack} with a random amount.
      * Returns null for empty entries or if the supplier returns null.
@@ -170,6 +167,10 @@ public final class LootEntry {
         return base;
     }
 
+    // =========================================================================
+    // Resolution
+    // =========================================================================
+
     /**
      * Returns true if this entry is eligible given the context.
      * Entries without a condition are always eligible.
@@ -180,4 +181,6 @@ public final class LootEntry {
     public boolean isEligible(@NotNull LootContext context) {
         return condition == null || condition.test(context);
     }
+
+    public enum Type {STATIC, DYNAMIC, EMPTY}
 }

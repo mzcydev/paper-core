@@ -5,14 +5,11 @@ import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Central manager for all {@link ManagedMap} instances.
@@ -49,7 +46,9 @@ public final class MapDisplayManager {
 
     private final Plugin plugin;
 
-    /** All registered maps by ID. */
+    /**
+     * All registered maps by ID.
+     */
     private final Map<String, ManagedMap> maps = new LinkedHashMap<>();
 
     public MapDisplayManager(@NotNull Plugin plugin) {
@@ -79,7 +78,7 @@ public final class MapDisplayManager {
         }
 
         final MapView mapView = Bukkit.createMap(world);
-        final ManagedMap map  = new ManagedMap(id, mapView, renderer);
+        final ManagedMap map = new ManagedMap(id, mapView, renderer);
         maps.put(id, map);
 
         log.info("Created map [" + id + "] mapId=" + mapView.getId());
@@ -199,9 +198,9 @@ public final class MapDisplayManager {
     /**
      * Spawns a new item frame and places the map in it.
      *
-     * @param map       the map to display
-     * @param location  the location to spawn the frame at
-     * @param face      the {@link org.bukkit.block.BlockFace} the frame faces
+     * @param map      the map to display
+     * @param location the location to spawn the frame at
+     * @param face     the {@link org.bukkit.block.BlockFace} the frame faces
      * @return the spawned {@link ItemFrame}
      */
     @NotNull

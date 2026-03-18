@@ -17,16 +17,15 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 
 /**
  * Manages anvil-based text input sessions.
@@ -55,12 +54,16 @@ public final class AnvilInputManager implements Listener {
     private static final PlainTextComponentSerializer PLAIN =
             PlainTextComponentSerializer.plainText();
 
-    /** Anvil result slot index. */
+    /**
+     * Anvil result slot index.
+     */
     private static final int RESULT_SLOT = 2;
 
     private final Plugin plugin;
 
-    /** Active sessions by player UUID. */
+    /**
+     * Active sessions by player UUID.
+     */
     private final Map<UUID, AnvilInputSession> sessions = new ConcurrentHashMap<>();
 
     public AnvilInputManager(@NotNull Plugin plugin) {

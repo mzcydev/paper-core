@@ -31,7 +31,7 @@ public final class MongoDatabaseProvider implements DatabaseProvider {
     private final String connectionString;
     private final String databaseName;
 
-    private MongoClient   client;
+    private MongoClient client;
     private MongoDatabase database;
 
     public MongoDatabaseProvider(
@@ -39,9 +39,9 @@ public final class MongoDatabaseProvider implements DatabaseProvider {
             @NotNull String connectionString,
             @NotNull String databaseName
     ) {
-        this.id               = id;
+        this.id = id;
         this.connectionString = connectionString;
-        this.databaseName     = databaseName;
+        this.databaseName = databaseName;
     }
 
     // =========================================================================
@@ -106,7 +106,7 @@ public final class MongoDatabaseProvider implements DatabaseProvider {
                     .codecRegistry(pojoRegistry)
                     .build();
 
-            client   = MongoClients.create(settings);
+            client = MongoClients.create(settings);
             database = client.getDatabase(databaseName);
 
             // Ping to verify connection
@@ -123,7 +123,7 @@ public final class MongoDatabaseProvider implements DatabaseProvider {
     public void disconnect() {
         if (client != null) {
             client.close();
-            client   = null;
+            client = null;
             database = null;
             log.info("[" + id + "] Disconnected from MongoDB.");
         }

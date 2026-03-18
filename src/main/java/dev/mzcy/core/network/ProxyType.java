@@ -7,10 +7,16 @@ package dev.mzcy.core.network;
  * by the {@link NetworkManager} for all proxy operations.
  */
 public enum ProxyType {
-    /** BungeeCord or Waterfall proxy. */
+    /**
+     * BungeeCord or Waterfall proxy.
+     */
     BUNGEECORD,
-    /** Velocity proxy (modern forwarding). */
+    /**
+     * Velocity proxy (modern forwarding).
+     */
     VELOCITY,
-    /** No proxy — single server mode. Network operations are no-ops. */
+    /**
+     * No proxy — single server mode. Network operations are no-ops.
+     */
     NONE
 }

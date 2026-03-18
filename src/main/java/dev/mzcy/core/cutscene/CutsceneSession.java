@@ -32,40 +32,54 @@ import java.util.logging.Level;
 @Getter
 public final class CutsceneSession {
 
-    @NotNull private final Player   player;
-    @NotNull private final Cutscene cutscene;
-    @NotNull private final Plugin   plugin;
+    @NotNull
+    private final Player player;
+    @NotNull
+    private final Cutscene cutscene;
+    @NotNull
+    private final Plugin plugin;
 
-    @NotNull private final CompletableFuture<CutsceneState> future;
+    @NotNull
+    private final CompletableFuture<CutsceneState> future;
 
-    @NotNull private volatile CutsceneState state = CutsceneState.IDLE;
+    @NotNull
+    private volatile CutsceneState state = CutsceneState.IDLE;
 
-    /** Tick counter since playback started. */
+    /**
+     * Tick counter since playback started.
+     */
     private long tick = 0;
 
-    /** The Bukkit repeating task driving the playback. */
-    @Nullable private BukkitTask task;
+    /**
+     * The Bukkit repeating task driving the playback.
+     */
+    @Nullable
+    private BukkitTask task;
 
     // Saved player state for restore on finish/skip
-    @Nullable private Location savedLocation;
-    @Nullable private GameMode savedGameMode;
-    private boolean            savedFly;
-    private boolean            savedFlying;
+    @Nullable
+    private Location savedLocation;
+    @Nullable
+    private GameMode savedGameMode;
+    private boolean savedFly;
+    private boolean savedFlying;
+    @Nullable
+    private Runnable onEnd;
+
+    // =========================================================================
+    // Lifecycle
+    // =========================================================================
 
     CutsceneSession(
             @NotNull Player player,
             @NotNull Cutscene cutscene,
             @NotNull Plugin plugin
     ) {
-        this.player   = player;
+        this.player = player;
         this.cutscene = cutscene;
-        this.plugin   = plugin;
-        this.future   = new CompletableFuture<>();
+        this.plugin = plugin;
+        this.future = new CompletableFuture<>();
     }
-
-    // =========================================================================
-    // Lifecycle
-    // =========================================================================
 
     void start() {
         if (state != CutsceneState.IDLE) return;
@@ -122,6 +136,10 @@ public final class CutsceneSession {
         return Math.min(1.0, (double) tick / cutscene.getDurationTicks());
     }
 
+    // =========================================================================
+    // Tick loop
+    // =========================================================================
+
     /**
      * Returns the remaining ticks.
      */
@@ -130,7 +148,7 @@ public final class CutsceneSession {
     }
 
     // =========================================================================
-    // Tick loop
+    // Finish
     // =========================================================================
 
     private void onTick() {
@@ -179,7 +197,7 @@ public final class CutsceneSession {
     }
 
     // =========================================================================
-    // Finish
+    // Player state management
     // =========================================================================
 
     private void finish(@NotNull CutsceneState endState) {
@@ -197,8 +215,10 @@ public final class CutsceneSession {
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (player.isOnline()) restorePlayerState();
             if (onEnd != null) {
-                try { onEnd.run(); }
-                catch (Exception ignored) {}
+                try {
+                    onEnd.run();
+                } catch (Exception ignored) {
+                }
             }
             future.complete(endState);
         }, cutscene.isBlindOnEnd() ? 20L : 0L);
@@ -208,15 +228,11 @@ public final class CutsceneSession {
                 + " for: " + player.getName());
     }
 
-    // =========================================================================
-    // Player state management
-    // =========================================================================
-
     private void savePlayerState() {
         savedLocation = player.getLocation().clone();
         savedGameMode = player.getGameMode();
-        savedFly      = player.getAllowFlight();
-        savedFlying   = player.isFlying();
+        savedFly = player.getAllowFlight();
+        savedFlying = player.isFlying();
     }
 
     private void applyPlaybackState() {
@@ -228,6 +244,10 @@ public final class CutsceneSession {
         player.setFlying(true);
     }
 
+    // =========================================================================
+    // Camera
+    // =========================================================================
+
     private void restorePlayerState() {
         if (savedGameMode != null) player.setGameMode(savedGameMode);
         player.setAllowFlight(savedFly);
@@ -237,7 +257,7 @@ public final class CutsceneSession {
     }
 
     // =========================================================================
-    // Camera
+    // Fade effect
     // =========================================================================
 
     /**
@@ -247,10 +267,6 @@ public final class CutsceneSession {
     private void teleportCamera(@NotNull Location loc) {
         player.teleport(loc);
     }
-
-    // =========================================================================
-    // Fade effect
-    // =========================================================================
 
     private void fadeBlack(boolean fadeIn) {
         if (fadeIn) {
@@ -275,9 +291,6 @@ public final class CutsceneSession {
                     .send(player);
         }
     }
-
-    @Nullable
-    private Runnable onEnd;
 
     void setOnEnd(@Nullable Runnable onEnd) {
         this.onEnd = onEnd;

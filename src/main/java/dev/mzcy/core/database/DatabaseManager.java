@@ -6,9 +6,9 @@ import dev.mzcy.core.database.redis.AbstractRedisRepository;
 import dev.mzcy.core.database.redis.RedisDatabaseProvider;
 import dev.mzcy.core.database.sql.AbstractSqlRepository;
 import dev.mzcy.core.database.sql.SqlDatabaseProvider;
+import dev.mzcy.core.di.Container;
 import dev.mzcy.core.exception.CoreException;
 import dev.mzcy.core.scanner.ScanResult;
-import dev.mzcy.core.di.Container;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,11 +33,15 @@ public final class DatabaseManager {
 
     private final Container container;
 
-    /** All registered providers by ID. */
+    /**
+     * All registered providers by ID.
+     */
     private final Map<String, DatabaseProvider> providers
             = new LinkedHashMap<>();
 
-    /** All registered repository instances by class. */
+    /**
+     * All registered repository instances by class.
+     */
     private final Map<Class<?>, CoreRepository<?, ?>> repositories
             = new LinkedHashMap<>();
 

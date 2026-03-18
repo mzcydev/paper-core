@@ -1,6 +1,7 @@
 # Core Framework
 
-> A professional, annotation-driven plugin framework for **Paper 1.21.x** built around dependency injection, automatic component scanning, and a clean module lifecycle.
+> A professional, annotation-driven plugin framework for **Paper 1.21.x** built around dependency injection, automatic
+> component scanning, and a clean module lifecycle.
 
 ```
 dev.mzcy.core  ·  Paper 1.21.x  ·  Java 21  ·  Gradle KTS  ·  Lombok
@@ -13,59 +14,59 @@ dev.mzcy.core  ·  Paper 1.21.x  ·  Java 21  ·  Gradle KTS  ·  Lombok
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
-  - [Adding Core as a Dependency](#adding-core-as-a-dependency)
-  - [Project Structure](#project-structure)
+    - [Adding Core as a Dependency](#adding-core-as-a-dependency)
+    - [Project Structure](#project-structure)
 - [Dependency Injection](#dependency-injection)
-  - [Registering Components](#registering-components)
-  - [Injecting Dependencies](#injecting-dependencies)
-  - [Scopes](#scopes)
-  - [Named Qualifiers](#named-qualifiers)
-  - [Lifecycle Callbacks](#lifecycle-callbacks)
-  - [Manual Binding](#manual-binding)
+    - [Registering Components](#registering-components)
+    - [Injecting Dependencies](#injecting-dependencies)
+    - [Scopes](#scopes)
+    - [Named Qualifiers](#named-qualifiers)
+    - [Lifecycle Callbacks](#lifecycle-callbacks)
+    - [Manual Binding](#manual-binding)
 - [Config Framework](#config-framework)
-  - [Creating a Config](#creating-a-config)
-  - [Accessing Configs](#accessing-configs)
-  - [Reloading](#reloading)
-  - [Formats](#formats)
+    - [Creating a Config](#creating-a-config)
+    - [Accessing Configs](#accessing-configs)
+    - [Reloading](#reloading)
+    - [Formats](#formats)
 - [Command Framework](#command-framework)
-  - [Root Commands](#root-commands)
-  - [Sub-Commands](#sub-commands)
-  - [CommandContext API](#commandcontext-api)
-  - [Tab Completion](#tab-completion)
-  - [Cooldown System](#cooldown-system)
+    - [Root Commands](#root-commands)
+    - [Sub-Commands](#sub-commands)
+    - [CommandContext API](#commandcontext-api)
+    - [Tab Completion](#tab-completion)
+    - [Cooldown System](#cooldown-system)
 - [Inventory Framework](#inventory-framework)
-  - [Creating a GUI](#creating-a-gui)
-  - [Opening a GUI](#opening-a-gui)
-  - [Refreshing a GUI](#refreshing-a-gui)
-  - [GuiBuilder API](#guibuilder-api)
-  - [Paged GUI](#paged-gui)
+    - [Creating a GUI](#creating-a-gui)
+    - [Opening a GUI](#opening-a-gui)
+    - [Refreshing a GUI](#refreshing-a-gui)
+    - [GuiBuilder API](#guibuilder-api)
+    - [Paged GUI](#paged-gui)
 - [Data Store](#data-store)
-  - [Defining a Store](#defining-a-store)
-  - [CRUD Operations](#crud-operations)
-  - [TTL / Expiry](#ttl--expiry)
-  - [Custom Key Types](#custom-key-types)
+    - [Defining a Store](#defining-a-store)
+    - [CRUD Operations](#crud-operations)
+    - [TTL / Expiry](#ttl--expiry)
+    - [Custom Key Types](#custom-key-types)
 - [Event Listeners](#event-listeners)
 - [Module System](#module-system)
-  - [Creating a Module](#creating-a-module)
-  - [Registering Modules](#registering-modules)
-  - [Lifecycle Order](#lifecycle-order)
+    - [Creating a Module](#creating-a-module)
+    - [Registering Modules](#registering-modules)
+    - [Lifecycle Order](#lifecycle-order)
 - [Item Builders](#item-builders)
-  - [ItemBuilder](#itembuilder)
-  - [SkullBuilder](#skullbuilder)
-  - [LeatherArmorBuilder](#leatherarmorbuilder)
-  - [BookBuilder](#bookbuilder)
-  - [FireworkBuilder](#fireworkbuilder)
+    - [ItemBuilder](#itembuilder)
+    - [SkullBuilder](#skullbuilder)
+    - [LeatherArmorBuilder](#leatherarmorbuilder)
+    - [BookBuilder](#bookbuilder)
+    - [FireworkBuilder](#fireworkbuilder)
 - [Display Systems](#display-systems)
-  - [Title & Actionbar Manager](#title--actionbar-manager)
-  - [Boss Bar Manager](#boss-bar-manager)
-  - [Scoreboard Framework](#scoreboard-framework)
-  - [Hologram Framework](#hologram-framework)
+    - [Title & Actionbar Manager](#title--actionbar-manager)
+    - [Boss Bar Manager](#boss-bar-manager)
+    - [Scoreboard Framework](#scoreboard-framework)
+    - [Hologram Framework](#hologram-framework)
 - [NPC Framework](#npc-framework)
 - [Interaction Systems](#interaction-systems)
-  - [Chat Input Handler](#chat-input-handler)
-  - [Form System](#form-system)
-  - [Menu System](#menu-system)
-  - [Conversation System](#conversation-system)
+    - [Chat Input Handler](#chat-input-handler)
+    - [Form System](#form-system)
+    - [Menu System](#menu-system)
+    - [Conversation System](#conversation-system)
 - [Task Pipeline](#task-pipeline)
 - [Loot Table System](#loot-table-system)
 - [Particle System](#particle-system)
@@ -74,12 +75,12 @@ dev.mzcy.core  ·  Paper 1.21.x  ·  Java 21  ·  Gradle KTS  ·  Lombok
 - [Hot-Reload](#hot-reload)
 - [Debug Overlay](#debug-overlay)
 - [Utilities](#utilities)
-  - [SchedulerUtil](#schedulerutil)
-  - [ComponentUtil](#componentutil)
-  - [ColorUtil](#colorutil)
-  - [TimeUtil](#timeutil)
-  - [SoundUtil](#soundutil)
-  - [Preconditions](#preconditions)
+    - [SchedulerUtil](#schedulerutil)
+    - [ComponentUtil](#componentutil)
+    - [ColorUtil](#colorutil)
+    - [TimeUtil](#timeutil)
+    - [SoundUtil](#soundutil)
+    - [Preconditions](#preconditions)
 - [Annotation Reference](#annotation-reference)
 - [Exception Hierarchy](#exception-hierarchy)
 - [Boot Sequence](#boot-sequence)
@@ -89,27 +90,28 @@ dev.mzcy.core  ·  Paper 1.21.x  ·  Java 21  ·  Gradle KTS  ·  Lombok
 
 ## Overview
 
-Core is a **framework plugin** — it does not add gameplay. It provides the infrastructure that your own plugins build on top of:
+Core is a **framework plugin** — it does not add gameplay. It provides the infrastructure that your own plugins build on
+top of:
 
-| Subsystem | What it gives you |
-|---|---|
-| **DI Container** | Constructor, field, and method injection with singleton/prototype scopes |
-| **Class Scanner** | Automatic discovery of `@Component`, `@Command`, `@Config`, `@Listener`, `@DataStore`, `@InventoryGui` |
-| **Config Framework** | Type-safe YAML/JSON configs as plain Java objects |
-| **Command Framework** | Annotation-based commands with sub-command routing, cooldowns, no `plugin.yml` declarations needed |
-| **Inventory Framework** | Fluent GUI builder with automatic click routing, paged GUIs, and per-player state isolation |
-| **Data Store** | Binary, non-human-readable persistent key-value storage per plugin |
-| **Display Systems** | Title/Actionbar manager, BossBar manager, Scoreboard sidebar, Hologram framework (Display entities) |
-| **NPC Framework** | Citizens-free NPC system with hologram labels, skin support, and click actions |
-| **Interaction Systems** | Chat input, multi-step forms, context menus, NPC conversation trees |
-| **Task Pipeline** | Fluent async/sync task chains with `@Task` annotation scheduling |
-| **Loot Tables** | Weighted, pool-based loot system with conditions and `@LootTableDef` auto-registration |
-| **Particle System** | Typed particle effects, geometric shapes, and animated sequences |
-| **PlaceholderAPI** | Soft-dependency integration with auto-discovered `PlaceholderProvider` components |
-| **Item Builders** | Modular, typed fluent builders for every item meta variant |
-| **Hot-Reload** | Config + listener reload without restart via `@Reloadable` and `/core reload` |
-| **Debug Overlay** | `/core debug` with JVM, server, DI, and custom `@Debug` entries — pasteable to pastes.dev |
-| **Utilities** | Scheduler, ComponentUtil, ColorUtil, TimeUtil, SoundUtil, Preconditions |
+| Subsystem               | What it gives you                                                                                      |
+|-------------------------|--------------------------------------------------------------------------------------------------------|
+| **DI Container**        | Constructor, field, and method injection with singleton/prototype scopes                               |
+| **Class Scanner**       | Automatic discovery of `@Component`, `@Command`, `@Config`, `@Listener`, `@DataStore`, `@InventoryGui` |
+| **Config Framework**    | Type-safe YAML/JSON configs as plain Java objects                                                      |
+| **Command Framework**   | Annotation-based commands with sub-command routing, cooldowns, no `plugin.yml` declarations needed     |
+| **Inventory Framework** | Fluent GUI builder with automatic click routing, paged GUIs, and per-player state isolation            |
+| **Data Store**          | Binary, non-human-readable persistent key-value storage per plugin                                     |
+| **Display Systems**     | Title/Actionbar manager, BossBar manager, Scoreboard sidebar, Hologram framework (Display entities)    |
+| **NPC Framework**       | Citizens-free NPC system with hologram labels, skin support, and click actions                         |
+| **Interaction Systems** | Chat input, multi-step forms, context menus, NPC conversation trees                                    |
+| **Task Pipeline**       | Fluent async/sync task chains with `@Task` annotation scheduling                                       |
+| **Loot Tables**         | Weighted, pool-based loot system with conditions and `@LootTableDef` auto-registration                 |
+| **Particle System**     | Typed particle effects, geometric shapes, and animated sequences                                       |
+| **PlaceholderAPI**      | Soft-dependency integration with auto-discovered `PlaceholderProvider` components                      |
+| **Item Builders**       | Modular, typed fluent builders for every item meta variant                                             |
+| **Hot-Reload**          | Config + listener reload without restart via `@Reloadable` and `/core reload`                          |
+| **Debug Overlay**       | `/core debug` with JVM, server, DI, and custom `@Debug` entries — pasteable to pastes.dev              |
+| **Utilities**           | Scheduler, ComponentUtil, ColorUtil, TimeUtil, SoundUtil, Preconditions                                |
 
 ---
 
@@ -150,7 +152,8 @@ CorePlugin (Bootstrap)
     └── ModuleRegistry                ← load → enable → disable lifecycle
 ```
 
-Every subsystem is registered as a singleton in the DI container, meaning you can inject any manager directly into your components.
+Every subsystem is registered as a singleton in the DI container, meaning you can inject any manager directly into your
+components.
 
 ---
 
@@ -159,6 +162,7 @@ Every subsystem is registered as a singleton in the DI container, meaning you ca
 ### Adding Core as a Dependency
 
 **`build.gradle.kts`** (your plugin):
+
 ```kotlin
 repositories {
     maven("https://repo.mzcy.dev/releases") // or local
@@ -170,6 +174,7 @@ dependencies {
 ```
 
 **`plugin.yml`**:
+
 ```yaml
 depend:
   - Core
@@ -255,10 +260,10 @@ public class ShopService {
 
 ### Scopes
 
-| Annotation | Behavior |
-|---|---|
+| Annotation             | Behavior                                              |
+|------------------------|-------------------------------------------------------|
 | `@Singleton` (default) | One shared instance for the entire container lifetime |
-| `@Prototype` | New instance created on every injection point |
+| `@Prototype`           | New instance created on every injection point         |
 
 GUIs are automatically `@Prototype` — each `open()` call gets a fresh instance with isolated per-player state.
 
@@ -329,15 +334,16 @@ public class MainConfig extends AbstractConfig {
 }
 ```
 
-The file is created at `plugins/MyPlugin/settings.yml` on first load. Default values serve as fallback when the file does not exist.
+The file is created at `plugins/MyPlugin/settings.yml` on first load. Default values serve as fallback when the file
+does not exist.
 
-| Attribute | Default | Description |
-|---|---|---|
-| `value` | required | Filename without extension |
-| `format` | `YAML` | `YAML` or `JSON` |
-| `directory` | `""` (root) | Sub-directory within the data folder |
-| `autoSave` | `true` | Save on plugin disable |
-| `copyDefaults` | `true` | Copy from JAR resources if file missing |
+| Attribute      | Default     | Description                             |
+|----------------|-------------|-----------------------------------------|
+| `value`        | required    | Filename without extension              |
+| `format`       | `YAML`      | `YAML` or `JSON`                        |
+| `directory`    | `""` (root) | Sub-directory within the data folder    |
+| `autoSave`     | `true`      | Save on plugin disable                  |
+| `copyDefaults` | `true`      | Copy from JAR resources if file missing |
 
 ### Accessing Configs
 
@@ -358,6 +364,7 @@ CorePlugin.getInstance().getConfigManager().reloadAll();
 ### Formats
 
 **YAML** (default):
+
 ```yaml
 prefix: '<dark_gray>[<aqua>MyPlugin<dark_gray>] '
 debug: false
@@ -365,6 +372,7 @@ maxHomes: 5
 ```
 
 **JSON**:
+
 ```json
 {
   "prefix": "<dark_gray>[<aqua>MyPlugin<dark_gray>] ",
@@ -490,10 +498,10 @@ public void onDaily(CommandContext ctx) { ... }
 public void onOther(CommandContext ctx) { ... }
 ```
 
-| Placeholder | Description |
-|---|---|
+| Placeholder   | Description                   |
+|---------------|-------------------------------|
 | `<remaining>` | Human-readable time remaining |
-| `<total>` | Total cooldown duration |
+| `<total>`     | Total cooldown duration       |
 
 Players with `core.cooldown.bypass` skip all cooldowns automatically. Manual API:
 
@@ -766,7 +774,8 @@ Registration → loadAll() → enableAll() → [runtime] → disableAll() (rever
 
 ## Item Builders
 
-All builders use the **CRTP pattern** — every method returns the most specific builder type, so you never lose the sub-type while chaining.
+All builders use the **CRTP pattern** — every method returns the most specific builder type, so you never lose the
+sub-type while chaining.
 
 ### ItemBuilder
 
@@ -1036,7 +1045,8 @@ chatInputManager.builder(player)
     });
 ```
 
-Built-in validators: `notBlank()`, `maxLength(n)`, `minLength(n)`, `alphanumeric()`, `integer()`, `integerInRange(min, max)`, `positiveDecimal()`, `matches(regex, msg)`, `onlinePlayer()`. Combine with `.and()`.
+Built-in validators: `notBlank()`, `maxLength(n)`, `minLength(n)`, `alphanumeric()`, `integer()`,
+`integerInRange(min, max)`, `positiveDecimal()`, `matches(regex, msg)`, `onlinePlayer()`. Combine with `.and()`.
 
 ### Form System
 
@@ -1079,7 +1089,8 @@ formManager.open("create_home", player);
 formManager.open(form, player).thenAccept(response -> { ... });
 ```
 
-`FormResponse` methods: `get(key)`, `getInt(key)`, `getDouble(key)`, `isConfirmed(key)`, `isSubmitted()`, `isCancelled()`, `getCancelledAtField()`.
+`FormResponse` methods: `get(key)`, `getInt(key)`, `getDouble(key)`, `isConfirmed(key)`, `isSubmitted()`,
+`isCancelled()`, `getCancelledAtField()`.
 
 ### Menu System
 
@@ -1105,6 +1116,7 @@ ContextMenu.builder("home_options")
 ```
 
 Output in chat:
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Home Options — base
@@ -1166,7 +1178,8 @@ conversationManager.start("guard_intro", player)
     });
 ```
 
-Node types: `DIALOGUE`, `CHOICE`, `ACTION`, `CONDITION`, `END`. Choices support `visibleIf` conditions. `ConversationContext` provides key-value data store and flag system between nodes.
+Node types: `DIALOGUE`, `CHOICE`, `ACTION`, `CONDITION`, `END`. Choices support `visibleIf` conditions.
+`ConversationContext` provides key-value data store and flag system between nodes.
 
 ---
 
@@ -1294,7 +1307,8 @@ LootContext ctx = LootContext.builder()
 List<ItemStack> items = lootManager.roll("boss_drops", ctx);
 ```
 
-Built-in conditions: `chance(p)`, `minLevel(n)`, `hasPermission(node)`, `hasFlag(flag)`, `isDaytime()`, `hasEnchantment(ench)`, `lootingLevel(n)`. All support `.and()`, `.or()`, `.negate()`.
+Built-in conditions: `chance(p)`, `minLevel(n)`, `hasPermission(node)`, `hasFlag(flag)`, `isDaytime()`,
+`hasEnchantment(ench)`, `lootingLevel(n)`. All support `.and()`, `.or()`, `.negate()`.
 
 ---
 
@@ -1340,6 +1354,7 @@ Available shapes: `circle`, `disk`, `line`, `sphere` (Fibonacci lattice), `cylin
 ## PlaceholderAPI Integration
 
 Soft-dependency — gracefully no-ops if PAPI is not installed. Add to `plugin.yml`:
+
 ```yaml
 softdepend:
   - PlaceholderAPI
@@ -1376,9 +1391,11 @@ Component comp = placeholderManager.parseWithPlaceholders(
     player, "<gold>Balance: <white>%core_balance%");
 ```
 
-Built-in placeholders: `%core_version%`, `%core_online%`, `%core_max_players%`, `%core_tps%`, `%core_uptime%`, `%core_player_name%`, `%core_player_uuid%`, `%core_player_online%`.
+Built-in placeholders: `%core_version%`, `%core_online%`, `%core_max_players%`, `%core_tps%`, `%core_uptime%`,
+`%core_player_name%`, `%core_player_uuid%`, `%core_player_online%`.
 
-Registration styles: `register()` (player-aware), `registerGlobal()` (same for all), `registerStatic()` (fixed value), `registerOnline()` (null-safe player).
+Registration styles: `register()` (player-aware), `registerGlobal()` (same for all), `registerStatic()` (fixed value),
+`registerOnline()` (null-safe player).
 
 ---
 
@@ -1403,7 +1420,8 @@ new UpdateChecker(this).checkAsync(result -> {
 UpdateResult result = new UpdateChecker(this).checkSync();
 ```
 
-Statuses: `UPDATE_AVAILABLE`, `UP_TO_DATE`, `DEV_BUILD`, `FAILED`. Full SemVer comparison: `1.2.3`, `1.2.3-SNAPSHOT`, `1.2.3-beta.1`, `1.2.3-rc.1`, leading `v` stripped automatically.
+Statuses: `UPDATE_AVAILABLE`, `UP_TO_DATE`, `DEV_BUILD`, `FAILED`. Full SemVer comparison: `1.2.3`, `1.2.3-SNAPSHOT`,
+`1.2.3-beta.1`, `1.2.3-rc.1`, leading `v` stripped automatically.
 
 ---
 
@@ -1441,6 +1459,7 @@ switch (result.getStatus()) {
 ```
 
 Reload phases (in order):
+
 1. Unregister all managed Bukkit listeners
 2. Execute built-in steps (`Configs.reloadAll()`, listener re-registration)
 3. Execute registered `ReloadStep`s
@@ -1461,7 +1480,9 @@ Reload phases (in order):
 /core reload         → Trigger hot-reload
 ```
 
-Built-in sections: **JVM** (heap, uptime, Java version, CPUs), **Server** (TPS×3 color-coded, players, ticks, worlds), **DI Container** (binding count, live singletons), **Configs** (files + existence), **DataStores** (per-store entry count), **Inventories** (open GUIs, registered types), **Scoreboard**, **NPC**, **PlaceholderAPI**.
+Built-in sections: **JVM** (heap, uptime, Java version, CPUs), **Server** (TPS×3 color-coded, players, ticks, worlds), *
+*DI Container** (binding count, live singletons), **Configs** (files + existence), **DataStores** (per-store entry
+count), **Inventories** (open GUIs, registered types), **Scoreboard**, **NPC**, **PlaceholderAPI**.
 
 Add custom entries via `@Debug` on any `@Component`:
 
@@ -1493,7 +1514,8 @@ core.getDebugOverlay().getRegistry()
     .registerEntry("Custom", "Server Status", () -> myService.getStatus());
 ```
 
-The paste upload uses `pastes.dev` API — plain text, all MiniMessage tags stripped, metadata header with timestamp and generator included.
+The paste upload uses `pastes.dev` API — plain text, all MiniMessage tags stripped, metadata header with timestamp and
+generator included.
 
 ---
 
@@ -1593,7 +1615,9 @@ SoundSequence.create()
     .play(plugin, player);
 ```
 
-Available presets: `CLICK`, `CLICK_SOFT`, `CLICK_HIGH`, `SUCCESS`, `ERROR`, `WARNING`, `LEVEL_UP`, `COIN`, `PURCHASE`, `OPEN`, `CLOSE`, `PAGE_PREV`, `PAGE_NEXT`, `PING`, `TICK`, `TICK_FINAL`, `TELEPORT_OUT`, `TELEPORT_IN`, `DEPOSIT`, `WITHDRAW`.
+Available presets: `CLICK`, `CLICK_SOFT`, `CLICK_HIGH`, `SUCCESS`, `ERROR`, `WARNING`, `LEVEL_UP`, `COIN`, `PURCHASE`,
+`OPEN`, `CLOSE`, `PAGE_PREV`, `PAGE_NEXT`, `PING`, `TICK`, `TICK_FINAL`, `TELEPORT_OUT`, `TELEPORT_IN`, `DEPOSIT`,
+`WITHDRAW`.
 
 ### Preconditions
 
@@ -1610,26 +1634,26 @@ Preconditions.notEmpty(homeList, "Home list must not be empty");
 
 ## Annotation Reference
 
-| Annotation | Target | Purpose |
-|---|---|---|
-| `@Component` | Class | Register as DI-managed component |
-| `@Singleton` | Class | Explicit singleton scope (default) |
-| `@Prototype` | Class | New instance per injection point |
-| `@Inject` | Field / Constructor / Method | Mark injection point |
-| `@Named("id")` | Field / Parameter | Qualify injection by name |
-| `@PostConstruct` | Method | Called after all fields injected |
-| `@PreDestroy` | Method | Called before container destroys instance |
-| `@Config(...)` | Class | Declare a config file binding |
-| `@Command(...)` | Class | Register a command handler |
-| `@SubCommand(...)` | Method | Register a sub-command on a `BaseCommand` |
-| `@Cooldown(...)` | Method / Class | Apply cooldown to a command or sub-command |
-| `@Listener` | Class | Auto-register as Bukkit event listener |
-| `@DataStore(...)` | Class | Register a binary data store |
-| `@InventoryGui(...)` | Class | Register a GUI inventory |
-| `@Task(...)` | Method | Schedule a recurring or one-shot task |
-| `@Reloadable(...)` | Method | Invoked during hot-reload |
-| `@Debug(...)` | Method / Class | Expose info to `/core debug` |
-| `@LootTableDef` | Method | Register a `LootTable` factory method |
+| Annotation           | Target                       | Purpose                                    |
+|----------------------|------------------------------|--------------------------------------------|
+| `@Component`         | Class                        | Register as DI-managed component           |
+| `@Singleton`         | Class                        | Explicit singleton scope (default)         |
+| `@Prototype`         | Class                        | New instance per injection point           |
+| `@Inject`            | Field / Constructor / Method | Mark injection point                       |
+| `@Named("id")`       | Field / Parameter            | Qualify injection by name                  |
+| `@PostConstruct`     | Method                       | Called after all fields injected           |
+| `@PreDestroy`        | Method                       | Called before container destroys instance  |
+| `@Config(...)`       | Class                        | Declare a config file binding              |
+| `@Command(...)`      | Class                        | Register a command handler                 |
+| `@SubCommand(...)`   | Method                       | Register a sub-command on a `BaseCommand`  |
+| `@Cooldown(...)`     | Method / Class               | Apply cooldown to a command or sub-command |
+| `@Listener`          | Class                        | Auto-register as Bukkit event listener     |
+| `@DataStore(...)`    | Class                        | Register a binary data store               |
+| `@InventoryGui(...)` | Class                        | Register a GUI inventory                   |
+| `@Task(...)`         | Method                       | Schedule a recurring or one-shot task      |
+| `@Reloadable(...)`   | Method                       | Invoked during hot-reload                  |
+| `@Debug(...)`        | Method / Class               | Expose info to `/core debug`               |
+| `@LootTableDef`      | Method                       | Register a `LootTable` factory method      |
 
 ---
 

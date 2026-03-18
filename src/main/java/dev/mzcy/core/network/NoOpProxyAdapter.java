@@ -18,43 +18,60 @@ public final class NoOpProxyAdapter extends AbstractProxyAdapter {
         super(plugin);
     }
 
-    @Override @NotNull public ProxyType getProxyType() { return ProxyType.NONE; }
-    @Override @NotNull public String getMainChannel()   { return "noop:noop"; }
+    @Override
+    @NotNull
+    public ProxyType getProxyType() {
+        return ProxyType.NONE;
+    }
 
-    @Override public void connectToServer(@NotNull Player p, @NotNull String s) {
+    @Override
+    @NotNull
+    public String getMainChannel() {
+        return "noop:noop";
+    }
+
+    @Override
+    public void connectToServer(@NotNull Player p, @NotNull String s) {
         log.fine(() -> "NoOp: connectToServer(" + p.getName() + ", " + s + ")");
     }
 
-    @Override public void connectOtherToServer(
+    @Override
+    public void connectOtherToServer(
             @NotNull Player c, @NotNull String t, @NotNull String s) {
         log.fine(() -> "NoOp: connectOtherToServer(" + t + ", " + s + ")");
     }
 
-    @Override public void sendToPlayer(
+    @Override
+    public void sendToPlayer(
             @NotNull Player c, @NotNull String t, @NotNull String m) {
         log.fine(() -> "NoOp: sendToPlayer(" + t + ")");
     }
 
-    @Override public void broadcastNetwork(@NotNull Player c, @NotNull String m) {
+    @Override
+    public void broadcastNetwork(@NotNull Player c, @NotNull String m) {
         log.fine(() -> "NoOp: broadcastNetwork");
     }
 
-    @Override public void kickPlayer(
+    @Override
+    public void kickPlayer(
             @NotNull Player c, @NotNull String t, @NotNull String r) {
         log.fine(() -> "NoOp: kickPlayer(" + t + ")");
     }
 
-    @Override public void forward(
+    @Override
+    public void forward(
             @NotNull Player c, @NotNull String s,
             @NotNull String ch, byte[] d) {
         log.fine(() -> "NoOp: forward(" + s + ", " + ch + ")");
     }
 
-    @Override public void requestServerName(@NotNull Player p) {
+    @Override
+    public void requestServerName(@NotNull Player p) {
         log.fine(() -> "NoOp: requestServerName");
     }
 
-    @Override public void requestPlayerCount(
+    @Override
+    public void requestPlayerCount(
             @NotNull Player c, @NotNull String s) {
         log.fine(() -> "NoOp: requestPlayerCount(" + s + ")");
     }

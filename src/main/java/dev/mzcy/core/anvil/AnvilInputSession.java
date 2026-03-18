@@ -25,13 +25,18 @@ import java.util.function.Predicate;
 @Getter
 public final class AnvilInputSession {
 
-    @NotNull  private final Player                              player;
-    @NotNull  private final Inventory                           inventory;
-    @NotNull  private final CompletableFuture<AnvilInputResult> future;
-    @Nullable private final Predicate<String>                   validator;
-    @Nullable private final String                              invalidMessage;
-    private   final boolean                                     preventClose;
-    private   volatile boolean                                  done = false;
+    @NotNull
+    private final Player player;
+    @NotNull
+    private final Inventory inventory;
+    @NotNull
+    private final CompletableFuture<AnvilInputResult> future;
+    @Nullable
+    private final Predicate<String> validator;
+    @Nullable
+    private final String invalidMessage;
+    private final boolean preventClose;
+    private volatile boolean done = false;
 
     AnvilInputSession(
             @NotNull Player player,
@@ -40,12 +45,12 @@ public final class AnvilInputSession {
             @Nullable String invalidMessage,
             boolean preventClose
     ) {
-        this.player         = player;
-        this.inventory      = inventory;
-        this.future         = new CompletableFuture<>();
-        this.validator      = validator;
+        this.player = player;
+        this.inventory = inventory;
+        this.future = new CompletableFuture<>();
+        this.validator = validator;
         this.invalidMessage = invalidMessage;
-        this.preventClose   = preventClose;
+        this.preventClose = preventClose;
     }
 
     boolean complete(@NotNull AnvilInputResult result) {

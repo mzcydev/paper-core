@@ -62,13 +62,17 @@ import java.util.logging.Level;
 public final class UpdateChecker {
 
     private static final String GITHUB_OWNER = "mzcydev";
-    private static final String GITHUB_REPO  = "paper-core";
+    private static final String GITHUB_REPO = "paper-core";
 
-    /** GitHub API base for all release endpoints. */
+    /**
+     * GitHub API base for all release endpoints.
+     */
     private static final String API_BASE = "https://api.github.com/repos/"
             + GITHUB_OWNER + "/" + GITHUB_REPO + "/releases";
 
-    /** Stable branch — newest non-prerelease. */
+    /**
+     * Stable branch — newest non-prerelease.
+     */
     private static final String API_LATEST = API_BASE + "/latest";
 
     /**
@@ -81,8 +85,8 @@ public final class UpdateChecker {
             + GITHUB_OWNER + "/" + GITHUB_REPO + "/releases";
 
     private static final int CONNECT_TIMEOUT_MS = 5_000;
-    private static final int READ_TIMEOUT_MS    = 5_000;
-    private static final int MAX_NOTES_LENGTH   = 500;
+    private static final int READ_TIMEOUT_MS = 5_000;
+    private static final int MAX_NOTES_LENGTH = 500;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -133,9 +137,9 @@ public final class UpdateChecker {
             @NotNull String currentVersion,
             @NotNull String branch
     ) {
-        this.plugin         = plugin;
+        this.plugin = plugin;
         this.currentVersion = currentVersion;
-        this.branch         = branch.trim().toLowerCase();
+        this.branch = branch.trim().toLowerCase();
     }
 
     // =========================================================================
@@ -271,7 +275,7 @@ public final class UpdateChecker {
             }
 
             final String releaseUrl = root.path("html_url").asText(RELEASES_URL);
-            final String notes      = extractNotes(root);
+            final String notes = extractNotes(root);
 
             // Strip leading 'v' for SemVer comparison (v1.0.0 → 1.0.0)
             final String latestVersion = latestTag.startsWith("v")
@@ -313,9 +317,9 @@ public final class UpdateChecker {
         try (final InputStream stream = connection.getInputStream()) {
             final JsonNode root = MAPPER.readTree(stream);
 
-            final String releaseUrl  = root.path("html_url").asText(RELEASES_URL);
+            final String releaseUrl = root.path("html_url").asText(RELEASES_URL);
             final String releaseName = root.path("name").asText("").trim();
-            final String notes       = extractNotes(root);
+            final String notes = extractNotes(root);
 
             // Release name: "Dev Build 1.0.0-dev+abc1234"
             // Extract the version token after the last space.
@@ -328,7 +332,7 @@ public final class UpdateChecker {
                 return UpdateResult.upToDate(currentVersion);
             }
 
-            final String latestHash  = extractCommitHash(latestVersion);
+            final String latestHash = extractCommitHash(latestVersion);
             final String currentHash = extractCommitHash(currentVersion);
 
             // Hash-based comparison (most accurate for dev builds)
@@ -341,7 +345,7 @@ public final class UpdateChecker {
             }
 
             // Fallback — SemVer on the base portion (strip +hash)
-            final String latestBase  = stripHashSuffix(latestVersion);
+            final String latestBase = stripHashSuffix(latestVersion);
             final String currentBase = stripHashSuffix(currentVersion);
 
             if (VersionComparator.isNewer(latestBase, currentBase)) {
@@ -379,18 +383,24 @@ public final class UpdateChecker {
     // Helpers
     // =========================================================================
 
-    /** Returns the correct GitHub API URL for the configured branch. */
+    /**
+     * Returns the correct GitHub API URL for the configured branch.
+     */
     @NotNull
     private String resolveApiUrl() {
         return isDev() ? API_DEV : API_LATEST;
     }
 
-    /** Returns {@code true} if the configured branch is {@code "dev"}. */
+    /**
+     * Returns {@code true} if the configured branch is {@code "dev"}.
+     */
     private boolean isDev() {
         return "dev".equals(branch);
     }
 
-    /** Extracts and trims release notes, capping at {@link #MAX_NOTES_LENGTH}. */
+    /**
+     * Extracts and trims release notes, capping at {@link #MAX_NOTES_LENGTH}.
+     */
     @Nullable
     private String extractNotes(@NotNull JsonNode root) {
         final String bodyRaw = root.path("body").asText("");
@@ -456,17 +466,14 @@ public final class UpdateChecker {
                 }
                 log.warning("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             }
-            case UP_TO_DATE ->
-                    log.info(branchLabel + "Core is up to date. ("
-                            + result.getCurrentVersion() + ")");
-            case DEV_BUILD ->
-                    log.info(branchLabel + "Running a dev build ("
-                            + result.getCurrentVersion()
-                            + ") ahead of latest release ("
-                            + result.getLatestVersion() + ").");
-            case FAILED ->
-                    log.warning(branchLabel + "Update check failed: "
-                            + result.getErrorMessage());
+            case UP_TO_DATE -> log.info(branchLabel + "Core is up to date. ("
+                    + result.getCurrentVersion() + ")");
+            case DEV_BUILD -> log.info(branchLabel + "Running a dev build ("
+                    + result.getCurrentVersion()
+                    + ") ahead of latest release ("
+                    + result.getLatestVersion() + ").");
+            case FAILED -> log.warning(branchLabel + "Update check failed: "
+                    + result.getErrorMessage());
         }
     }
 }

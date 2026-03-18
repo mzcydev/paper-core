@@ -11,7 +11,10 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,10 +35,14 @@ public final class CutsceneManager implements Listener {
 
     private final Plugin plugin;
 
-    /** Registered cutscene definitions. */
+    /**
+     * Registered cutscene definitions.
+     */
     private final Map<String, Cutscene> cutscenes = new LinkedHashMap<>();
 
-    /** Active sessions by player UUID. */
+    /**
+     * Active sessions by player UUID.
+     */
     private final Map<UUID, CutsceneSession> sessions = new ConcurrentHashMap<>();
 
     public CutsceneManager(@NotNull Plugin plugin) {
@@ -162,7 +169,9 @@ public final class CutsceneManager implements Listener {
     // Events
     // =========================================================================
 
-    /** Skip on sneak press. */
+    /**
+     * Skip on sneak press.
+     */
     @EventHandler(priority = EventPriority.HIGH)
     public void onSneak(@NotNull PlayerToggleSneakEvent event) {
         if (!event.isSneaking()) return;
@@ -174,7 +183,9 @@ public final class CutsceneManager implements Listener {
         session.skip();
     }
 
-    /** Block movement during cutscenes. */
+    /**
+     * Block movement during cutscenes.
+     */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMove(@NotNull PlayerMoveEvent event) {
         final CutsceneSession session =
@@ -190,7 +201,9 @@ public final class CutsceneManager implements Listener {
         }
     }
 
-    /** Clean up on disconnect. */
+    /**
+     * Clean up on disconnect.
+     */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(@NotNull PlayerQuitEvent event) {
         sessions.remove(event.getPlayer().getUniqueId());

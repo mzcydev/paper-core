@@ -1,9 +1,6 @@
 package dev.mzcy.core.cutscene;
 
-import dev.mzcy.core.display.TitleBuilder;
-import dev.mzcy.core.util.SoundUtil;
 import lombok.Getter;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,27 +39,30 @@ import java.util.*;
 @Getter
 public final class Cutscene {
 
-    @NotNull private final String                       id;
-    @Nullable private final CameraPath                  cameraPath;
-    @NotNull private final NavigableMap<Long, List<CutsceneAction>> actions;
-    private final long                                  durationTicks;
-    private final boolean                               skippable;
-    private final boolean                               hidePlayer;
-    private final boolean                               blockMovement;
-    private final boolean                               blindOnStart;
-    private final boolean                               blindOnEnd;
+    @NotNull
+    private final String id;
+    @Nullable
+    private final CameraPath cameraPath;
+    @NotNull
+    private final NavigableMap<Long, List<CutsceneAction>> actions;
+    private final long durationTicks;
+    private final boolean skippable;
+    private final boolean hidePlayer;
+    private final boolean blockMovement;
+    private final boolean blindOnStart;
+    private final boolean blindOnEnd;
 
     private Cutscene(@NotNull Builder builder) {
-        this.id            = builder.id;
-        this.cameraPath    = builder.cameraPath;
-        this.actions       = Collections.unmodifiableNavigableMap(
+        this.id = builder.id;
+        this.cameraPath = builder.cameraPath;
+        this.actions = Collections.unmodifiableNavigableMap(
                 new TreeMap<>(builder.actions));
         this.durationTicks = builder.durationTicks;
-        this.skippable     = builder.skippable;
-        this.hidePlayer    = builder.hidePlayer;
+        this.skippable = builder.skippable;
+        this.hidePlayer = builder.hidePlayer;
         this.blockMovement = builder.blockMovement;
-        this.blindOnStart  = builder.blindOnStart;
-        this.blindOnEnd    = builder.blindOnEnd;
+        this.blindOnStart = builder.blindOnStart;
+        this.blindOnEnd = builder.blindOnEnd;
     }
 
     // =========================================================================
@@ -76,17 +76,16 @@ public final class Cutscene {
 
     public static final class Builder {
 
-        private final String   id;
-        private CameraPath     cameraPath    = null;
-        private long           durationTicks = 0;
-        private boolean        skippable     = true;
-        private boolean        hidePlayer    = true;
-        private boolean        blockMovement = true;
-        private boolean        blindOnStart  = true;
-        private boolean        blindOnEnd    = true;
-
+        private final String id;
         private final NavigableMap<Long, List<CutsceneAction>> actions
                 = new TreeMap<>();
+        private CameraPath cameraPath = null;
+        private long durationTicks = 0;
+        private boolean skippable = true;
+        private boolean hidePlayer = true;
+        private boolean blockMovement = true;
+        private boolean blindOnStart = true;
+        private boolean blindOnEnd = true;
 
         private Builder(@NotNull String id) {
             this.id = id;

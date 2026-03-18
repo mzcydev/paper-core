@@ -2,7 +2,6 @@ package dev.mzcy.core.cutscene;
 
 import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,11 +23,13 @@ public final class CameraPath {
     @NotNull
     private final List<CameraPoint> points;
 
-    /** Total duration of the path in ticks. */
+    /**
+     * Total duration of the path in ticks.
+     */
     private final long totalTicks;
 
     private CameraPath(@NotNull List<CameraPoint> points) {
-        this.points     = Collections.unmodifiableList(new ArrayList<>(points));
+        this.points = Collections.unmodifiableList(new ArrayList<>(points));
         this.totalTicks = points.stream()
                 .skip(1) // first point has no duration
                 .mapToLong(CameraPoint::getDurationTicks)
@@ -38,6 +39,45 @@ public final class CameraPath {
     // =========================================================================
     // Sampling
     // =========================================================================
+
+    @NotNull
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    // =========================================================================
+    // Builder
+    // =========================================================================
+
+    @NotNull
+    private static Location interpolate(
+            @NotNull Location from,
+            @NotNull Location to,
+            double t
+    ) {
+        final double x = lerp(from.getX(), to.getX(), t);
+        final double y = lerp(from.getY(), to.getY(), t);
+        final double z = lerp(from.getZ(), to.getZ(), t);
+        final float yaw = (float) lerpAngle(from.getYaw(), to.getYaw(), t);
+        final float pitch = (float) lerp(from.getPitch(), to.getPitch(), t);
+        return new Location(from.getWorld(), x, y, z, yaw, pitch);
+    }
+
+    private static double lerp(double a, double b, double t) {
+        return a + (b - a) * t;
+    }
+
+    // =========================================================================
+    // Interpolation
+    // =========================================================================
+
+    private static double lerpAngle(double a, double b, double t) {
+        double diff = b - a;
+        // Shortest path around the circle
+        while (diff > 180) diff -= 360;
+        while (diff < -180) diff += 360;
+        return a + diff * t;
+    }
 
     /**
      * Returns the interpolated {@link Location} at the given tick offset
@@ -62,12 +102,12 @@ public final class CameraPath {
         long elapsed = 0;
         for (int i = 1; i < points.size(); i++) {
             final CameraPoint from = points.get(i - 1);
-            final CameraPoint to   = points.get(i);
+            final CameraPoint to = points.get(i);
             final long segDuration = to.getDurationTicks();
 
             if (tick <= elapsed + segDuration) {
-                final double linear = (double)(tick - elapsed) / segDuration;
-                final double t      = to.getEasing().ease(
+                final double linear = (double) (tick - elapsed) / segDuration;
+                final double t = to.getEasing().ease(
                         Math.max(0, Math.min(1, linear)));
                 return interpolate(from.getLocation(), to.getLocation(), t);
             }
@@ -75,15 +115,6 @@ public final class CameraPath {
         }
 
         return points.get(points.size() - 1).getLocation().clone();
-    }
-
-    // =========================================================================
-    // Builder
-    // =========================================================================
-
-    @NotNull
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static final class Builder {
@@ -132,35 +163,5 @@ public final class CameraPath {
             }
             return new CameraPath(points);
         }
-    }
-
-    // =========================================================================
-    // Interpolation
-    // =========================================================================
-
-    @NotNull
-    private static Location interpolate(
-            @NotNull Location from,
-            @NotNull Location to,
-            double t
-    ) {
-        final double x    = lerp(from.getX(),     to.getX(),     t);
-        final double y    = lerp(from.getY(),      to.getY(),     t);
-        final double z    = lerp(from.getZ(),      to.getZ(),     t);
-        final float  yaw  = (float) lerpAngle(from.getYaw(),   to.getYaw(),   t);
-        final float  pitch = (float) lerp(from.getPitch(),  to.getPitch(),  t);
-        return new Location(from.getWorld(), x, y, z, yaw, pitch);
-    }
-
-    private static double lerp(double a, double b, double t) {
-        return a + (b - a) * t;
-    }
-
-    private static double lerpAngle(double a, double b, double t) {
-        double diff = b - a;
-        // Shortest path around the circle
-        while (diff > 180)  diff -= 360;
-        while (diff < -180) diff += 360;
-        return a + diff * t;
     }
 }

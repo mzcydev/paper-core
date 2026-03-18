@@ -21,6 +21,7 @@ public final class TaskResult<T> {
     private final T value;
     @Nullable
     private final Throwable error;
+
     private TaskResult(
             @NotNull Status status,
             @Nullable T value,
