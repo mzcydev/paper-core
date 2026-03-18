@@ -42,7 +42,7 @@ public final class CommandManager {
     public CommandManager(@NotNull String pluginName, @NotNull Container container) {
         this.pluginName = pluginName.toLowerCase(Locale.ROOT);
         this.container = container;
-        this.cooldownManager = new CooldownManager();
+        this.cooldownManager = container.resolve(CooldownManager.class);
         container.bindInstance(CooldownManager.class, cooldownManager);
         this.commandMap = resolveCommandMap();
     }

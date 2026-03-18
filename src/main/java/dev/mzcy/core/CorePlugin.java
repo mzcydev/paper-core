@@ -362,6 +362,8 @@ public final class CorePlugin extends JavaPlugin {
                 getDataFolder().toPath(),
                 container
         );
+        cooldownManager = new CooldownManager(this);
+        container.bindInstance(CooldownManager.class, cooldownManager);
         commandManager = new CommandManager(getName(), container);
         inventoryManager = new InventoryManager(container, this);
         placeholderManager = new PlaceholderManager(this, container);
@@ -391,7 +393,6 @@ public final class CorePlugin extends JavaPlugin {
         mapDisplayManager = new MapDisplayManager(this);
         cacheManager = new CacheManager(this);
         cutsceneManager = new CutsceneManager(this);
-        cooldownManager = new CooldownManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -424,7 +425,6 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(MapDisplayManager.class, mapDisplayManager);
         container.bindInstance(CacheManager.class, cacheManager);
         container.bindInstance(CutsceneManager.class, cutsceneManager);
-        container.bindInstance(CooldownManager.class, cooldownManager);
 
     }
 
