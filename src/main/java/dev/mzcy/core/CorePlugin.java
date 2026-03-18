@@ -25,6 +25,7 @@ import dev.mzcy.core.menu.MenuManager;
 import dev.mzcy.core.module.ModuleRegistry;
 import dev.mzcy.core.network.NetworkManager;
 import dev.mzcy.core.npc.NpcManager;
+import dev.mzcy.core.permission.PermissionManager;
 import dev.mzcy.core.placeholder.PlaceholderManager;
 import dev.mzcy.core.reload.HotReloadManager;
 import dev.mzcy.core.scanner.ClassScanner;
@@ -38,6 +39,7 @@ import dev.mzcy.core.updater.UpdateChecker;
 import dev.mzcy.core.updater.UpdateNotifier;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -132,6 +134,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private AnvilInputManager anvilInputManager;
     @Getter private MapDisplayManager mapDisplayManager;
     @Getter private CacheManager cacheManager;
+    @Getter private PermissionManager permissionManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -338,13 +341,17 @@ public final class CorePlugin extends JavaPlugin {
         anvilInputManager = new AnvilInputManager(this);
         mapDisplayManager = new MapDisplayManager(this);
         cacheManager = new CacheManager(this);
+        permissionManager = new PermissionManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
         container.bindInstance(DataStoreManager.class, dataStoreManager);
         container.bindInstance(CommandManager.class, commandManager);
         container.bindInstance(InventoryManager.class, inventoryManager);
-        container.bindInstance(PlaceholderManager.class, placeholderManager);
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            container.bindInstance(PlaceholderManager.class, placeholderManager);
+            log.info("PlaceholderAPI detected — PlaceholderManager enabled.");
+        }
         container.bindInstance(ChatInputManager.class, chatInputManager);
         container.bindInstance(ScoreboardManager.class, scoreboardManager);
         container.bindInstance(NpcManager.class, npcManager);
@@ -360,15 +367,19 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(ConversationManager.class, conversationManager);
         container.bindInstance(LootManager.class, lootManager);
         container.bindInstance(NetworkManager.class, networkManager);
-        container.bindInstance(SchematicManager.class, schematicManager);
-        if (schematicManager.isWorldEditAvailable()) {
-            schematicManager.loadAll();
+        if (Bukkit.getPluginManager().getPlugin("WorldEdit") != null || Bukkit.getPluginManager().getPlugin("FastAsyncWorldEdit") != null) {
+            log.info("WorldEdit detected — SchematicManager enabled.");
+            container.bindInstance(SchematicManager.class, schematicManager);
+            if (schematicManager.isWorldEditAvailable()) {
+                schematicManager.loadAll();
+            }
         }
         container.bindInstance(DatabaseManager.class, databaseManager);
         container.bindInstance(SignManager.class, signManager);
         container.bindInstance(AnvilInputManager.class, anvilInputManager);
         container.bindInstance(MapDisplayManager.class, mapDisplayManager);
         container.bindInstance(CacheManager.class, cacheManager);
+        container.bindInstance(PermissionManager.class, permissionManager);
 
     }
 

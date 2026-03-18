@@ -5,8 +5,10 @@ import dev.mzcy.core.annotation.Cooldown;
 import dev.mzcy.core.annotation.SubCommand;
 import dev.mzcy.core.cooldown.CooldownManager;
 import dev.mzcy.core.exception.CommandException;
+import dev.mzcy.core.permission.PermissionContext;
 import lombok.extern.java.Log;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
@@ -23,6 +25,9 @@ import java.util.logging.Level;
  *   <li>Minimum argument validation</li>
  *   <li>Automatic sub-command routing via {@link SubCommand}-annotated methods</li>
  *   <li>Tab completion with sub-command token suggestions</li>
+ *   <li>Automatic {@link PermissionContext} population for player senders —
+ *       enables {@link dev.mzcy.core.permission.RequiresPermission} on injected
+ *       services to work transparently within command handlers</li>
  * </ul>
  *
  * <p>Subclasses implement {@link #onCommand(CommandContext)} for the root
@@ -71,11 +76,39 @@ public abstract class BaseCommand {
 
     /**
      * Entry point called by the Bukkit command wrapper.
-     * Performs all validation before delegating to sub-command or root handler.
+     *
+     * <p>If the sender is a {@link Player}, their instance is set as the
+     * current {@link PermissionContext} for the duration of the dispatch.
+     * This enables {@link dev.mzcy.core.permission.RequiresPermission}-annotated
+     * service methods to resolve the acting player automatically.
      *
      * @return true always (error messages are sent to the sender)
      */
     final boolean dispatch(
+            @NotNull CommandSender sender,
+            @NotNull String label,
+            @NotNull String[] args
+    ) {
+        // Set PermissionContext for the duration of this dispatch
+        // so that @RequiresPermission on injected services works transparently.
+        final boolean hasContext = sender instanceof Player player
+                && setContext(player);
+
+        try {
+            return doDispatch(sender, label, args);
+        } finally {
+            // Always clear — even if an exception propagates upward.
+            if (hasContext) {
+                PermissionContext.clear();
+            }
+        }
+    }
+
+    // =========================================================================
+    // Core dispatch logic
+    // =========================================================================
+
+    private boolean doDispatch(
             @NotNull CommandSender sender,
             @NotNull String label,
             @NotNull String[] args
@@ -98,11 +131,12 @@ public abstract class BaseCommand {
             return true;
         }
 
+        // Root cooldown check
         final Cooldown rootCooldown = getClass().getAnnotation(Cooldown.class);
         if (rootCooldown != null && cooldownManager != null) {
             final String key = "cmd:" + meta.name();
             if (!cooldownManager.checkAndApply(sender, key, rootCooldown)) {
-                return true; // blocked by cooldown
+                return true;
             }
         }
 
@@ -130,8 +164,10 @@ public abstract class BaseCommand {
         try {
             onCommand(ctx);
         } catch (Exception ex) {
-            log.log(Level.SEVERE, "Unhandled exception in command: " + meta.name(), ex);
-            ctx.sendError("An internal error occurred. Please notify an administrator.");
+            log.log(Level.SEVERE,
+                    "Unhandled exception in command: " + meta.name(), ex);
+            ctx.sendError(
+                    "An internal error occurred. Please notify an administrator.");
         }
 
         return true;
@@ -158,11 +194,14 @@ public abstract class BaseCommand {
         }
 
         // Sub-command cooldown check
-        final Cooldown subCooldown = handler.getMethod().getAnnotation(Cooldown.class);
+        final Cooldown subCooldown =
+                handler.getMethod().getAnnotation(Cooldown.class);
         if (subCooldown != null && cooldownManager != null) {
-            final String key = "cmd:" + getCommandAnnotation().name() + ":" + handler.token();
+            final String key = "cmd:"
+                    + getCommandAnnotation().name()
+                    + ":" + handler.token();
             if (!cooldownManager.checkAndApply(ctx.getSender(), key, subCooldown)) {
-                return; // blocked by cooldown
+                return;
             }
         }
 
@@ -187,7 +226,8 @@ public abstract class BaseCommand {
         } catch (Exception ex) {
             log.log(Level.SEVERE,
                     "Unhandled exception in sub-command: " + meta.value(), ex);
-            ctx.sendError("An internal error occurred. Please notify an administrator.");
+            ctx.sendError(
+                    "An internal error occurred. Please notify an administrator.");
         }
     }
 
@@ -205,16 +245,19 @@ public abstract class BaseCommand {
     @NotNull
     protected List<String> onTabComplete(@NotNull CommandContext ctx) {
         if (ctx.argCount() == 1) {
-            final String partial = ctx.arg(0).orElse("").toLowerCase(Locale.ROOT);
+            final String partial =
+                    ctx.arg(0).orElse("").toLowerCase(Locale.ROOT);
             return getSubCommands().keySet().stream()
                     .filter(token -> token.startsWith(partial))
                     .sorted()
-                    .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
+                    .collect(java.util.stream.Collectors.toCollection(
+                            ArrayList::new));
         }
 
         // Delegate to sub-command if matched
         if (ctx.argCount() > 1) {
-            final String token = ctx.arg(0).orElse("").toLowerCase(Locale.ROOT);
+            final String token =
+                    ctx.arg(0).orElse("").toLowerCase(Locale.ROOT);
             final SubCommandHandler handler = getSubCommands().get(token);
             if (handler != null) {
                 final CommandContext subCtx = new CommandContext(
@@ -247,6 +290,10 @@ public abstract class BaseCommand {
      * Called when the command is executed without a matching sub-command.
      * Implement this for root command logic.
      *
+     * <p>When called from a player, {@link PermissionContext#getCurrent()}
+     * is populated — injected services with {@link dev.mzcy.core.permission.RequiresPermission}
+     * will resolve permissions against this player automatically.
+     *
      * @param ctx the command context
      */
     protected abstract void onCommand(@NotNull CommandContext ctx);
@@ -275,14 +322,16 @@ public abstract class BaseCommand {
 
                 validateSubCommandMethod(method);
 
-                final String token = annotation.value().toLowerCase(Locale.ROOT);
-                result.putIfAbsent(token, new SubCommandHandler(annotation, method));
+                final String token =
+                        annotation.value().toLowerCase(Locale.ROOT);
+                result.putIfAbsent(
+                        token, new SubCommandHandler(annotation, method));
             }
             current = current.getSuperclass();
         }
 
-        log.fine(() -> "Discovered " + result.size() + " sub-command(s) for: "
-                + getClass().getSimpleName());
+        log.fine(() -> "Discovered " + result.size()
+                + " sub-command(s) for: " + getClass().getSimpleName());
         return Collections.unmodifiableMap(result);
     }
 
@@ -291,8 +340,8 @@ public abstract class BaseCommand {
         if (params.length != 1 || !params[0].equals(CommandContext.class)) {
             throw new CommandException(
                     method.getName(),
-                    "@SubCommand method must accept exactly one CommandContext parameter. "
-                            + "Found in: " + getClass().getName()
+                    "@SubCommand method must accept exactly one CommandContext "
+                            + "parameter. Found in: " + getClass().getName()
             );
         }
     }
@@ -304,10 +353,26 @@ public abstract class BaseCommand {
             if (commandAnnotation == null) {
                 throw new CommandException(
                         getClass().getSimpleName(),
-                        "Missing @Command annotation on class: " + getClass().getName()
+                        "Missing @Command annotation on class: "
+                                + getClass().getName()
                 );
             }
         }
         return commandAnnotation;
+    }
+
+    // =========================================================================
+    // PermissionContext helpers
+    // =========================================================================
+
+    /**
+     * Sets the given player as the current {@link PermissionContext}.
+     *
+     * @param player the player to set
+     * @return true always — used as a flag to know whether to clear later
+     */
+    private boolean setContext(@NotNull Player player) {
+        PermissionContext.setCurrent(player);
+        return true;
     }
 }

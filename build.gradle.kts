@@ -2,7 +2,7 @@ import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
     java
-    //id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.gradleup.shadow") version "9.4.0"
 }
@@ -20,12 +20,13 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.extendedclip.com/releases/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://jitpack.io/")
 }
 
 dependencies {
     // Paper
-    // paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+    // compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 
     // PlaceholderAPI Integration
     compileOnly("me.clip:placeholderapi:2.12.2")
@@ -40,6 +41,10 @@ dependencies {
     // SnakeYAML (bundled in Paper, but explicit for IDE)
     compileOnly("org.yaml:snakeyaml:2.2")
 
+    // Permissions and Economy APIs
+    compileOnly("net.luckperms:api:5.4")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+
     // HikariCP — Connection Pool für MySQL + SQLite
     implementation("com.zaxxer:HikariCP:5.1.0")
 
@@ -47,13 +52,13 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.46.1.3")
 
     // MySQL Connector
-    compileOnly("com.mysql:mysql-connector-j:9.0.0")
+    compileOnly("com.mysql:mysql-connector-j:9.3.0")
 
     // MongoDB Java Driver
     implementation("org.mongodb:mongodb-driver-sync:5.2.0")
 
     // Redisson — Redis Client
-    implementation("org.redisson:redisson:3.37.0")
+    implementation("org.redisson:redisson:3.50.0")
 
     // Jackson for JSON config
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
@@ -69,9 +74,9 @@ dependencies {
 }
 
 tasks {
-//    assemble {
-//        dependsOn(reobfJar)
-//    }
+    assemble {
+        dependsOn(reobfJar)
+    }
 
     compileJava {
         options.encoding = "UTF-8"
@@ -113,6 +118,7 @@ bukkit {
     authors = listOf("mzcy")
     load = BukkitPluginDescription.PluginLoadOrder.STARTUP
     website = "https://mzcy.dev"
+    softDepend = listOf("PlaceholderAPI", "WorldEdit", "FastAsyncWorldEdit", "LuckPerms", "Vault")
 
     permissions {
         register("core.admin") {
