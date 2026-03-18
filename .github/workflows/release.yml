@@ -88,31 +88,32 @@ jobs:
       # ── JAR finden ─────────────────────────────────────────────────────────
       # Gradle names the JAR based on archiveBaseName + archiveVersion + archiveClassifier:
       #   master  →  Core-1.0.0.jar
-      #   dev   →  Core-1.0.0-dev.jar
+      #   dev   →  Core-1.0.0-dev-abc1234.jar
       - name: Locate JAR
         if: steps.publish.outputs.enabled == 'true'
         id: jar
         run: |
           BRANCH="${GITHUB_REF_NAME}"
           VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
-
+          SHORT_SHA=$(git rev-parse --short HEAD)
+      
           if [ "$BRANCH" = "dev" ]; then
-            JAR_NAME="Core-${VERSION}-dev.jar"
+            JAR_NAME="Core-${VERSION}-dev-${SHORT_SHA}.jar"
           else
             JAR_NAME="Core-${VERSION}.jar"
           fi
-
+      
           JAR="build/libs/${JAR_NAME}"
-
+      
           if [ ! -f "$JAR" ]; then
             echo "ERROR: Expected JAR not found: ${JAR}"
             echo "Available files:"
             ls -la build/libs/
             exit 1
           fi
-
-          echo "path=${JAR}"          >> $GITHUB_OUTPUT
-          echo "name=${JAR_NAME}"     >> $GITHUB_OUTPUT
+      
+          echo "path=${JAR}"       >> $GITHUB_OUTPUT
+          echo "name=${JAR_NAME}"  >> $GITHUB_OUTPUT
           echo "Found JAR: ${JAR}"
 
       # ── Delete old dev-latest release ──────────────────────────────────────
