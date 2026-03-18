@@ -20,7 +20,7 @@ val shortSha = System.getenv("GITHUB_SHA")?.take(7) ?: ""
 
 // Full version string embedded in the JAR name and plugin.yml:
 //   main branch  →  1.0.0
-//   dev  branch  →  1.0.0-dev+abc1234
+//   dev  branch  →  1.0.0-dev+abc123
 val fullVersion = if (isDev) "${version}-dev+${shortSha}" else version.toString()
 
 java {
