@@ -5,6 +5,8 @@ import dev.mzcy.core.cache.CacheManager;
 import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
 import dev.mzcy.core.conversation.ConversationManager;
+import dev.mzcy.core.cooldown.CooldownManager;
+import dev.mzcy.core.cooldown.PersistentCooldownStore;
 import dev.mzcy.core.cutscene.CutsceneManager;
 import dev.mzcy.core.data.DataStoreManager;
 import dev.mzcy.core.database.DatabaseManager;
@@ -143,6 +145,8 @@ public final class CorePlugin extends JavaPlugin {
     private CacheManager cacheManager;
     @Getter
     private CutsceneManager cutsceneManager;
+    @Getter
+    private CooldownManager cooldownManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -201,6 +205,9 @@ public final class CorePlugin extends JavaPlugin {
         // 4. Flush all data stores
         safeRun("DataStoreManager.flushAll",
                 () -> dataStoreManager.flushAll());
+
+        safeRun("CooldownManager.shutdown",
+                () -> cooldownManager.shutdown());
 
         // 5. Save all configs
         safeRun("ConfigManager.saveAll",
@@ -353,6 +360,7 @@ public final class CorePlugin extends JavaPlugin {
         mapDisplayManager = new MapDisplayManager(this);
         cacheManager = new CacheManager(this);
         cutsceneManager = new CutsceneManager(this);
+        cooldownManager = new CooldownManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -385,6 +393,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(MapDisplayManager.class, mapDisplayManager);
         container.bindInstance(CacheManager.class, cacheManager);
         container.bindInstance(CutsceneManager.class, cutsceneManager);
+        container.bindInstance(CooldownManager.class, cooldownManager);
 
     }
 
@@ -421,6 +430,12 @@ public final class CorePlugin extends JavaPlugin {
 
     private void initDataStores() {
         dataStoreManager.initializeAll(scanResult);
+
+        // Cooldown
+        final PersistentCooldownStore cooldownStore =
+                container.resolve(PersistentCooldownStore.class);
+        cooldownManager.setPersistentStore(cooldownStore);
+        cooldownManager.loadPersisted();
     }
 
     private void initCommands() {

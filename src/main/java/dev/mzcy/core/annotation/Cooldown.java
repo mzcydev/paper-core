@@ -67,4 +67,12 @@ public @interface Cooldown {
      * Always includes {@code core.cooldown.bypass} automatically.
      */
     String bypassPermission() default "";
+
+    /**
+     * Whether this cooldown should persist across server restarts.
+     * Requires a {@link dev.mzcy.core.cooldown.PersistentCooldownStore}
+     * to be registered.
+     * Defaults to {@code false} — in-memory only.
+     */
+    boolean persistent() default false;
 }
