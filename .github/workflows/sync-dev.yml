@@ -1,9 +1,9 @@
-name: Sync dev ← main
+name: Sync dev ← master
 
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   sync:
@@ -23,9 +23,9 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Merge main → dev
+      - name: Merge master → dev
         run: |
           git fetch origin
           git checkout dev
-          git merge origin/main --no-edit --strategy-option=ours
+          git merge origin/master --no-edit --strategy-option=ours
           git push origin dev
