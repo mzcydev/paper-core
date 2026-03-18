@@ -5,6 +5,7 @@ import dev.mzcy.core.cache.CacheManager;
 import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
 import dev.mzcy.core.conversation.ConversationManager;
+import dev.mzcy.core.cutscene.CutsceneManager;
 import dev.mzcy.core.data.DataStoreManager;
 import dev.mzcy.core.database.DatabaseManager;
 import dev.mzcy.core.debug.DebugCommand;
@@ -26,6 +27,7 @@ import dev.mzcy.core.module.ModuleRegistry;
 import dev.mzcy.core.network.NetworkManager;
 import dev.mzcy.core.npc.NpcManager;
 import dev.mzcy.core.placeholder.PlaceholderManager;
+import dev.mzcy.core.plugin.settings.CoreSettingsConfig;
 import dev.mzcy.core.reload.HotReloadManager;
 import dev.mzcy.core.scanner.ClassScanner;
 import dev.mzcy.core.scanner.ComponentRegistry;
@@ -132,6 +134,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private AnvilInputManager anvilInputManager;
     @Getter private MapDisplayManager mapDisplayManager;
     @Getter private CacheManager cacheManager;
+    @Getter private CutsceneManager cutsceneManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -221,6 +224,9 @@ public final class CorePlugin extends JavaPlugin {
 
         safeRun("FormManager.shutdown",
                 () -> formManager.shutdown());
+
+        safeRun("CutsceneManager.shutdown",
+                () -> cutsceneManager.shutdown());
 
         safeRun("MenuManager.shutdown",
                 () -> menuManager.shutdown());
@@ -338,6 +344,7 @@ public final class CorePlugin extends JavaPlugin {
         anvilInputManager = new AnvilInputManager(this);
         mapDisplayManager = new MapDisplayManager(this);
         cacheManager = new CacheManager(this);
+        cutsceneManager =  new CutsceneManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -369,6 +376,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(AnvilInputManager.class, anvilInputManager);
         container.bindInstance(MapDisplayManager.class, mapDisplayManager);
         container.bindInstance(CacheManager.class, cacheManager);
+        container.bindInstance(CutsceneManager.class, cutsceneManager);
 
     }
 
@@ -390,7 +398,8 @@ public final class CorePlugin extends JavaPlugin {
 
     private void checkForUpdates() {
         new UpdateChecker(this).checkAsync(result -> {
-            if (result.isUpdateAvailable()) {
+            CoreSettingsConfig coreSettingsConfig = configManager.get(CoreSettingsConfig.class);
+            if (result.isUpdateAvailable() && coreSettingsConfig.updater.enabled) {
                 getServer().getPluginManager()
                         .registerEvents(new UpdateNotifier(this, result), this);
             }

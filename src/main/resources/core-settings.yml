@@ -1,0 +1,5 @@
+# core-settings.yml
+updater:
+  enabled: true
+  branch: main   # main = stable releases, dev = development builds
+  notify-ops: true
