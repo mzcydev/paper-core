@@ -13,6 +13,8 @@ import dev.mzcy.core.database.DatabaseManager;
 import dev.mzcy.core.debug.DebugCommand;
 import dev.mzcy.core.debug.DebugOverlay;
 import dev.mzcy.core.debug.DebugRegistry;
+import dev.mzcy.core.dependency.DependencyCheckResultSet;
+import dev.mzcy.core.dependency.DependencyChecker;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.display.ActionbarManager;
 import dev.mzcy.core.display.bossbar.BossBarManager;
@@ -88,6 +90,8 @@ public final class CorePlugin extends JavaPlugin {
     // =========================================================================
 
     @Getter
+    private DependencyCheckResultSet dependencyCheckResult;
+    @Getter
     private Container container;
     @Getter
     private ModuleRegistry moduleRegistry;
@@ -158,6 +162,30 @@ public final class CorePlugin extends JavaPlugin {
     // Enable
     // =========================================================================
 
+    private void checkDependencies() {
+        dependencyCheckResult = new DependencyChecker(getServer().getPluginManager())
+                // Keine required deps für Core selbst — es ist das Framework
+                .recommend("LuckPerms",
+                        "Permission group support and @RequiresPermission integration")
+                .recommend("Vault",
+                        "Economy and permissions API fallback")
+                .recommend("PlaceholderAPI",
+                        "Placeholder support in messages and configs")
+                .optional("WorldEdit",
+                        "Schematic paste/save support")
+                .optional("FastAsyncWorldEdit",
+                        "Faster schematic paste/save support")
+                .check(this);
+
+        // Hard stop if a required dep is missing
+        if (dependencyCheckResult.hasFatal()) {
+            log.severe("Core cannot start — required dependencies are missing.");
+            log.severe("Install the missing plugins and restart the server.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -169,6 +197,9 @@ public final class CorePlugin extends JavaPlugin {
         log.info("/ /___/ /_/ / /  /  __/     ");
         log.info("\\____/\\____/_/   \\___/   ");
         log.info("Framework booting...         ");
+
+        checkDependencies();
+        if (!isEnabled()) return;
 
         try {
             bootFramework();
