@@ -124,7 +124,9 @@ public final class TaskChain {
             @NotNull BiConsumer<TaskContext, IN> consumer
     ) {
         return sync((ctx, input) -> {
-            consumer.accept(ctx, input);
+            @SuppressWarnings("unchecked")
+            final IN in = (IN) input;
+            consumer.accept(ctx, in);
             return null;
         });
     }
@@ -141,7 +143,9 @@ public final class TaskChain {
             @NotNull BiConsumer<TaskContext, IN> consumer
     ) {
         return async((ctx, input) -> {
-            consumer.accept(ctx, input);
+            @SuppressWarnings("unchecked")
+            final IN in = (IN) input;
+            consumer.accept(ctx, in);
             return null;
         });
     }

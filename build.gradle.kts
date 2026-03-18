@@ -4,7 +4,7 @@ plugins {
     java
     //id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "9.4.0"
 }
 
 group = "dev.mzcy"

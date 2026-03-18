@@ -121,16 +121,18 @@ public final class SqlDatabaseProvider implements DatabaseProvider {
 
     @Override
     public void connect() {
-        try {
-            dataSource = new HikariDataSource(hikariConfig);
-            // Test connection
-            try (final Connection conn = dataSource.getConnection()) {
-                log.info("[" + id + "] Connected to " + type
-                        + " — pool active.");
+        dataSource = new HikariDataSource(hikariConfig);
+        // Test connection
+        try (final Connection conn = dataSource.getConnection()) {
+            if (!conn.isValid(10)) {
+                throw new CoreException("Connection test failed for database [" + id + "]");
             }
-        } catch (SQLException ex) {
+            log.info("[" + id + "] Connected to " + type
+                    + " — pool active.");
+        } catch (Exception e) {
+            dataSource.close();
             throw new CoreException(
-                    "Failed to connect to database [" + id + "]", ex);
+                    "Failed to test connection for database [" + id + "]", e);
         }
     }
 

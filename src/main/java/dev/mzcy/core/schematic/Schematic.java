@@ -63,9 +63,9 @@ public final class Schematic {
         this.clipboard = clipboard;
 
         final BlockVector3 dims = clipboard.getDimensions();
-        this.width  = dims.getX();
-        this.height = dims.getY();
-        this.length = dims.getZ();
+        this.width  = dims.x();
+        this.height = dims.y();
+        this.length = dims.z();
     }
 
     // =========================================================================
@@ -104,19 +104,7 @@ public final class Schematic {
                 .maxBlocks(-1)
                 .build()
         ) {
-            final ClipboardHolder holder = new ClipboardHolder(clipboard);
-
-            // Apply rotation transform
-            if (options.getRotation() != org.bukkit.block.structure.StructureRotation.NONE) {
-                final AffineTransform transform = new AffineTransform();
-                final double degrees = switch (options.getRotation()) {
-                    case CLOCKWISE_90          ->  90;
-                    case CLOCKWISE_180         -> 180;
-                    case COUNTERCLOCKWISE_90   -> 270;
-                    default                    ->   0;
-                };
-                holder.setTransform(transform.rotateY(degrees));
-            }
+            final ClipboardHolder holder = getClipboardHolder(options);
 
             // Compute paste vector
             final BlockVector3 pasteVector = buildPasteVector(origin, options);
@@ -141,6 +129,23 @@ public final class Schematic {
             throw new CoreException(
                     "Failed to paste schematic [" + name + "]", ex);
         }
+    }
+
+    private @NotNull ClipboardHolder getClipboardHolder(@NotNull PasteOptions options) {
+        final ClipboardHolder holder = new ClipboardHolder(clipboard);
+
+        // Apply rotation transform
+        if (options.getRotation() != org.bukkit.block.structure.StructureRotation.NONE) {
+            final AffineTransform transform = new AffineTransform();
+            final double degrees = switch (options.getRotation()) {
+                case CLOCKWISE_90          ->  90;
+                case CLOCKWISE_180         -> 180;
+                case COUNTERCLOCKWISE_90   -> 270;
+                default                    ->   0;
+            };
+            holder.setTransform(transform.rotateY(degrees));
+        }
+        return holder;
     }
 
     /**
@@ -222,9 +227,9 @@ public final class Schematic {
             // Offset by clipboard origin so min corner lands at target
             final BlockVector3 clipOrigin = clipboard.getOrigin();
             final BlockVector3 clipMin    = clipboard.getMinimumPoint();
-            x -= clipOrigin.getX() - clipMin.getX();
-            y -= clipOrigin.getY() - clipMin.getY();
-            z -= clipOrigin.getZ() - clipMin.getZ();
+            x -= clipOrigin.x() - clipMin.x();
+            y -= clipOrigin.y() - clipMin.y();
+            z -= clipOrigin.z() - clipMin.z();
         }
 
         return BlockVector3.at(x, y, z);

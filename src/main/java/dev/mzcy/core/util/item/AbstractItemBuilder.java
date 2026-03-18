@@ -176,6 +176,7 @@ public abstract class AbstractItemBuilder<SELF extends AbstractItemBuilder<SELF,
      * @param data custom model data integer
      * @return {@code this} builder
      */
+    @SuppressWarnings("deprecation")
     @NotNull
     public SELF customModelData(int data) {
         meta.setCustomModelData(data);

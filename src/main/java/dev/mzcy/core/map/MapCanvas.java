@@ -27,6 +27,7 @@ import java.awt.image.BufferedImage;
  * canvas.drawText(15, 15, "Hello!", MapColor.WHITE);
  * }</pre>
  */
+@SuppressWarnings("deprecation")
 public final class MapCanvas {
 
     public static final int WIDTH  = 128;

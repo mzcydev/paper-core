@@ -2,6 +2,7 @@ package dev.mzcy.core.display;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
@@ -30,7 +31,7 @@ import java.util.Collection;
  * }</pre>
  */
 @Getter
-@Builder
+@Builder(builderClassName = "Builder")
 public final class TitleBuilder {
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
@@ -45,21 +46,23 @@ public final class TitleBuilder {
     );
 
     @Nullable
-    private final Component title;
+    @Setter
+    private Component title;
 
     @Nullable
-    private final Component subtitle;
+    @Setter
+    private Component subtitle;
 
     @NotNull
-    @Builder.Default
+    @lombok.Builder.Default
     private final Duration fadeIn = Duration.ofMillis(500);
 
     @NotNull
-    @Builder.Default
+    @lombok.Builder.Default
     private final Duration stay = Duration.ofSeconds(3);
 
     @NotNull
-    @Builder.Default
+    @lombok.Builder.Default
     private final Duration fadeOut = Duration.ofMillis(500);
 
     // =========================================================================
@@ -67,7 +70,7 @@ public final class TitleBuilder {
     // =========================================================================
 
     @NotNull
-    public static TitleBuilderBuilder create() {
+    public static Builder create() {
         return TitleBuilder.builder();
     }
 
@@ -88,8 +91,8 @@ public final class TitleBuilder {
             @NotNull String subtitle
     ) {
         TitleBuilder.builder()
-                .title(MINI.deserialize(title))
-                .subtitle(MINI.deserialize(subtitle))
+                .titleMini(title)
+                .subtitleMini(subtitle)
                 .build()
                 .send(player);
     }
@@ -102,7 +105,7 @@ public final class TitleBuilder {
             @NotNull String title
     ) {
         TitleBuilder.builder()
-                .title(MINI.deserialize(title))
+                .titleMini(title)
                 .build()
                 .send(player);
     }
@@ -115,7 +118,7 @@ public final class TitleBuilder {
             @NotNull String subtitle
     ) {
         TitleBuilder.builder()
-                .subtitle(MINI.deserialize(subtitle))
+                .subtitleMini(subtitle)
                 .build()
                 .send(player);
     }
@@ -175,13 +178,13 @@ public final class TitleBuilder {
     // Builder extension — MiniMessage convenience
     // =========================================================================
 
-    public static final class TitleBuilderBuilder {
+    public static final class Builder {
 
         /**
          * Sets the title from a MiniMessage string.
          */
         @NotNull
-        public TitleBuilderBuilder title(@NotNull String miniMessage) {
+        public Builder titleMini(@NotNull String miniMessage) {
             return title(MINI.deserialize(miniMessage));
         }
 
@@ -189,7 +192,7 @@ public final class TitleBuilder {
          * Sets the subtitle from a MiniMessage string.
          */
         @NotNull
-        public TitleBuilderBuilder subtitle(@NotNull String miniMessage) {
+        public Builder subtitleMini(@NotNull String miniMessage) {
             return subtitle(MINI.deserialize(miniMessage));
         }
     }

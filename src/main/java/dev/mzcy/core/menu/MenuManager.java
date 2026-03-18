@@ -1,7 +1,9 @@
 package dev.mzcy.core.menu;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -123,12 +125,12 @@ public final class MenuManager implements Listener {
      * Routes number input in chat to the active menu session.
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onChat(@NotNull AsyncPlayerChatEvent event) {
+    public void onChat(@NotNull AsyncChatEvent event) {
         final UUID uuid = event.getPlayer().getUniqueId();
         final MenuSession session = sessions.get(uuid);
         if (session == null || session.isExpired()) return;
 
-        final String message = event.getMessage().trim();
+        final String message = PlainTextComponentSerializer.plainText().serialize(event.message()).trim();
         event.setCancelled(true);
 
         // Parse as number

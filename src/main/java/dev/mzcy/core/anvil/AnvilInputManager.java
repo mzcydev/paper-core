@@ -167,6 +167,7 @@ public final class AnvilInputManager implements Listener {
     // Event handling
     // =========================================================================
 
+    @SuppressWarnings("removal")
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(@NotNull InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;

@@ -403,9 +403,8 @@ public final class NetworkManager {
                 message.getClass().getAnnotation(NetworkMessage.class);
         final boolean mainThread = annotation == null || annotation.mainThread();
 
-        @SuppressWarnings({"unchecked", "rawtypes"})
         final MessagePayload<Object> payload =
-                new MessagePayload<>((Object) message, channel, player);
+                new MessagePayload<>(message, channel, player);
 
         if (mainThread) {
             plugin.getServer().getScheduler().runTask(plugin,

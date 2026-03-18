@@ -160,7 +160,7 @@ public final class Container {
                     "No binding registered for key: " + key);
         }
 
-        return (T) resolveBinding((Binding<T>) binding);
+        return resolveBinding((Binding<T>) binding);
     }
 
     /**

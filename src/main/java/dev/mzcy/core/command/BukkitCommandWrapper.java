@@ -13,6 +13,7 @@ import java.util.List;
  * {@link org.bukkit.command.CommandMap} — this wrapper is the Bukkit
  * {@link Command} object that gets registered there.
  */
+@SuppressWarnings("deprecation")
 public final class BukkitCommandWrapper extends Command {
 
     private final BaseCommand delegate;

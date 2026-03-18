@@ -1,5 +1,6 @@
 package dev.mzcy.core.reload;
 
+import dev.mzcy.core.annotation.Reloadable;
 import dev.mzcy.core.config.ConfigManager;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.scanner.ScanResult;

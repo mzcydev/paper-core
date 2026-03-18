@@ -109,6 +109,7 @@ public abstract class AbstractRedisRepository<K, V>
         });
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     @NotNull
     public CompletableFuture<List<V>> findAll() {
@@ -206,6 +207,7 @@ public abstract class AbstractRedisRepository<K, V>
      * @param ttl    time-to-live duration
      * @return a future completing when saved
      */
+    @SuppressWarnings("deprecation")
     @NotNull
     public CompletableFuture<Void> saveWithTtl(
             @NotNull K id,
@@ -214,8 +216,7 @@ public abstract class AbstractRedisRepository<K, V>
     ) {
         return async(() -> {
             provider.getClient()
-                    .<String>getBucket(buildKey(id))
-                    .set(serialize(entity), ttl.toMillis(),
+                    .<String>getBucket(buildKey(id)).set(serialize(entity), ttl.toMillis(),
                             java.util.concurrent.TimeUnit.MILLISECONDS);
             return null;
         });
