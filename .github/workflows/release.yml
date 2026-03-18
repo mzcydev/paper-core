@@ -24,6 +24,12 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Check publish flag
+        id: publish
+        run: |
+          PUBLISH=$(grep '^publish=' release.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          echo "enabled=${PUBLISH}" >> $GITHUB_OUTPUT
+
       - name: Build with Gradle
         run: ./gradlew shadowJar
 
@@ -67,6 +73,7 @@ jobs:
       # ── Create GitHub Release ────────────────────────────────────────────────
 
       - name: Create Release
+        if: steps.publish.outputs.enabled == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name:   ${{ steps.version.outputs.tag }}
