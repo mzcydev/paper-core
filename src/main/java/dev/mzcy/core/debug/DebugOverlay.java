@@ -156,8 +156,16 @@ public final class DebugOverlay {
         registerPapiSection();
         registerCacheSection();
         registerProfilingSection();
+
         registry.registerEntry("Rate Limiter", "Active Buckets", () ->
                 "<white>" + core.getRateLimitManager().getRegistry().size());
+
+        registry.registerEntry("Spatial Index", "Indexed Players", () ->
+                "<white>" + core.getSpatialIndex().indexedPlayerCount());
+        registry.registerEntry("Spatial Index", "Custom Objects", () ->
+                "<white>" + core.getSpatialIndex().indexedCustomCount());
+        registry.registerEntry("Spatial Index", "Active Cells", () ->
+                "<white>" + core.getSpatialIndex().playerCellCount());
     }
 
     private void registerJvmSection() {

@@ -1,6 +1,7 @@
 package dev.mzcy.core;
 
 import dev.mzcy.core.anvil.AnvilInputManager;
+import dev.mzcy.core.behaviortree.BehaviorTreeManager;
 import dev.mzcy.core.cache.CacheManager;
 import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
@@ -43,6 +44,7 @@ import dev.mzcy.core.scanner.ScanResult;
 import dev.mzcy.core.schematic.SchematicManager;
 import dev.mzcy.core.scoreboard.ScoreboardManager;
 import dev.mzcy.core.sign.SignManager;
+import dev.mzcy.core.spatial.SpatialIndex;
 import dev.mzcy.core.task.TaskManager;
 import dev.mzcy.core.updater.UpdateChecker;
 import dev.mzcy.core.updater.UpdateNotifier;
@@ -159,7 +161,8 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private ConfigMigrationManager configMigrationManager;
     @Getter private ProfilingManager profilingManager;
     @Getter private ValidationManager validationManager;
-    @Getter private RetryManager retryManager;@Getter private RateLimitManager rateLimitManager;
+    @Getter private RetryManager retryManager;@Getter private RateLimitManager rateLimitManager;@Getter private BehaviorTreeManager behaviorTreeManager;
+    @Getter private SpatialIndex spatialIndex;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -307,6 +310,9 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("CacheManager.shutdown",
                 () -> cacheManager.shutdown());
 
+        safeRun("BehaviorTreeManager.shutdown",
+                () -> behaviorTreeManager.shutdown());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -416,6 +422,8 @@ public final class CorePlugin extends JavaPlugin {
         cutsceneManager = new CutsceneManager(this);
         retryManager = new RetryManager();
         rateLimitManager = new RateLimitManager(this);
+        behaviorTreeManager = new BehaviorTreeManager(this);
+        spatialIndex = new SpatialIndex(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -450,6 +458,8 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(CutsceneManager.class, cutsceneManager);
         container.bindInstance(RetryManager.class, retryManager);
         container.bindInstance(RateLimitManager.class, rateLimitManager);
+        container.bindInstance(BehaviorTreeManager.class, behaviorTreeManager);
+        container.bindInstance(SpatialIndex.class, spatialIndex);
 
     }
 
