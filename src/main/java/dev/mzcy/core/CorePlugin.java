@@ -34,6 +34,7 @@ import dev.mzcy.core.npc.NpcManager;
 import dev.mzcy.core.placeholder.PlaceholderManager;
 import dev.mzcy.core.plugin.settings.CoreSettingsConfig;
 import dev.mzcy.core.profiling.ProfilingManager;
+import dev.mzcy.core.ratelimit.RateLimitManager;
 import dev.mzcy.core.reload.HotReloadManager;
 import dev.mzcy.core.retry.RetryManager;
 import dev.mzcy.core.scanner.ClassScanner;
@@ -158,7 +159,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private ConfigMigrationManager configMigrationManager;
     @Getter private ProfilingManager profilingManager;
     @Getter private ValidationManager validationManager;
-    @Getter private RetryManager retryManager;
+    @Getter private RetryManager retryManager;@Getter private RateLimitManager rateLimitManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -414,6 +415,7 @@ public final class CorePlugin extends JavaPlugin {
         cacheManager = new CacheManager(this);
         cutsceneManager = new CutsceneManager(this);
         retryManager = new RetryManager();
+        rateLimitManager = new RateLimitManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -447,6 +449,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(CacheManager.class, cacheManager);
         container.bindInstance(CutsceneManager.class, cutsceneManager);
         container.bindInstance(RetryManager.class, retryManager);
+        container.bindInstance(RateLimitManager.class, rateLimitManager);
 
     }
 

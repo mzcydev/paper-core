@@ -155,6 +155,9 @@ public final class DebugOverlay {
         registerNpcSection();
         registerPapiSection();
         registerCacheSection();
+        registerProfilingSection();
+        registry.registerEntry("Rate Limiter", "Active Buckets", () ->
+                "<white>" + core.getRateLimitManager().getRegistry().size());
     }
 
     private void registerJvmSection() {
