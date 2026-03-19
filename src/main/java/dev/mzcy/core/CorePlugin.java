@@ -44,6 +44,7 @@ import dev.mzcy.core.scanner.ScanResult;
 import dev.mzcy.core.schematic.SchematicManager;
 import dev.mzcy.core.scoreboard.ScoreboardManager;
 import dev.mzcy.core.sign.SignManager;
+import dev.mzcy.core.spatial.SpatialIndex;
 import dev.mzcy.core.task.TaskManager;
 import dev.mzcy.core.updater.UpdateChecker;
 import dev.mzcy.core.updater.UpdateNotifier;
@@ -161,6 +162,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private ProfilingManager profilingManager;
     @Getter private ValidationManager validationManager;
     @Getter private RetryManager retryManager;@Getter private RateLimitManager rateLimitManager;@Getter private BehaviorTreeManager behaviorTreeManager;
+    @Getter private SpatialIndex spatialIndex;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -421,6 +423,7 @@ public final class CorePlugin extends JavaPlugin {
         retryManager = new RetryManager();
         rateLimitManager = new RateLimitManager(this);
         behaviorTreeManager = new BehaviorTreeManager(this);
+        spatialIndex = new SpatialIndex(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -456,6 +459,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(RetryManager.class, retryManager);
         container.bindInstance(RateLimitManager.class, rateLimitManager);
         container.bindInstance(BehaviorTreeManager.class, behaviorTreeManager);
+        container.bindInstance(SpatialIndex.class, spatialIndex);
 
     }
 
