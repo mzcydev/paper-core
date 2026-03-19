@@ -1,5 +1,6 @@
 package dev.mzcy.core.statemachine;
 
+import dev.mzcy.core.reactive.Subscription;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
