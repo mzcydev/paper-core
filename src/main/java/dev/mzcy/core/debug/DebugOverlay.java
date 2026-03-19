@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.RuntimeMXBean;
+import java.util.List;
 
 /**
  * The Core debug overlay — accessible via {@code /core debug}.
