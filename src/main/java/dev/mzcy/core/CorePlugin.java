@@ -4,6 +4,7 @@ import dev.mzcy.core.anvil.AnvilInputManager;
 import dev.mzcy.core.cache.CacheManager;
 import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
+import dev.mzcy.core.config.migration.ConfigMigrationManager;
 import dev.mzcy.core.conversation.ConversationManager;
 import dev.mzcy.core.cooldown.CooldownManager;
 import dev.mzcy.core.cooldown.PersistentCooldownStore;
@@ -151,6 +152,7 @@ public final class CorePlugin extends JavaPlugin {
     private CutsceneManager cutsceneManager;
     @Getter
     private CooldownManager cooldownManager;
+    @Getter private ConfigMigrationManager configMigrationManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -314,6 +316,8 @@ public final class CorePlugin extends JavaPlugin {
         step("Scanning classpath", this::initScanner);
         step("Wiring database repositories",
                 () -> databaseManager.discoverAndWire(scanResult));
+        step("Running config migrations",
+                () -> configMigrationManager.migrateAll(getDataFolder()));
         step("Initializing ConfigManager", this::initConfigs);
         step("Initializing DataStoreManager", this::initDataStores);
         step("Registering commands", this::initCommands);
@@ -338,6 +342,10 @@ public final class CorePlugin extends JavaPlugin {
 
         // Self-register the plugin and server into the container
         container.bindInstance(CorePlugin.class, this);
+
+        configMigrationManager = new ConfigMigrationManager();
+        container.bindInstance(ConfigMigrationManager.class, configMigrationManager);
+
         container.bindInstance(
                 org.bukkit.Server.class,
                 getServer()
