@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 /**
@@ -11,7 +12,7 @@ import java.time.Instant;
  */
 @Getter
 @RequiredArgsConstructor
-public final class CooldownEntry {
+public final class CooldownEntry implements Serializable {
 
     /**
      * The instant this cooldown was applied.

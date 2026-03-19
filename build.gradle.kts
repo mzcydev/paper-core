@@ -82,7 +82,7 @@ tasks {
         // dev   →  Core-1.0.0-dev.jar
         archiveBaseName.set("Core")
         archiveVersion.set(version.toString())
-        archiveClassifier.set(if (isDev) "dev" else "")
+        archiveClassifier.set(if (isDev) "dev-${shortSha}" else "")
 
         // ── Relocation ───────────────────────────────────────────────────────
         relocate("com.fasterxml.jackson", "dev.mzcy.core.libs.jackson")

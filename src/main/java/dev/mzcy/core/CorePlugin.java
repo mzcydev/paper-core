@@ -4,13 +4,18 @@ import dev.mzcy.core.anvil.AnvilInputManager;
 import dev.mzcy.core.cache.CacheManager;
 import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
+import dev.mzcy.core.config.migration.ConfigMigrationManager;
 import dev.mzcy.core.conversation.ConversationManager;
+import dev.mzcy.core.cooldown.CooldownManager;
+import dev.mzcy.core.cooldown.PersistentCooldownStore;
 import dev.mzcy.core.cutscene.CutsceneManager;
 import dev.mzcy.core.data.DataStoreManager;
 import dev.mzcy.core.database.DatabaseManager;
 import dev.mzcy.core.debug.DebugCommand;
 import dev.mzcy.core.debug.DebugOverlay;
 import dev.mzcy.core.debug.DebugRegistry;
+import dev.mzcy.core.dependency.DependencyCheckResultSet;
+import dev.mzcy.core.dependency.DependencyChecker;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.display.ActionbarManager;
 import dev.mzcy.core.display.bossbar.BossBarManager;
@@ -28,7 +33,10 @@ import dev.mzcy.core.network.NetworkManager;
 import dev.mzcy.core.npc.NpcManager;
 import dev.mzcy.core.placeholder.PlaceholderManager;
 import dev.mzcy.core.plugin.settings.CoreSettingsConfig;
+import dev.mzcy.core.profiling.ProfilingManager;
+import dev.mzcy.core.ratelimit.RateLimitManager;
 import dev.mzcy.core.reload.HotReloadManager;
+import dev.mzcy.core.retry.RetryManager;
 import dev.mzcy.core.scanner.ClassScanner;
 import dev.mzcy.core.scanner.ComponentRegistry;
 import dev.mzcy.core.scanner.ScanResult;
@@ -38,6 +46,7 @@ import dev.mzcy.core.sign.SignManager;
 import dev.mzcy.core.task.TaskManager;
 import dev.mzcy.core.updater.UpdateChecker;
 import dev.mzcy.core.updater.UpdateNotifier;
+import dev.mzcy.core.validation.ValidationManager;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.event.Listener;
@@ -85,6 +94,8 @@ public final class CorePlugin extends JavaPlugin {
     // Framework components
     // =========================================================================
 
+    @Getter
+    private DependencyCheckResultSet dependencyCheckResult;
     @Getter
     private Container container;
     @Getter
@@ -143,6 +154,12 @@ public final class CorePlugin extends JavaPlugin {
     private CacheManager cacheManager;
     @Getter
     private CutsceneManager cutsceneManager;
+    @Getter
+    private CooldownManager cooldownManager;
+    @Getter private ConfigMigrationManager configMigrationManager;
+    @Getter private ProfilingManager profilingManager;
+    @Getter private ValidationManager validationManager;
+    @Getter private RetryManager retryManager;@Getter private RateLimitManager rateLimitManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -153,6 +170,30 @@ public final class CorePlugin extends JavaPlugin {
     // =========================================================================
     // Enable
     // =========================================================================
+
+    private void checkDependencies() {
+        dependencyCheckResult = new DependencyChecker(getServer().getPluginManager())
+                // Keine required deps für Core selbst — es ist das Framework
+                .recommend("LuckPerms",
+                        "Permission group support and @RequiresPermission integration")
+                .recommend("Vault",
+                        "Economy and permissions API fallback")
+                .recommend("PlaceholderAPI",
+                        "Placeholder support in messages and configs")
+                .optional("WorldEdit",
+                        "Schematic paste/save support")
+                .optional("FastAsyncWorldEdit",
+                        "Faster schematic paste/save support")
+                .check(this);
+
+        // Hard stop if a required dep is missing
+        if (dependencyCheckResult.hasFatal()) {
+            log.severe("Core cannot start — required dependencies are missing.");
+            log.severe("Install the missing plugins and restart the server.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+    }
 
     @Override
     public void onEnable() {
@@ -165,6 +206,9 @@ public final class CorePlugin extends JavaPlugin {
         log.info("/ /___/ /_/ / /  /  __/     ");
         log.info("\\____/\\____/_/   \\___/   ");
         log.info("Framework booting...         ");
+
+        checkDependencies();
+        if (!isEnabled()) return;
 
         try {
             bootFramework();
@@ -201,6 +245,9 @@ public final class CorePlugin extends JavaPlugin {
         // 4. Flush all data stores
         safeRun("DataStoreManager.flushAll",
                 () -> dataStoreManager.flushAll());
+
+        safeRun("CooldownManager.shutdown",
+                () -> cooldownManager.shutdown());
 
         // 5. Save all configs
         safeRun("ConfigManager.saveAll",
@@ -276,6 +323,8 @@ public final class CorePlugin extends JavaPlugin {
         step("Scanning classpath", this::initScanner);
         step("Wiring database repositories",
                 () -> databaseManager.discoverAndWire(scanResult));
+        step("Running config migrations",
+                () -> configMigrationManager.migrateAll(getDataFolder()));
         step("Initializing ConfigManager", this::initConfigs);
         step("Initializing DataStoreManager", this::initDataStores);
         step("Registering commands", this::initCommands);
@@ -300,6 +349,7 @@ public final class CorePlugin extends JavaPlugin {
 
         // Self-register the plugin and server into the container
         container.bindInstance(CorePlugin.class, this);
+
         container.bindInstance(
                 org.bukkit.Server.class,
                 getServer()
@@ -313,6 +363,15 @@ public final class CorePlugin extends JavaPlugin {
                 getDataFolder().toPath()
         );
 
+        validationManager = new ValidationManager();
+        container.bindInstance(ValidationManager.class, validationManager);
+
+        configMigrationManager = new ConfigMigrationManager();
+        container.bindInstance(ConfigMigrationManager.class, configMigrationManager);
+
+        profilingManager = new ProfilingManager();
+        container.bindInstance(ProfilingManager.class, profilingManager);
+
         // Construct and register all framework managers
         moduleRegistry = new ModuleRegistry();
         configManager = new ConfigManager(
@@ -324,6 +383,8 @@ public final class CorePlugin extends JavaPlugin {
                 getDataFolder().toPath(),
                 container
         );
+        cooldownManager = new CooldownManager(this);
+        container.bindInstance(CooldownManager.class, cooldownManager);
         commandManager = new CommandManager(getName(), container);
         inventoryManager = new InventoryManager(container, this);
         placeholderManager = new PlaceholderManager(this, container);
@@ -353,6 +414,8 @@ public final class CorePlugin extends JavaPlugin {
         mapDisplayManager = new MapDisplayManager(this);
         cacheManager = new CacheManager(this);
         cutsceneManager = new CutsceneManager(this);
+        retryManager = new RetryManager();
+        rateLimitManager = new RateLimitManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -385,6 +448,8 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(MapDisplayManager.class, mapDisplayManager);
         container.bindInstance(CacheManager.class, cacheManager);
         container.bindInstance(CutsceneManager.class, cutsceneManager);
+        container.bindInstance(RetryManager.class, retryManager);
+        container.bindInstance(RateLimitManager.class, rateLimitManager);
 
     }
 
@@ -421,6 +486,12 @@ public final class CorePlugin extends JavaPlugin {
 
     private void initDataStores() {
         dataStoreManager.initializeAll(scanResult);
+
+        // Cooldown
+        final PersistentCooldownStore cooldownStore =
+                container.resolve(PersistentCooldownStore.class);
+        cooldownManager.setPersistentStore(cooldownStore);
+        cooldownManager.loadPersisted();
     }
 
     private void initCommands() {

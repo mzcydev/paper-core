@@ -16,7 +16,7 @@ public final class CooldownKey {
     /**
      * Sentinel UUID used for global cooldowns.
      */
-    private static final UUID GLOBAL_UUID = new UUID(0, 0);
+    public static final UUID GLOBAL_UUID = new UUID(0, 0);
 
     private final UUID senderUuid;
     private final String commandKey;
