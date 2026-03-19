@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 /**
  * {@link DatabaseProvider} for MySQL, MariaDB, and SQLite using HikariCP.
@@ -30,7 +29,7 @@ import java.util.logging.Level;
 @Getter
 public final class SqlDatabaseProvider implements DatabaseProvider {
 
-    private final String       id;
+    private final String id;
     private final DatabaseType type;
     private final HikariConfig hikariConfig;
 
@@ -41,8 +40,8 @@ public final class SqlDatabaseProvider implements DatabaseProvider {
             @NotNull DatabaseType type,
             @NotNull HikariConfig hikariConfig
     ) {
-        this.id           = id;
-        this.type         = type;
+        this.id = id;
+        this.type = type;
         this.hikariConfig = hikariConfig;
     }
 
@@ -119,6 +118,25 @@ public final class SqlDatabaseProvider implements DatabaseProvider {
     // DatabaseProvider contract
     // =========================================================================
 
+    private static void applyCommonSettings(@NotNull HikariConfig config) {
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(2);
+        config.setConnectionTimeout(30_000);
+        config.setIdleTimeout(600_000);
+        config.setMaxLifetime(1_800_000);
+        config.setConnectionTestQuery("SELECT 1");
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.addDataSourceProperty("useServerPrepStmts", "true");
+        config.addDataSourceProperty("useLocalSessionState", "true");
+        config.addDataSourceProperty("rewriteBatchedStatements", "true");
+        config.addDataSourceProperty("cacheResultSetMetadata", "true");
+        config.addDataSourceProperty("cacheServerConfiguration", "true");
+        config.addDataSourceProperty("elideSetAutoCommits", "true");
+        config.addDataSourceProperty("maintainTimeStats", "false");
+    }
+
     @Override
     public void connect() {
         dataSource = new HikariDataSource(hikariConfig);
@@ -151,6 +169,10 @@ public final class SqlDatabaseProvider implements DatabaseProvider {
                 && dataSource.isRunning();
     }
 
+    // =========================================================================
+    // SQL API
+    // =========================================================================
+
     @Override
     @NotNull
     public String getConnectionInfo() {
@@ -162,7 +184,7 @@ public final class SqlDatabaseProvider implements DatabaseProvider {
     }
 
     // =========================================================================
-    // SQL API
+    // Helpers
     // =========================================================================
 
     /**
@@ -179,28 +201,5 @@ public final class SqlDatabaseProvider implements DatabaseProvider {
             throw new CoreException("Database [" + id + "] is not connected.");
         }
         return dataSource.getConnection();
-    }
-
-    // =========================================================================
-    // Helpers
-    // =========================================================================
-
-    private static void applyCommonSettings(@NotNull HikariConfig config) {
-        config.setMaximumPoolSize(10);
-        config.setMinimumIdle(2);
-        config.setConnectionTimeout(30_000);
-        config.setIdleTimeout(600_000);
-        config.setMaxLifetime(1_800_000);
-        config.setConnectionTestQuery("SELECT 1");
-        config.addDataSourceProperty("cachePrepStmts",          "true");
-        config.addDataSourceProperty("prepStmtCacheSize",        "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit",    "2048");
-        config.addDataSourceProperty("useServerPrepStmts",       "true");
-        config.addDataSourceProperty("useLocalSessionState",     "true");
-        config.addDataSourceProperty("rewriteBatchedStatements", "true");
-        config.addDataSourceProperty("cacheResultSetMetadata",   "true");
-        config.addDataSourceProperty("cacheServerConfiguration", "true");
-        config.addDataSourceProperty("elideSetAutoCommits",      "true");
-        config.addDataSourceProperty("maintainTimeStats",        "false");
     }
 }

@@ -5,7 +5,8 @@ import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,14 +27,16 @@ public final class Cache {
     @Getter
     private final String name;
 
-    /** Maximum number of entries. -1 = unlimited. */
+    /**
+     * Maximum number of entries. -1 = unlimited.
+     */
     private final int maxSize;
 
     private final ConcurrentHashMap<String, CacheEntry<?>> entries
             = new ConcurrentHashMap<>();
 
     Cache(@NotNull String name, int maxSize) {
-        this.name    = name;
+        this.name = name;
         this.maxSize = maxSize;
     }
 

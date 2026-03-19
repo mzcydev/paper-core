@@ -36,6 +36,7 @@ public final class FormField {
     private final InputValidator validator;
     private final boolean required;
     private final long timeoutSeconds;
+
     private FormField(Builder builder) {
         this.key = builder.key;
         this.prompt = builder.prompt;

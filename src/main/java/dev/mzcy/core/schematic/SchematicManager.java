@@ -14,8 +14,12 @@ import lombok.extern.java.Log;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Stream;
@@ -55,10 +59,10 @@ import java.util.stream.Stream;
 public final class SchematicManager {
 
     private static final String WORLDEDIT_PLUGIN = "WorldEdit";
-    private static final String FAWE_PLUGIN      = "FastAsyncWorldEdit";
+    private static final String FAWE_PLUGIN = "FastAsyncWorldEdit";
 
     private final Plugin plugin;
-    private final Path   schematicsDir;
+    private final Path schematicsDir;
 
     /**
      * In-memory cache of loaded schematics.
@@ -83,11 +87,11 @@ public final class SchematicManager {
     /**
      * Creates a {@link SchematicManager} with a custom schematics directory.
      *
-     * @param plugin         the owning plugin
-     * @param schematicsDir  the directory to store schematic files in
+     * @param plugin        the owning plugin
+     * @param schematicsDir the directory to store schematic files in
      */
     public SchematicManager(@NotNull Plugin plugin, @NotNull Path schematicsDir) {
-        this.plugin        = plugin;
+        this.plugin = plugin;
         this.schematicsDir = schematicsDir;
 
         try {
@@ -122,9 +126,9 @@ public final class SchematicManager {
     /**
      * Saves the blocks in a {@link SchematicRegion} to disk in the given format.
      *
-     * @param region  the cuboid region to save
-     * @param name    the schematic name (without extension)
-     * @param format  the output format
+     * @param region the cuboid region to save
+     * @param name   the schematic name (without extension)
+     * @param format the output format
      * @return the saved and cached {@link Schematic}
      * @throws CoreException if WorldEdit is not available or saving fails
      */
@@ -257,7 +261,7 @@ public final class SchematicManager {
             }
 
             final Clipboard clipboard;
-            try (final InputStream is  = Files.newInputStream(file);
+            try (final InputStream is = Files.newInputStream(file);
                  final ClipboardReader reader = format.getReader(is)) {
                 clipboard = reader.read();
             }
@@ -470,8 +474,8 @@ public final class SchematicManager {
     @NotNull
     private ClipboardFormat resolveClipboardFormat(@NotNull SchematicFormat format) {
         return switch (format) {
-            case SPONGE_V2        -> BuiltInClipboardFormat.SPONGE_V2_SCHEMATIC;
-            case SPONGE_V3        -> BuiltInClipboardFormat.SPONGE_V3_SCHEMATIC;
+            case SPONGE_V2 -> BuiltInClipboardFormat.SPONGE_V2_SCHEMATIC;
+            case SPONGE_V3 -> BuiltInClipboardFormat.SPONGE_V3_SCHEMATIC;
             case LEGACY_SCHEMATIC -> BuiltInClipboardFormat.MCEDIT_SCHEMATIC;
         };
     }
@@ -483,7 +487,7 @@ public final class SchematicManager {
     ) {
         final String extension = switch (format) {
             case LEGACY_SCHEMATIC -> ".schematic";
-            default               -> ".schem";
+            default -> ".schem";
         };
         return schematicsDir.resolve(name + extension);
     }
@@ -500,8 +504,8 @@ public final class SchematicManager {
 
     @NotNull
     private String stripExtension(@NotNull String fileName) {
-        if (fileName.endsWith(".schem"))      return fileName.substring(0, fileName.length() - 6);
-        if (fileName.endsWith(".schematic"))  return fileName.substring(0, fileName.length() - 10);
+        if (fileName.endsWith(".schem")) return fileName.substring(0, fileName.length() - 6);
+        if (fileName.endsWith(".schematic")) return fileName.substring(0, fileName.length() - 10);
         return fileName;
     }
 }

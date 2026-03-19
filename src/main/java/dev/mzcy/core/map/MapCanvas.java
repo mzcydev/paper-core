@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.bukkit.map.MapFont;
 import org.bukkit.map.MinecraftFont;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -30,13 +29,17 @@ import java.awt.image.BufferedImage;
 @SuppressWarnings("deprecation")
 public final class MapCanvas {
 
-    public static final int WIDTH  = 128;
+    public static final int WIDTH = 128;
     public static final int HEIGHT = 128;
 
-    /** Flat pixel buffer — index = y * WIDTH + x. */
+    /**
+     * Flat pixel buffer — index = y * WIDTH + x.
+     */
     private final byte[] pixels = new byte[WIDTH * HEIGHT];
 
-    /** Whether this canvas has been modified since last render. */
+    /**
+     * Whether this canvas has been modified since last render.
+     */
     @Getter
     private boolean dirty = true;
 
@@ -133,12 +136,12 @@ public final class MapCanvas {
                 }
             }
         } else {
-            for (int dx = 0; dx < width;  dx++) {
-                setPixel(x + dx, y,            b);
+            for (int dx = 0; dx < width; dx++) {
+                setPixel(x + dx, y, b);
                 setPixel(x + dx, y + height - 1, b);
             }
             for (int dy = 0; dy < height; dy++) {
-                setPixel(x,           y + dy, b);
+                setPixel(x, y + dy, b);
                 setPixel(x + width - 1, y + dy, b);
             }
         }
@@ -172,14 +175,21 @@ public final class MapCanvas {
                 drawHLine(cx - y, cx + y, cy + x, b);
                 drawHLine(cx - y, cx + y, cy - x, b);
             } else {
-                setPixel(cx + x, cy + y, b); setPixel(cx - x, cy + y, b);
-                setPixel(cx + x, cy - y, b); setPixel(cx - x, cy - y, b);
-                setPixel(cx + y, cy + x, b); setPixel(cx - y, cy + x, b);
-                setPixel(cx + y, cy - x, b); setPixel(cx - y, cy - x, b);
+                setPixel(cx + x, cy + y, b);
+                setPixel(cx - x, cy + y, b);
+                setPixel(cx + x, cy - y, b);
+                setPixel(cx - x, cy - y, b);
+                setPixel(cx + y, cy + x, b);
+                setPixel(cx - y, cy + x, b);
+                setPixel(cx + y, cy - x, b);
+                setPixel(cx - y, cy - x, b);
             }
             y++;
             err += 1 + 2 * y;
-            if (2 * (err - x) + 1 > 0) { x--; err += 1 - 2 * x; }
+            if (2 * (err - x) + 1 > 0) {
+                x--;
+                err += 1 - 2 * x;
+            }
         }
         dirty = true;
     }
@@ -201,8 +211,14 @@ public final class MapCanvas {
             setPixel(x1, y1, b);
             if (x1 == x2 && y1 == y2) break;
             final int e2 = 2 * err;
-            if (e2 >= dy) { err += dy; x1 += sx; }
-            if (e2 <= dx) { err += dx; y1 += sy; }
+            if (e2 >= dy) {
+                err += dy;
+                x1 += sx;
+            }
+            if (e2 <= dx) {
+                err += dx;
+                y1 += sy;
+            }
         }
         dirty = true;
     }
@@ -227,7 +243,7 @@ public final class MapCanvas {
             int x, int y,
             int width, int height
     ) {
-        final int targetW = width  > 0 ? width  : image.getWidth();
+        final int targetW = width > 0 ? width : image.getWidth();
         final int targetH = height > 0 ? height : image.getHeight();
 
         final BufferedImage scaled;
@@ -245,7 +261,7 @@ public final class MapCanvas {
 
         for (int py = 0; py < targetH; py++) {
             for (int px = 0; px < targetW; px++) {
-                final int argb  = scaled.getRGB(px, py);
+                final int argb = scaled.getRGB(px, py);
                 final int alpha = (argb >> 24) & 0xFF;
                 if (alpha < 128) continue; // skip mostly-transparent
                 final Color c = new Color(argb, true);
@@ -290,7 +306,10 @@ public final class MapCanvas {
         int cursorX = x;
         for (final char c : text.toCharArray()) {
             final MapFont.CharacterSprite sprite = font.getChar(c);
-            if (sprite == null) { cursorX += 4; continue; }
+            if (sprite == null) {
+                cursorX += 4;
+                continue;
+            }
 
             for (int row = 0; row < sprite.getHeight(); row++) {
                 for (int col = 0; col < sprite.getWidth(); col++) {

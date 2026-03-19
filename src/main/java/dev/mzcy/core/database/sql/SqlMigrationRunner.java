@@ -6,8 +6,10 @@ import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
-import java.util.*;
-import java.util.logging.Level;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Runs {@link SqlMigration}s against a {@link SqlDatabaseProvider},
@@ -64,12 +66,12 @@ public final class SqlMigrationRunner {
         try (final Connection conn = provider.getConnection();
              final Statement stmt = conn.createStatement()) {
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS %s (
-                    version     INT          NOT NULL PRIMARY KEY,
-                    description VARCHAR(255) NOT NULL,
-                    applied_at  BIGINT       NOT NULL
-                )
-                """.formatted(MIGRATIONS_TABLE));
+                    CREATE TABLE IF NOT EXISTS %s (
+                        version     INT          NOT NULL PRIMARY KEY,
+                        description VARCHAR(255) NOT NULL,
+                        applied_at  BIGINT       NOT NULL
+                    )
+                    """.formatted(MIGRATIONS_TABLE));
         } catch (SQLException ex) {
             throw new CoreException("Failed to create migrations table", ex);
         }

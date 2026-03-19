@@ -22,23 +22,28 @@ import java.util.function.Consumer;
 @Getter
 public final class SignEditorSession {
 
-    @NotNull  private final Player                          player;
-    @NotNull  private final Location                        signLocation;
-    @NotNull  private final CompletableFuture<String[]>     future;
-    @Nullable private final Consumer<String[]>              callback;
-    @NotNull  private final Instant                         openedAt;
-    private   volatile boolean                              done = false;
+    @NotNull
+    private final Player player;
+    @NotNull
+    private final Location signLocation;
+    @NotNull
+    private final CompletableFuture<String[]> future;
+    @Nullable
+    private final Consumer<String[]> callback;
+    @NotNull
+    private final Instant openedAt;
+    private volatile boolean done = false;
 
     SignEditorSession(
             @NotNull Player player,
             @NotNull Location signLocation,
             @Nullable Consumer<String[]> callback
     ) {
-        this.player       = player;
+        this.player = player;
         this.signLocation = signLocation.clone();
-        this.callback     = callback;
-        this.future       = new CompletableFuture<>();
-        this.openedAt     = Instant.now();
+        this.callback = callback;
+        this.future = new CompletableFuture<>();
+        this.openedAt = Instant.now();
     }
 
     boolean complete(@NotNull String[] lines) {
@@ -46,8 +51,10 @@ public final class SignEditorSession {
         done = true;
         future.complete(lines);
         if (callback != null) {
-            try { callback.accept(lines); }
-            catch (Exception ignored) {}
+            try {
+                callback.accept(lines);
+            } catch (Exception ignored) {
+            }
         }
         return true;
     }

@@ -9,7 +9,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -32,25 +35,27 @@ import java.util.logging.Level;
 @Log
 public final class NetworkManager {
 
-    private final Plugin    plugin;
+    private final Plugin plugin;
     private final Container container;
-
-    /** The active proxy adapter — never null (falls back to {@link NoOpProxyAdapter}). */
-    @Getter
-    private ProxyAdapter proxyAdapter;
-
-    /** Registered outgoing channels. */
+    /**
+     * Registered outgoing channels.
+     */
     private final Set<String> registeredOutgoing = ConcurrentHashMap.newKeySet();
-
-    /** Registered incoming channels. */
+    /**
+     * Registered incoming channels.
+     */
     private final Set<String> registeredIncoming = ConcurrentHashMap.newKeySet();
-
     /**
      * Message handlers grouped by fully qualified message type name.
      * Key = message class name, Value = list of registered handlers.
      */
     private final Map<String, List<HandlerRegistration>> handlers
             = new ConcurrentHashMap<>();
+    /**
+     * The active proxy adapter — never null (falls back to {@link NoOpProxyAdapter}).
+     */
+    @Getter
+    private ProxyAdapter proxyAdapter;
 
     // =========================================================================
     // Construction
@@ -72,22 +77,79 @@ public final class NetworkManager {
     /**
      * Creates a {@link NetworkManager} with an explicit proxy type.
      *
-     * @param plugin     the owning plugin
-     * @param container  the DI container
-     * @param proxyType  the proxy type to use
+     * @param plugin    the owning plugin
+     * @param container the DI container
+     * @param proxyType the proxy type to use
      */
     public NetworkManager(
             @NotNull Plugin plugin,
             @NotNull Container container,
             @NotNull ProxyType proxyType
     ) {
-        this.plugin    = plugin;
+        this.plugin = plugin;
         this.container = container;
         applyProxyType(proxyType);
     }
 
     // =========================================================================
     // Discovery
+    // =========================================================================
+
+    /**
+     * Auto-detects the proxy type from server configuration files.
+     *
+     * <p>Detection order:
+     * <ol>
+     *   <li>Check {@code spigot.yml → settings.bungeecord: true}
+     *       → {@link ProxyType#BUNGEECORD}</li>
+     *   <li>Check {@code config/paper-global.yml} or spigot config for
+     *       Velocity forwarding secret → {@link ProxyType#VELOCITY}</li>
+     *   <li>Default → {@link ProxyType#NONE}</li>
+     * </ol>
+     *
+     * @param plugin the owning plugin
+     * @return the detected proxy type
+     */
+    @SuppressWarnings("removal")
+    @NotNull
+    private static ProxyType detectProxyType(@NotNull Plugin plugin) {
+        // Check spigot.yml for BungeeCord mode
+        try {
+            final boolean bungeeCord = plugin.getServer()
+                    .spigot().getConfig()
+                    .getBoolean("settings.bungeecord", false);
+
+            if (bungeeCord) {
+                log.info("Auto-detected proxy: BUNGEECORD (spigot.yml)");
+                return ProxyType.BUNGEECORD;
+            }
+        } catch (Exception ignored) {
+        }
+
+        // Check paper.yml / paper-global.yml for Velocity forwarding
+        try {
+            final java.io.File paperGlobal =
+                    new java.io.File("config/paper-global.yml");
+            if (paperGlobal.exists()) {
+                final org.bukkit.configuration.file.YamlConfiguration cfg =
+                        org.bukkit.configuration.file.YamlConfiguration
+                                .loadConfiguration(paperGlobal);
+                final boolean velocityEnabled = cfg.getBoolean(
+                        "proxies.velocity.enabled", false);
+                if (velocityEnabled) {
+                    log.info("Auto-detected proxy: VELOCITY (paper-global.yml)");
+                    return ProxyType.VELOCITY;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        log.info("No proxy detected — using NONE (single-server mode).");
+        return ProxyType.NONE;
+    }
+
+    // =========================================================================
+    // Channel registration
     // =========================================================================
 
     /**
@@ -153,10 +215,6 @@ public final class NetworkManager {
                 + handlerCount + " handler(s) registered.");
     }
 
-    // =========================================================================
-    // Channel registration
-    // =========================================================================
-
     /**
      * Registers an outgoing plugin messaging channel.
      * No-op if already registered.
@@ -186,6 +244,10 @@ public final class NetworkManager {
         }
     }
 
+    // =========================================================================
+    // Sending typed messages
+    // =========================================================================
+
     /**
      * Registers a raw {@link org.bukkit.plugin.messaging.PluginMessageListener}
      * for a channel. Use this for channels where you need direct access to the
@@ -202,10 +264,6 @@ public final class NetworkManager {
         plugin.getServer().getMessenger()
                 .registerIncomingPluginChannel(plugin, channel, listener);
     }
-
-    // =========================================================================
-    // Sending typed messages
-    // =========================================================================
 
     /**
      * Sends a {@link NetworkMessage}-annotated message through a player's
@@ -238,6 +296,10 @@ public final class NetworkManager {
                 + " on: " + annotation.channel());
     }
 
+    // =========================================================================
+    // Proxy action delegation
+    // =========================================================================
+
     /**
      * Sends raw bytes on a channel through a player's connection.
      *
@@ -253,10 +315,6 @@ public final class NetworkManager {
         registerOutgoing(channel);
         player.sendPluginMessage(plugin, channel, data);
     }
-
-    // =========================================================================
-    // Proxy action delegation
-    // =========================================================================
 
     public void connectToServer(@NotNull Player player, @NotNull String server) {
         proxyAdapter.connectToServer(player, server);
@@ -303,10 +361,6 @@ public final class NetworkManager {
         proxyAdapter.requestServerName(player);
     }
 
-    public void requestPlayerCount(@NotNull Player carrier, @NotNull String server) {
-        proxyAdapter.requestPlayerCount(carrier, server);
-    }
-
 //    public void requestServerList(@NotNull Player carrier) {
 //        proxyAdapter.requestServerList(carrier);
 //    }
@@ -318,6 +372,10 @@ public final class NetworkManager {
     // =========================================================================
     // Proxy type management
     // =========================================================================
+
+    public void requestPlayerCount(@NotNull Player carrier, @NotNull String server) {
+        proxyAdapter.requestPlayerCount(carrier, server);
+    }
 
     /**
      * Returns the currently active {@link ProxyType}.
@@ -340,11 +398,15 @@ public final class NetworkManager {
         log.info("Switched proxy adapter to: " + type);
     }
 
+    // =========================================================================
+    // Message routing
+    // =========================================================================
+
     private void applyProxyType(@NotNull ProxyType type) {
         this.proxyAdapter = switch (type) {
             case BUNGEECORD -> new BungeeCordAdapter(plugin);
-            case VELOCITY   -> new VelocityAdapter(plugin);
-            case NONE       -> new NoOpProxyAdapter(plugin);
+            case VELOCITY -> new VelocityAdapter(plugin);
+            case NONE -> new NoOpProxyAdapter(plugin);
         };
 
         if (type != ProxyType.NONE) {
@@ -358,10 +420,6 @@ public final class NetworkManager {
             }
         }
     }
-
-    // =========================================================================
-    // Message routing
-    // =========================================================================
 
     private void onPluginMessage(
             @NotNull String channel,
@@ -414,6 +472,10 @@ public final class NetworkManager {
         }
     }
 
+    // =========================================================================
+    // Auto-detection
+    // =========================================================================
+
     private void dispatch(
             @NotNull List<HandlerRegistration> registrations,
             @NotNull MessagePayload<?> payload
@@ -430,61 +492,6 @@ public final class NetworkManager {
                                 + payload.getMessage().getClass().getSimpleName(), ex);
             }
         }
-    }
-
-    // =========================================================================
-    // Auto-detection
-    // =========================================================================
-
-    /**
-     * Auto-detects the proxy type from server configuration files.
-     *
-     * <p>Detection order:
-     * <ol>
-     *   <li>Check {@code spigot.yml → settings.bungeecord: true}
-     *       → {@link ProxyType#BUNGEECORD}</li>
-     *   <li>Check {@code config/paper-global.yml} or spigot config for
-     *       Velocity forwarding secret → {@link ProxyType#VELOCITY}</li>
-     *   <li>Default → {@link ProxyType#NONE}</li>
-     * </ol>
-     *
-     * @param plugin the owning plugin
-     * @return the detected proxy type
-     */
-    @SuppressWarnings("removal")
-    @NotNull
-    private static ProxyType detectProxyType(@NotNull Plugin plugin) {
-        // Check spigot.yml for BungeeCord mode
-        try {
-            final boolean bungeeCord = plugin.getServer()
-                    .spigot().getConfig()
-                    .getBoolean("settings.bungeecord", false);
-
-            if (bungeeCord) {
-                log.info("Auto-detected proxy: BUNGEECORD (spigot.yml)");
-                return ProxyType.BUNGEECORD;
-            }
-        } catch (Exception ignored) {}
-
-        // Check paper.yml / paper-global.yml for Velocity forwarding
-        try {
-            final java.io.File paperGlobal =
-                    new java.io.File("config/paper-global.yml");
-            if (paperGlobal.exists()) {
-                final org.bukkit.configuration.file.YamlConfiguration cfg =
-                        org.bukkit.configuration.file.YamlConfiguration
-                                .loadConfiguration(paperGlobal);
-                final boolean velocityEnabled = cfg.getBoolean(
-                        "proxies.velocity.enabled", false);
-                if (velocityEnabled) {
-                    log.info("Auto-detected proxy: VELOCITY (paper-global.yml)");
-                    return ProxyType.VELOCITY;
-                }
-            }
-        } catch (Exception ignored) {}
-
-        log.info("No proxy detected — using NONE (single-server mode).");
-        return ProxyType.NONE;
     }
 
     // =========================================================================

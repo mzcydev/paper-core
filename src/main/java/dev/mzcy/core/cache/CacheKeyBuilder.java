@@ -19,14 +19,15 @@ import java.lang.reflect.Method;
  */
 public final class CacheKeyBuilder {
 
-    private CacheKeyBuilder() {}
+    private CacheKeyBuilder() {
+    }
 
     /**
      * Builds the cache key for a method invocation.
      *
-     * @param method         the invoked method
-     * @param args           the method arguments
-     * @param keyExpression  the key expression from the annotation (may be empty)
+     * @param method        the invoked method
+     * @param args          the method arguments
+     * @param keyExpression the key expression from the annotation (may be empty)
      * @return the computed cache key
      */
     @NotNull

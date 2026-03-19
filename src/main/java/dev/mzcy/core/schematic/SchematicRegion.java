@@ -24,9 +24,12 @@ import org.jetbrains.annotations.NotNull;
 @RequiredArgsConstructor
 public final class SchematicRegion {
 
-    @NotNull private final World  world;
-    @NotNull private final Vector min;
-    @NotNull private final Vector max;
+    @NotNull
+    private final World world;
+    @NotNull
+    private final Vector min;
+    @NotNull
+    private final Vector max;
 
     // =========================================================================
     // Factory
@@ -63,16 +66,30 @@ public final class SchematicRegion {
     // Dimensions
     // =========================================================================
 
-    /** Returns the width (X size) of this region. */
-    public int getWidth()  { return max.getBlockX() - min.getBlockX() + 1; }
+    /**
+     * Returns the width (X size) of this region.
+     */
+    public int getWidth() {
+        return max.getBlockX() - min.getBlockX() + 1;
+    }
 
-    /** Returns the height (Y size) of this region. */
-    public int getHeight() { return max.getBlockY() - min.getBlockY() + 1; }
+    /**
+     * Returns the height (Y size) of this region.
+     */
+    public int getHeight() {
+        return max.getBlockY() - min.getBlockY() + 1;
+    }
 
-    /** Returns the length (Z size) of this region. */
-    public int getLength() { return max.getBlockZ() - min.getBlockZ() + 1; }
+    /**
+     * Returns the length (Z size) of this region.
+     */
+    public int getLength() {
+        return max.getBlockZ() - min.getBlockZ() + 1;
+    }
 
-    /** Returns the total block volume of this region. */
+    /**
+     * Returns the total block volume of this region.
+     */
     public long getVolume() {
         return (long) getWidth() * getHeight() * getLength();
     }

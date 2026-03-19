@@ -14,18 +14,8 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 public final class AnvilInputResult {
 
-    public enum Status {
-        /** The player clicked the output slot and submitted text. */
-        SUBMITTED,
-        /** The player closed the anvil without submitting. */
-        CANCELLED,
-        /** The player disconnected during the session. */
-        DISCONNECTED
-    }
-
     @NotNull
     private final Status status;
-
     /**
      * The text the player entered in the rename field.
      * {@code null} for any non-{@link Status#SUBMITTED} status.
@@ -33,14 +23,14 @@ public final class AnvilInputResult {
     @Nullable
     private final String value;
 
-    // =========================================================================
-    // Factories
-    // =========================================================================
-
     @NotNull
     public static AnvilInputResult submitted(@NotNull String value) {
         return new AnvilInputResult(Status.SUBMITTED, value);
     }
+
+    // =========================================================================
+    // Factories
+    // =========================================================================
 
     @NotNull
     public static AnvilInputResult cancelled() {
@@ -52,13 +42,21 @@ public final class AnvilInputResult {
         return new AnvilInputResult(Status.DISCONNECTED, null);
     }
 
+    public boolean isSubmitted() {
+        return status == Status.SUBMITTED;
+    }
+
     // =========================================================================
     // Convenience
     // =========================================================================
 
-    public boolean isSubmitted()    { return status == Status.SUBMITTED;    }
-    public boolean isCancelled()    { return status == Status.CANCELLED;    }
-    public boolean isDisconnected() { return status == Status.DISCONNECTED; }
+    public boolean isCancelled() {
+        return status == Status.CANCELLED;
+    }
+
+    public boolean isDisconnected() {
+        return status == Status.DISCONNECTED;
+    }
 
     /**
      * Returns the value if submitted, or the given fallback otherwise.
@@ -73,5 +71,20 @@ public final class AnvilInputResult {
         return "AnvilInputResult{status=" + status
                 + (value != null ? ", value='" + value + "'" : "")
                 + "}";
+    }
+
+    public enum Status {
+        /**
+         * The player clicked the output slot and submitted text.
+         */
+        SUBMITTED,
+        /**
+         * The player closed the anvil without submitting.
+         */
+        CANCELLED,
+        /**
+         * The player disconnected during the session.
+         */
+        DISCONNECTED
     }
 }

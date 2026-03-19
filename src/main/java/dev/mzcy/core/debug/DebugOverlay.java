@@ -1,6 +1,7 @@
 package dev.mzcy.core.debug;
 
 import dev.mzcy.core.di.Container;
+import dev.mzcy.core.profiling.TimingSummary;
 import dev.mzcy.core.scanner.ScanResult;
 import lombok.Getter;
 import lombok.extern.java.Log;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.RuntimeMXBean;
+import java.util.List;
 
 /**
  * The Core debug overlay — accessible via {@code /core debug}.
@@ -153,6 +155,9 @@ public final class DebugOverlay {
         registerNpcSection();
         registerPapiSection();
         registerCacheSection();
+        registerProfilingSection();
+        registry.registerEntry("Rate Limiter", "Active Buckets", () ->
+                "<white>" + core.getRateLimitManager().getRegistry().size());
     }
 
     private void registerJvmSection() {
@@ -343,6 +348,29 @@ public final class DebugOverlay {
                         .append("<dark_gray>: <white>").append(count);
             });
             return sb.isEmpty() ? "<dark_gray>none" : sb.toString();
+        });
+    }
+
+    private void registerProfilingSection() {
+        // Top 5 slowest
+        registry.registerEntry("Profiling", "Tracked Methods", () ->
+                "<white>" + core.getProfilingManager().getRegistry().size());
+
+        registry.registerEntry("Profiling", "Top 5 Slowest", () -> {
+            final List<TimingSummary> slowest =
+                    core.getProfilingManager().getSlowest();
+            if (slowest.isEmpty()) return "<dark_gray>no data yet";
+
+            final StringBuilder sb = new StringBuilder();
+            for (final TimingSummary s : slowest) {
+                if (!sb.isEmpty()) sb.append("\n");
+                sb.append("<gray>").append(s.getKey())
+                        .append("\n  ")
+                        .append("<white>avg=").append(String.format("%.2f", s.avgMs())).append("ms")
+                        .append(" max=").append(String.format("%.2f", s.maxMs())).append("ms")
+                        .append(" calls=").append(s.getInvocationCount());
+            }
+            return sb.toString();
         });
     }
 

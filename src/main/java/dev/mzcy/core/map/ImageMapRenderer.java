@@ -41,7 +41,7 @@ public final class ImageMapRenderer implements MapRenderer {
     private volatile boolean loaded = false;
 
     private ImageMapRenderer(@Nullable BufferedImage image) {
-        this.image  = image;
+        this.image = image;
         this.loaded = image != null;
     }
 
@@ -147,7 +147,7 @@ public final class ImageMapRenderer implements MapRenderer {
      * @param newImage the new image to display
      */
     public void setImage(@NotNull BufferedImage newImage) {
-        this.image  = newImage;
+        this.image = newImage;
         this.loaded = true;
     }
 
@@ -196,7 +196,7 @@ public final class ImageMapRenderer implements MapRenderer {
 
                 final BufferedImage img = ImageIO.read(response.body());
                 if (img != null) {
-                    this.image  = img;
+                    this.image = img;
                     this.loaded = true;
                     log.fine("ImageMapRenderer: loaded image from " + url);
                 }

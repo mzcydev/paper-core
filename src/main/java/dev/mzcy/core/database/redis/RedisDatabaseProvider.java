@@ -35,7 +35,7 @@ public final class RedisDatabaseProvider implements DatabaseProvider {
             @NotNull String id,
             @NotNull Config redissonConfig
     ) {
-        this.id             = id;
+        this.id = id;
         this.redissonConfig = redissonConfig;
     }
 

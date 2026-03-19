@@ -15,11 +15,15 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 public final class MessagePayload<T> {
 
-    /** The deserialized message object. */
+    /**
+     * The deserialized message object.
+     */
     @NotNull
     private final T message;
 
-    /** The channel this message was received on. */
+    /**
+     * The channel this message was received on.
+     */
     @NotNull
     private final String channel;
 

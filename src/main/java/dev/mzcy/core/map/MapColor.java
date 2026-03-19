@@ -17,31 +17,31 @@ import java.awt.*;
  */
 public final class MapColor {
 
-    private MapColor() {}
+    public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
     // =========================================================================
     // Common colors
     // =========================================================================
-
-    public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
-    public static final Color WHITE       = new Color(255, 255, 255);
-    public static final Color BLACK       = new Color(0, 0, 0);
-    public static final Color RED         = new Color(176, 46, 38);
-    public static final Color GREEN       = new Color(117, 176, 73);
-    public static final Color BLUE        = new Color(44, 46, 143);
-    public static final Color YELLOW      = new Color(247, 233, 163);
-    public static final Color AQUA        = new Color(64, 153, 150);
-    public static final Color ORANGE      = new Color(213, 125, 50);
-    public static final Color GRAY        = new Color(127, 127, 127);
-    public static final Color DARK_GRAY   = new Color(76, 76, 76);
-    public static final Color LIGHT_GRAY  = new Color(199, 199, 199);
-    public static final Color BROWN       = new Color(102, 76, 51);
-    public static final Color DARK_GREEN  = new Color(89, 125, 39);
-    public static final Color PURPLE      = new Color(137, 50, 184);
-    public static final Color CYAN        = new Color(22, 156, 156);
-    public static final Color PINK        = new Color(243, 139, 170);
-    public static final Color LIME        = new Color(128, 199, 31);
-    public static final Color GOLD        = new Color(255, 163, 20);
+    public static final Color WHITE = new Color(255, 255, 255);
+    public static final Color BLACK = new Color(0, 0, 0);
+    public static final Color RED = new Color(176, 46, 38);
+    public static final Color GREEN = new Color(117, 176, 73);
+    public static final Color BLUE = new Color(44, 46, 143);
+    public static final Color YELLOW = new Color(247, 233, 163);
+    public static final Color AQUA = new Color(64, 153, 150);
+    public static final Color ORANGE = new Color(213, 125, 50);
+    public static final Color GRAY = new Color(127, 127, 127);
+    public static final Color DARK_GRAY = new Color(76, 76, 76);
+    public static final Color LIGHT_GRAY = new Color(199, 199, 199);
+    public static final Color BROWN = new Color(102, 76, 51);
+    public static final Color DARK_GREEN = new Color(89, 125, 39);
+    public static final Color PURPLE = new Color(137, 50, 184);
+    public static final Color CYAN = new Color(22, 156, 156);
+    public static final Color PINK = new Color(243, 139, 170);
+    public static final Color LIME = new Color(128, 199, 31);
+    public static final Color GOLD = new Color(255, 163, 20);
+    private MapColor() {
+    }
 
     // =========================================================================
     // Conversion

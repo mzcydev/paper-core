@@ -6,8 +6,11 @@ import dev.mzcy.core.command.BaseCommand;
 import dev.mzcy.core.command.CommandContext;
 import dev.mzcy.core.di.Container;
 import dev.mzcy.core.di.Scope;
+import dev.mzcy.core.profiling.TimingSummary;
 import lombok.extern.java.Log;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * The {@code /core} command — entry point to the Core framework CLI.
@@ -90,6 +93,39 @@ public final class DebugCommand extends BaseCommand {
                             + instance
             );
         });
+    }
+
+    @SubCommand(value = "timings", permission = "core.admin")
+    public void onTimings(CommandContext ctx) {
+        final List<TimingSummary> all = core.getProfilingManager()
+                .getRegistry().getAll();
+
+        if (all.isEmpty()) {
+            ctx.send("<gray>No timing data recorded yet.");
+            return;
+        }
+
+        ctx.send("<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        ctx.send("<gold><bold>Profiling — All Methods");
+        ctx.send("<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+        for (final TimingSummary s : all) {
+            ctx.send("<gray>" + s.getKey());
+            ctx.send("  <dark_gray>avg=<white>" + String.format("%.2f", s.avgMs())
+                    + "ms <dark_gray>min=<white>" + String.format("%.2f", s.minMs())
+                    + "ms <dark_gray>max=<white>" + String.format("%.2f", s.maxMs())
+                    + "ms <dark_gray>calls=<white>" + s.getInvocationCount());
+        }
+
+        ctx.send("<dark_gray>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+        // Reset option
+        if (ctx.arg(0).map("reset"::equalsIgnoreCase).orElse(false)) {
+            core.getProfilingManager().resetAll();
+            ctx.sendSuccess("Timing stats reset.");
+        } else {
+            ctx.send("<dark_gray>Tip: <gray>/core timings reset");
+        }
     }
 
     // =========================================================================

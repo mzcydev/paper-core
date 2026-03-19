@@ -2,7 +2,6 @@ package dev.mzcy.core.sign;
 
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Fluent builder for creating {@link SignEntry} instances.
@@ -23,18 +22,18 @@ import org.jetbrains.annotations.Nullable;
 public final class SignBuilder {
 
     private final SignManager manager;
-    private final Location    location;
+    private final Location location;
 
-    private String     id     = java.util.UUID.randomUUID().toString();
-    private String[]   lines  = null;
+    private String id = java.util.UUID.randomUUID().toString();
+    private String[] lines = null;
     private SignAction action = null;
-    private String     tag    = null;
+    private String tag = null;
 
     SignBuilder(
             @NotNull SignManager manager,
             @NotNull Location location
     ) {
-        this.manager  = manager;
+        this.manager = manager;
         this.location = location;
     }
 

@@ -66,10 +66,14 @@ public final class SignManager implements Listener {
 
     private final Plugin plugin;
 
-    /** All registered sign entries by their location key. */
+    /**
+     * All registered sign entries by their location key.
+     */
     private final Map<String, SignEntry> signs = new LinkedHashMap<>();
 
-    /** Active sign editor sessions by player UUID. */
+    /**
+     * Active sign editor sessions by player UUID.
+     */
     private final Map<UUID, SignEditorSession> editorSessions
             = new ConcurrentHashMap<>();
 
@@ -361,7 +365,7 @@ public final class SignManager implements Listener {
             final Component line = event.line(i);
             lines[i] = line != null
                     ? net.kyori.adventure.text.serializer.plain
-                    .PlainTextComponentSerializer.plainText().serialize(line)
+                      .PlainTextComponentSerializer.plainText().serialize(line)
                     : "";
         }
 

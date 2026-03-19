@@ -5,7 +5,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -38,29 +41,41 @@ import java.util.logging.Level;
 @Log
 public final class CacheManager {
 
-    /** Default max cache size when none is specified. */
+    /**
+     * Default max cache size when none is specified.
+     */
     private static final int DEFAULT_MAX_SIZE = 1000;
 
-    /** Sweep interval in ticks (60 seconds). */
+    /**
+     * Sweep interval in ticks (60 seconds).
+     */
     private static final long SWEEP_INTERVAL_TICKS = 1200L;
 
     private final Plugin plugin;
 
-    /** All registered caches by name. */
+    /**
+     * All registered caches by name.
+     */
     private final Map<String, Cache> caches = new ConcurrentHashMap<>();
 
-    /** Proxy factory for annotation-driven caching. */
+    /**
+     * Proxy factory for annotation-driven caching.
+     */
     private final CacheProxyFactory proxyFactory;
 
-    /** The interceptor used by proxied components. */
+    /**
+     * The interceptor used by proxied components.
+     */
     private final CacheInterceptor interceptor;
 
-    /** Periodic sweep task. */
+    /**
+     * Periodic sweep task.
+     */
     private BukkitTask sweepTask;
 
     public CacheManager(@NotNull Plugin plugin) {
-        this.plugin       = plugin;
-        this.interceptor  = new CacheInterceptor(this);
+        this.plugin = plugin;
+        this.interceptor = new CacheInterceptor(this);
         this.proxyFactory = new CacheProxyFactory(interceptor);
         startSweepTask();
     }

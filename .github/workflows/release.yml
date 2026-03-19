@@ -1,0 +1,140 @@
+name: Build & Release
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # ── Check release.properties BEFORE building ───────────────────────────
+      - name: Check publish flag
+        id: publish
+        run: |
+          if [ -f "release.properties" ]; then
+            PUBLISH=$(grep '^publish=' release.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          else
+            PUBLISH="true"
+          fi
+
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          if echo "$COMMIT_MSG" | grep -q '\[skip release\]'; then
+            PUBLISH="false"
+            echo "Skipping — [skip release] in commit message."
+          fi
+
+          echo "enabled=${PUBLISH}" >> $GITHUB_OUTPUT
+          echo "publish=${PUBLISH}"
+
+      # ── Build ──────────────────────────────────────────────────────────────
+      - name: Build with Gradle
+        if: steps.publish.outputs.enabled == 'true'
+        run: ./gradlew shadowJar
+
+      # ── Debug ──────────────────────────────────────────────────────────────
+      - name: List built JARs
+        if: steps.publish.outputs.enabled == 'true'
+        run: |
+          echo "=== build/libs ==="
+          ls -la build/libs/
+
+      # ── Version + tag ──────────────────────────────────────────────────────
+      - name: Resolve version and tag
+        if: steps.publish.outputs.enabled == 'true'
+        id: meta
+        run: |
+          VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          BRANCH="${GITHUB_REF_NAME}"
+          SHORT_SHA=$(git rev-parse --short HEAD)
+
+          if [ "$BRANCH" = "dev" ]; then
+            FULL_VERSION="${VERSION}-dev+${SHORT_SHA}"
+            TAG="dev-latest"
+            PRERELEASE="true"
+            RELEASE_NAME="Dev Build ${FULL_VERSION}"
+            RELEASE_BODY="> ⚠️ Automated development build — may be unstable."
+          else
+            FULL_VERSION="${VERSION}"
+            TAG="v${VERSION}"
+            PRERELEASE="false"
+            RELEASE_NAME="Release ${FULL_VERSION}"
+            RELEASE_BODY="## Release ${FULL_VERSION}"
+          fi
+
+          echo "version=${FULL_VERSION}"          >> $GITHUB_OUTPUT
+          echo "tag=${TAG}"                        >> $GITHUB_OUTPUT
+          echo "prerelease=${PRERELEASE}"          >> $GITHUB_OUTPUT
+          echo "release_name=${RELEASE_NAME}"      >> $GITHUB_OUTPUT
+          echo "release_body=${RELEASE_BODY}"      >> $GITHUB_OUTPUT
+          echo "branch=${BRANCH}"                  >> $GITHUB_OUTPUT
+
+      # ── JAR finden ─────────────────────────────────────────────────────────
+      # Gradle names the JAR based on archiveBaseName + archiveVersion + archiveClassifier:
+      #   master  →  Core-1.0.0.jar
+      #   dev   →  Core-1.0.0-dev-abc1234.jar
+      - name: Locate JAR
+        if: steps.publish.outputs.enabled == 'true'
+        id: jar
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
+          VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          SHORT_SHA=$(git rev-parse --short HEAD)
+      
+          if [ "$BRANCH" = "dev" ]; then
+            JAR_NAME="Core-${VERSION}-dev-${SHORT_SHA}.jar"
+          else
+            JAR_NAME="Core-${VERSION}.jar"
+          fi
+      
+          JAR="build/libs/${JAR_NAME}"
+      
+          if [ ! -f "$JAR" ]; then
+            echo "ERROR: Expected JAR not found: ${JAR}"
+            echo "Available files:"
+            ls -la build/libs/
+            exit 1
+          fi
+      
+          echo "path=${JAR}"       >> $GITHUB_OUTPUT
+          echo "name=${JAR_NAME}"  >> $GITHUB_OUTPUT
+          echo "Found JAR: ${JAR}"
+
+      # ── Delete old dev-latest release ──────────────────────────────────────
+      - name: Delete existing dev-latest release
+        if: |
+          steps.publish.outputs.enabled == 'true' &&
+          steps.meta.outputs.branch == 'dev'
+        run: |
+          gh release delete dev-latest --yes --cleanup-tag 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Create GitHub Release ───────────────────────────────────────────────
+      - name: Create GitHub Release
+        if: steps.publish.outputs.enabled == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name:   ${{ steps.meta.outputs.tag }}
+          name:       ${{ steps.meta.outputs.release_name }}
+          body:       ${{ steps.meta.outputs.release_body }}
+          prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
+          files:      ${{ steps.jar.outputs.path }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

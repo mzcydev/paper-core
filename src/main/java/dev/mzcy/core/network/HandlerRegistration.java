@@ -16,15 +16,21 @@ import java.lang.reflect.Method;
 @RequiredArgsConstructor
 public final class HandlerRegistration {
 
-    /** The instance that owns the handler method. */
+    /**
+     * The instance that owns the handler method.
+     */
     @NotNull
     private final Object instance;
 
-    /** The handler method to invoke. */
+    /**
+     * The handler method to invoke.
+     */
     @NotNull
     private final Method method;
 
-    /** The message type this handler accepts. */
+    /**
+     * The message type this handler accepts.
+     */
     @NotNull
     private final Class<?> messageType;
 
