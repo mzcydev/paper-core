@@ -45,6 +45,9 @@ dependencies {
 
     compileOnly("org.yaml:snakeyaml:2.2")
 
+    compileOnly("net.luckperms:api:5.4")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("org.xerial:sqlite-jdbc:3.46.1.3")
     compileOnly("com.mysql:mysql-connector-j:9.0.0")
