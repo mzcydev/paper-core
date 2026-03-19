@@ -1,6 +1,7 @@
 package dev.mzcy.core;
 
 import dev.mzcy.core.anvil.AnvilInputManager;
+import dev.mzcy.core.behaviortree.BehaviorTreeManager;
 import dev.mzcy.core.cache.CacheManager;
 import dev.mzcy.core.command.CommandManager;
 import dev.mzcy.core.config.ConfigManager;
@@ -159,7 +160,7 @@ public final class CorePlugin extends JavaPlugin {
     @Getter private ConfigMigrationManager configMigrationManager;
     @Getter private ProfilingManager profilingManager;
     @Getter private ValidationManager validationManager;
-    @Getter private RetryManager retryManager;@Getter private RateLimitManager rateLimitManager;
+    @Getter private RetryManager retryManager;@Getter private RateLimitManager rateLimitManager;@Getter private BehaviorTreeManager behaviorTreeManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -307,6 +308,9 @@ public final class CorePlugin extends JavaPlugin {
         safeRun("CacheManager.shutdown",
                 () -> cacheManager.shutdown());
 
+        safeRun("BehaviorTreeManager.shutdown",
+                () -> behaviorTreeManager.shutdown());
+
         // 6. Tear down the DI container — invokes @PreDestroy on singletons
         safeRun("Container.destroy",
                 () -> container.destroy());
@@ -416,6 +420,7 @@ public final class CorePlugin extends JavaPlugin {
         cutsceneManager = new CutsceneManager(this);
         retryManager = new RetryManager();
         rateLimitManager = new RateLimitManager(this);
+        behaviorTreeManager = new BehaviorTreeManager(this);
 
         container.bindInstance(ModuleRegistry.class, moduleRegistry);
         container.bindInstance(ConfigManager.class, configManager);
@@ -450,6 +455,7 @@ public final class CorePlugin extends JavaPlugin {
         container.bindInstance(CutsceneManager.class, cutsceneManager);
         container.bindInstance(RetryManager.class, retryManager);
         container.bindInstance(RateLimitManager.class, rateLimitManager);
+        container.bindInstance(BehaviorTreeManager.class, behaviorTreeManager);
 
     }
 
