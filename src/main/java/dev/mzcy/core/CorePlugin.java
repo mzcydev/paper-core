@@ -33,6 +33,7 @@ import dev.mzcy.core.network.NetworkManager;
 import dev.mzcy.core.npc.NpcManager;
 import dev.mzcy.core.placeholder.PlaceholderManager;
 import dev.mzcy.core.plugin.settings.CoreSettingsConfig;
+import dev.mzcy.core.profiling.ProfilingManager;
 import dev.mzcy.core.reload.HotReloadManager;
 import dev.mzcy.core.scanner.ClassScanner;
 import dev.mzcy.core.scanner.ComponentRegistry;
@@ -43,6 +44,7 @@ import dev.mzcy.core.sign.SignManager;
 import dev.mzcy.core.task.TaskManager;
 import dev.mzcy.core.updater.UpdateChecker;
 import dev.mzcy.core.updater.UpdateNotifier;
+import dev.mzcy.core.validation.ValidationManager;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.bukkit.event.Listener;
@@ -153,6 +155,8 @@ public final class CorePlugin extends JavaPlugin {
     @Getter
     private CooldownManager cooldownManager;
     @Getter private ConfigMigrationManager configMigrationManager;
+    @Getter private ProfilingManager profilingManager;
+    @Getter private ValidationManager validationManager;
 
     /**
      * The scan result from startup — available to dependent plugins post-enable.
@@ -343,9 +347,6 @@ public final class CorePlugin extends JavaPlugin {
         // Self-register the plugin and server into the container
         container.bindInstance(CorePlugin.class, this);
 
-        configMigrationManager = new ConfigMigrationManager();
-        container.bindInstance(ConfigMigrationManager.class, configMigrationManager);
-
         container.bindInstance(
                 org.bukkit.Server.class,
                 getServer()
@@ -358,6 +359,15 @@ public final class CorePlugin extends JavaPlugin {
                 java.nio.file.Path.class,
                 getDataFolder().toPath()
         );
+
+        validationManager = new ValidationManager();
+        container.bindInstance(ValidationManager.class, validationManager);
+
+        configMigrationManager = new ConfigMigrationManager();
+        container.bindInstance(ConfigMigrationManager.class, configMigrationManager);
+
+        profilingManager = new ProfilingManager();
+        container.bindInstance(ProfilingManager.class, profilingManager);
 
         // Construct and register all framework managers
         moduleRegistry = new ModuleRegistry();
